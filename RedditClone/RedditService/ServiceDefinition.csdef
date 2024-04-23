@@ -3,41 +3,31 @@
   <WorkerRole name="HealthMonitoringService_WorkerRole" vmsize="Standard_D1_v2">
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
+      <Setting name="DataConnectionString" />
     </ConfigurationSettings>
   </WorkerRole>
   <WorkerRole name="NotificationService_WorkerRole" vmsize="Standard_D1_v2">
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
+      <Setting name="DataConnectionString" />
     </ConfigurationSettings>
   </WorkerRole>
-  <WebRole name="HealthStatusService_WebRole" vmsize="Standard_D1_v2">
-    <Sites>
-      <Site name="Web">
-        <Bindings>
-          <Binding name="Endpoint1" endpointName="Endpoint1" />
-        </Bindings>
-      </Site>
-    </Sites>
-    <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
-    </ConfigurationSettings>
-    <Endpoints>
-      <InputEndpoint name="Endpoint1" protocol="http" port="8080" />
-    </Endpoints>
-  </WebRole>
   <WebRole name="RedditService_WebRole" vmsize="Standard_D1_v2">
     <Sites>
       <Site name="Web">
         <Bindings>
-          <Binding name="Endpoint1" endpointName="Endpoint1" />
+          <Binding name="Endpoint1" endpointName="DefaultInput" />
+          <Binding name="Endpoint1" endpointName="RedditInput" />
         </Bindings>
       </Site>
     </Sites>
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
+      <Setting name="DataConnectionString" />
     </ConfigurationSettings>
     <Endpoints>
-      <InputEndpoint name="Endpoint1" protocol="http" port="80" />
+      <InputEndpoint name="DefaultInput" protocol="http" port="80" />
+      <InputEndpoint name="RedditInput" protocol="http" port="8787" />
     </Endpoints>
   </WebRole>
 </ServiceDefinition>

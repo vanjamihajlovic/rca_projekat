@@ -10,17 +10,13 @@ using System.Threading;
 using System.Threading.Tasks;
 
 /*
-Na svakih 1-5 sekundi šalje zahtev ka RedditService i NotificationService /health-monitoring endpoint,
-gde ukoliko sam zahtev prođe smatra se da je sve kako treba, a ukoliko ne prođe šalje se mejl 
-na mejl adrese koje je moguće urediti kroz konzolnu aplikaciju (implementirati autentifikaciju nekog tipa)
-
-Svejedno da li je zahtev prošao ili nije, neophodno je upisati poruku u posebnu tabelu HealthCheck 
-sa trenutnim datumom i vremenom i statusom da li je uspelo ili nije
-npr. 2023-11-03:12:23.33.3333_OK ili 2023-11-03:12:23.33.3333_NOT_OK
+Prilikom postavljanja novog komentara na temu - RedditService rola šalje poruku u red (notifications) gde ubacuje ID komentara
 
 Po mogućnošću koristiti neki servis za slanje mejlova ili slati ručno (SMTP). 
 Primer sistema za slanje mejlova jesu Postmark ili SendGrid.
 */
+
+// TODO kasnije dodati UI za korisnike (kao poseban projekat)
 
 namespace NotificationService_WorkerRole
 {

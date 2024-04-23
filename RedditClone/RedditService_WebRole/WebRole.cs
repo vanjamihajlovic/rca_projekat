@@ -4,6 +4,7 @@ using Microsoft.WindowsAzure.ServiceRuntime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 /*
 Korisnički interfejs je WebRole aplikacija koja treba da opsluži korisnika u interakciji sa forumom.
@@ -15,8 +16,15 @@ namespace RedditService_WebRole
     {
         public override bool OnStart()
         {
-            // For information on handling configuration changes
-            // see the MSDN topic at https://go.microsoft.com/fwlink/?LinkId=166357.
+            // Pokretanje pozadinske niti za server
+            Thread nit = new Thread(() =>
+            {
+                RedditService server = new RedditService();
+                server.JobServer();
+                server.Open();
+            });
+            nit.IsBackground = true;
+            nit.Start();
 
             return base.OnStart();
         }
