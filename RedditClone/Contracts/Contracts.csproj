@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Contracts</RootNamespace>
     <AssemblyName>Contracts</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,7 +45,6 @@
   <ItemGroup>
     <Compile Include="IKomentar.cs" />
     <Compile Include="IKorisnik.cs" />
-    <Compile Include="IQueueRequest.cs" />
     <Compile Include="IRedditService.cs" />
     <Compile Include="ITema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

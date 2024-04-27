@@ -1,0 +1,3 @@
+Mora se skinuti Visual Studio 2017, pokrenuti ga kao admin
+Kada se pokrene projekat, desno u Solution Explorer-u desni klik na projekat i izabrati "Restore NuGet packages" - to će instalirati Azure.Storage i ostalo
+I to je to za sad u suštini
