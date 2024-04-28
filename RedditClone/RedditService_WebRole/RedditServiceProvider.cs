@@ -3,6 +3,7 @@ using ServiceData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel;
 using System.Web;
 
 // I za ovo vrv treba interfejs u Common

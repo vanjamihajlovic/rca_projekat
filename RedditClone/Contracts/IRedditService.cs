@@ -15,6 +15,6 @@ namespace Contracts
     public interface IRedditService
     {
         [OperationContract]
-        bool DodajKorisnika(Korisnik k);
+        bool DodajKorisnika(Korisnik k);        
     }
 }

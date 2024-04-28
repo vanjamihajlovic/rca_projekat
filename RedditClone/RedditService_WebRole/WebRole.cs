@@ -14,6 +14,8 @@ namespace RedditService_WebRole
 {
     public class WebRole : RoleEntryPoint
     {
+        private HealthCheckServer hcs = new HealthCheckServer();
+
         public override bool OnStart()
         {
             // Pokretanje pozadinske niti za server
@@ -25,6 +27,8 @@ namespace RedditService_WebRole
             });
             nit.IsBackground = true;
             nit.Start();
+
+            hcs.Open();
 
             return base.OnStart();
         }

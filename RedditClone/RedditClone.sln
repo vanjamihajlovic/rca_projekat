@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.9.34728.123
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "RedditService", "RedditService\RedditService.ccproj", "{D7FFBAA0-F8A0-4DDB-82D0-C68C61B8099F}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceData", "ServiceData\ServiceData.csproj", "{D24FCE89-50C7-4A94-B64F-1A4C4C79A666}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableRepository", "TableRepository\TableRepository.csproj", "{B2B4461E-98BA-4A41-8285-ED9F9BC39943}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "Helpers\Helpers.csproj", "{077B37FC-CF6A-4E68-83E6-B1A62B19DAAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{B2B4461E-98BA-4A41-8285-ED9F9BC39943}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2B4461E-98BA-4A41-8285-ED9F9BC39943}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2B4461E-98BA-4A41-8285-ED9F9BC39943}.Release|Any CPU.Build.0 = Release|Any CPU
+		{077B37FC-CF6A-4E68-83E6-B1A62B19DAAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{077B37FC-CF6A-4E68-83E6-B1A62B19DAAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{077B37FC-CF6A-4E68-83E6-B1A62B19DAAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{077B37FC-CF6A-4E68-83E6-B1A62B19DAAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -61,6 +67,7 @@ Global
 		{80030AF7-A578-46E1-AAF2-CD06CE2D09E8} = {3EE30115-A8B0-451A-8165-B6D0D1DA3042}
 		{D24FCE89-50C7-4A94-B64F-1A4C4C79A666} = {3EE30115-A8B0-451A-8165-B6D0D1DA3042}
 		{B2B4461E-98BA-4A41-8285-ED9F9BC39943} = {3EE30115-A8B0-451A-8165-B6D0D1DA3042}
+		{077B37FC-CF6A-4E68-83E6-B1A62B19DAAC} = {3EE30115-A8B0-451A-8165-B6D0D1DA3042}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E49F158A-1737-444F-8E60-EBD16A32D411}
