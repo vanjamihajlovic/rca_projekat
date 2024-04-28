@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Helpers;
+using Microsoft.WindowsAzure.Storage.Queue;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +16,12 @@ namespace NotificationService_WorkerRole
 { 
     public class NotificationServiceProvider
     {
+		CloudQueue queueComments = QueueHelper.GetQueueReference("CommentNotificationsQueue");
+		CloudQueue queueAdmins = QueueHelper.GetQueueReference("AdminNotificationsQueue");
 
-    }
+		// Dobavljanje poruka iz queue (poziv u metodama):
+		//string idKomentara = queueComments.GetMessage().AsString;
+		//string idProvere = queueAdmins.GetMessage().AsString;
+
+	}
 }

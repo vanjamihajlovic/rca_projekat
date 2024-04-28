@@ -73,7 +73,6 @@ namespace TableRepository
             }
         }
 
-        // Da li uopšte treba da imamo ovo ?
         public bool IzmeniKomentar(string id, Komentar k)
         {
             if (k == null || string.IsNullOrEmpty(id)) return false;

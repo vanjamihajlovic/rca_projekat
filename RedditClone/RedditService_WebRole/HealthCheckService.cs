@@ -9,12 +9,12 @@ using System.Web;
 
 namespace RedditService_WebRole
 {
-    public class HealthCheckServer
+    public class HealthCheckService
     {
         private ServiceHost serviceHost;
         private string endPointName = "HealthCheck";
 
-        public HealthCheckServer()
+        public HealthCheckService()
         {
             RoleInstanceEndpoint inputEndPoint = RoleEnvironment.CurrentRoleInstance.InstanceEndpoints[endPointName];
             string endpoint = string.Format("net.tcp://{0}/{1}", inputEndPoint.IPEndpoint, endPointName);

@@ -14,7 +14,7 @@ namespace RedditService_WebRole
 {
     public class WebRole : RoleEntryPoint
     {
-        private HealthCheckServer hcs = new HealthCheckServer();
+        private HealthCheckService hcs = new HealthCheckService();
 
         public override bool OnStart()
         {

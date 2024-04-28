@@ -46,6 +46,7 @@
     <Compile Include="IKomentar.cs" />
     <Compile Include="IKorisnik.cs" />
     <Compile Include="IHealthCheck.cs" />
+    <Compile Include="INotificationService.cs" />
     <Compile Include="IRedditService.cs" />
     <Compile Include="ITema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,6 +56,9 @@
       <Project>{D24FCE89-50C7-4A94-B64F-1A4C4C79A666}</Project>
       <Name>ServiceData</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

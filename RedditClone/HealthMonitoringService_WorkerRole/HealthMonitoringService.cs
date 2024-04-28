@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace HealthMonitoringService_WorkerRole
 {
-    public class HealthMonitoringServer
+    public class HealthMonitoringService
     {
         private ServiceHost serviceHost;
-        private string endPointName = "HealthCheck";
+        private string endPointName = "HealthCheckInput";
 
-        public HealthMonitoringServer()
+        public HealthMonitoringService()
         {
             RoleInstanceEndpoint inputEndPoint = RoleEnvironment.CurrentRoleInstance.InstanceEndpoints[endPointName];
             string endpoint = string.Format("net.tcp://{0}/{1}", inputEndPoint.IPEndpoint, endPointName);
