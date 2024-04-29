@@ -13,5 +13,8 @@ namespace Contracts
 	{
 		[OperationContract]
 		bool SacuvajIzvestaj(Izvestaj i);
+
+		[OperationContract]
+		Izvestaj DobaviIzvestaj(string id);
 	}
 }

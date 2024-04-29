@@ -17,6 +17,7 @@ namespace NotificationService_WorkerRole
 
         public HealthCheckService()
         {
+			// Interni endpoint koji će biti pingovan da bi se proverila dostupnost servisa
             RoleInstanceEndpoint inputEndPoint = RoleEnvironment.CurrentRoleInstance.InstanceEndpoints[endPointName];
             string endpoint = string.Format("net.tcp://{0}/{1}", inputEndPoint.IPEndpoint, endPointName);
 

@@ -6,7 +6,7 @@
       <Setting name="DataConnectionString" />
     </ConfigurationSettings>
     <Endpoints>
-      <InputEndpoint name="HealthCheck" protocol="tcp" port="10100" />
+      <InputEndpoint name="HealthCheckInput" protocol="tcp" port="10100" />
     </Endpoints>
   </WorkerRole>
   <WorkerRole name="NotificationService_WorkerRole" vmsize="Standard_D1_v2">

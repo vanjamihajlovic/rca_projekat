@@ -41,5 +41,21 @@ namespace TableRepository
 				return false;
 			}
 		}
+
+		public Izvestaj DobaviIzvestaj(string id)
+		{
+			if (string.IsNullOrEmpty(id))
+				return new Izvestaj();
+
+			try
+			{
+				var izv = (from g in table.CreateQuery<Izvestaj>() where g.PartitionKey == "Izvestaj" && g.RowKey == id select g).FirstOrDefault();
+				return izv ?? new Izvestaj();
+			}
+			catch (Exception)
+			{
+				return new Izvestaj();
+			}
+		}
 	}
 }

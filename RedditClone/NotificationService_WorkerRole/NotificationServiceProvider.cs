@@ -24,6 +24,7 @@ namespace NotificationService_WorkerRole
 		CloudQueue queueComments = QueueHelper.GetQueueReference("CommentNotificationsQueue");
 		CloudQueue queueAdmins = QueueHelper.GetQueueReference("AdminNotificationsQueue");
 
+		// TODO: implementirati
 		public void PosaljiMejl()
 		{
 			throw new NotImplementedException();
@@ -71,7 +72,13 @@ namespace NotificationService_WorkerRole
 			if (queueComments.ApproximateMessageCount > 0)
 			{
 				string idIzvestaja = queueAdmins.GetMessage().AsString;
-				
+
+				TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
+				Izvestaj i = tri.DobaviIzvestaj(idIzvestaja);
+
+				string poruka = i.Sadrzaj;
+				DateTime vreme = i.Vreme;
+
 				// TODO dalju logiku
 			}
 		}

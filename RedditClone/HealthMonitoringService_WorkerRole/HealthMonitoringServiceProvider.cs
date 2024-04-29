@@ -10,19 +10,17 @@ using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
-// Metode PosaljiZahtev, PosaljiMejl (ako je neuspesan zahtev), NapisiIzvestaj
+// Metode PosaljiZahtev, NapisiIzvestaj
 // Izveštaj se čuva u posebnoj tabeli HealthCheckTable, |vreme-datum|poruka (OK/NOT_OK)|
 
-// HealthCheck se vrši svakih 1-5 minuta
+// HealthCheck se vrši svakih 1-5 sekundo
 
 namespace HealthMonitoringService_WorkerRole
 {
     public class HealthMonitoringServiceProvider : IHealthCheck
     {
         CloudQueue queue = QueueHelper.GetQueueReference("AdminNotificationsQueue");
-        // U funkciji za slanje mejlova će se pozivati sledeće (mada još nisam sigurna za idProvere):
-        // queue.AddMessage(new CloudQueueMessage(idProvere));
-
+        
         private static IHealthCheck proxy1;
         private static IHealthCheck proxy2;
 
@@ -58,14 +56,14 @@ namespace HealthMonitoringService_WorkerRole
                 if (!alive) sveOkej = false;
             }
 
+			// Napravi izveštaj i upiši ga u tabelu
+
             if (!sveOkej)
             {
-                // poslati mejl administratorima
-            }
-
-            // Upisati u tabelu izveštaj
-        }
-
+				// Dodaj idIzvestaja u AdminNotificaionQueue
+				// queue.AddMessage(new CloudQueueMessage(idProvere));
+			}
+		}
 
         private void PerformCheckNotifications()
         {
@@ -87,12 +85,13 @@ namespace HealthMonitoringService_WorkerRole
                 if (!alive) sveOkej = false;
             }
 
-            if (!sveOkej)
-            {
-                // poslati mejl administratorima
-            }
+			// Napravi izveštaj i upiši ga u tabelu
 
-            // Upisati u tabelu izveštaj
-        }
+			if (!sveOkej)
+            {
+				// Dodaj idIzvestaja u AdminNotificaionQueue
+				// queue.AddMessage(new CloudQueueMessage(idProvere));
+			}
+		}
     }
 }
