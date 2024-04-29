@@ -66,8 +66,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TableRepositoryIzvestaj.cs" />
     <Compile Include="TableRepositoryKomentar.cs" />
     <Compile Include="TableRepositoryKorisnik.cs" />
+    <Compile Include="TableRepositoryNotifikacije.cs" />
     <Compile Include="TableRepositoryTema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

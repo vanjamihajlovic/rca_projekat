@@ -67,8 +67,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Izvestaj.cs" />
     <Compile Include="Komentar.cs" />
     <Compile Include="Korisnik.cs" />
+    <Compile Include="Notifikacija.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tema.cs" />
   </ItemGroup>

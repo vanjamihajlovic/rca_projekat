@@ -43,10 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IIzvestaj.cs" />
     <Compile Include="IKomentar.cs" />
     <Compile Include="IKorisnik.cs" />
     <Compile Include="IHealthCheck.cs" />
     <Compile Include="INotificationService.cs" />
+    <Compile Include="INotifikacije.cs" />
     <Compile Include="IRedditService.cs" />
     <Compile Include="ITema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

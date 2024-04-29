@@ -3,7 +3,9 @@ using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Threading;
 
 /*
@@ -14,23 +16,23 @@ namespace RedditService_WebRole
 {
     public class WebRole : RoleEntryPoint
     {
-        private HealthCheckService hcs = new HealthCheckService();
+		private HealthCheckService hcs = new HealthCheckService();
 
-        public override bool OnStart()
-        {
-            // Pokretanje pozadinske niti za server
-            Thread nit = new Thread(() =>
-            {
-                RedditService server = new RedditService();
-                server.JobServer();
-                server.Open();
-            });
-            nit.IsBackground = true;
-            nit.Start();
+		public override bool OnStart()
+		{
+			// Pokretanje pozadinske niti za server
+			Thread nit = new Thread(() =>
+			{
+				RedditService server = new RedditService();
+				server.JobServer();
+				server.Open();
+			});
+			nit.IsBackground = true;
+			nit.Start();
 
-            hcs.Open();
+			hcs.Open();
 
-            return base.OnStart();
-        }
-    }
+			return base.OnStart();
+		}
+	}
 }
