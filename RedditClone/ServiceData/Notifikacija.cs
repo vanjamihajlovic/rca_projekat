@@ -9,22 +9,22 @@ namespace ServiceData
 {
 	public class Notifikacija : TableEntity
 	{
-		private int id;
+		private int idKomentara;
 		private DateTime vreme;
 		private int brojPoslatihMejlova;
 
-		public int Id { get => id; set => id = value; }
+		public int IdKomentara { get => idKomentara; set => idKomentara = value; }
 		public DateTime Vreme { get => vreme; set => vreme = value; }
 		public int BrojPoslatihMejlova { get => brojPoslatihMejlova; set => brojPoslatihMejlova = value; }
 
 		public Notifikacija() { }
 
-		public Notifikacija(int id, DateTime vreme, int brojPoslatihMejlova)
+		public Notifikacija(int idKomentara, DateTime vreme, int brojPoslatihMejlova)
 		{
 			PartitionKey = "Notifikacija";
-			RowKey = id.ToString();
+			RowKey = idKomentara.ToString();
 
-			Id = id;
+			IdKomentara = idKomentara;
 			Vreme = vreme;
 			BrojPoslatihMejlova = brojPoslatihMejlova;
 		}

@@ -11,6 +11,6 @@ namespace Contracts
 	public interface INotificationService
 	{
 		[OperationContract]
-		void SendEmail();
+		void PosaljiMejl();
 	}
 }

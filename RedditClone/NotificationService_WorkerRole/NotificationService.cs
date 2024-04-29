@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAzure.ServiceRuntime;
+﻿using Contracts;
+using Microsoft.WindowsAzure.ServiceRuntime;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,24 +12,19 @@ namespace NotificationService_WorkerRole
 {
 	public class NotificationService
 	{
-		// Da li njemu uopšte treba servis?
-		// Nema interne EP, nema eksterne EP, koristi samo queue
-		// Potreban je samo HealthCheck servis, ali on već postoji
-
-		/*
 		private ServiceHost serviceHost;
-		private string endPointName = "NotificaionInternal";
+		private string endPointName = "NotificationInternal";
 
 		public NotificationService()
 		{
 			RoleInstanceEndpoint inputEndPoint = RoleEnvironment.CurrentRoleInstance.InstanceEndpoints[endPointName];
 			string endpoint = string.Format("net.tcp://{0}/{1}", inputEndPoint.IPEndpoint, endPointName);
 
-			serviceHost = new ServiceHost(typeof(HealthCheckServiceProvider));
+			serviceHost = new ServiceHost(typeof(NotificationServiceProvider));
 			NetTcpBinding binding = new NetTcpBinding();
 			serviceHost.AddServiceEndpoint(typeof(INotificationService), binding, endpoint);
 		}
-
+		
 		public void Open()
 		{
 			try
@@ -53,8 +49,6 @@ namespace NotificationService_WorkerRole
 			{
 				Trace.TraceInformation("Host close error for {0} endpoint type. Error message is: {1}. ", endPointName, e.Message);
 			}
-
-		}
-		*/
+		}		
 	}
 }

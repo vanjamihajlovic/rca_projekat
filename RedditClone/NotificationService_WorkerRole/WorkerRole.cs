@@ -25,7 +25,10 @@ namespace NotificationService_WorkerRole
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
 
-        public override void Run()
+		private HealthCheckService hcs = new HealthCheckService();
+		private NotificationService ns = new NotificationService();
+
+		public override void Run()
         {
             Trace.TraceInformation("NotificationService_WorkerRole is running");
 
@@ -52,7 +55,10 @@ namespace NotificationService_WorkerRole
 
             bool result = base.OnStart();
 
-            Trace.TraceInformation("NotificationService_WorkerRole has been started");
+			hcs.Open();
+			ns.Open();
+
+			Trace.TraceInformation("NotificationService_WorkerRole has been started");
 
             return result;
         }
@@ -66,6 +72,9 @@ namespace NotificationService_WorkerRole
 
             base.OnStop();
 
+			hcs.Close();
+			ns.Close();
+
             Trace.TraceInformation("NotificationService_WorkerRole has stopped");
         }
 
@@ -75,7 +84,7 @@ namespace NotificationService_WorkerRole
             while (!cancellationToken.IsCancellationRequested)
             {
                 Trace.TraceInformation("Working");
-                await Task.Delay(1000);
+                await Task.Delay(10000);
             }
         }
     }

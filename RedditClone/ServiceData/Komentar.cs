@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 /*
 Komentar:
  * ID
+ - idTeme
  - naslov
  - autor
  - sadržaj
@@ -24,23 +25,26 @@ namespace ServiceData
     public class Komentar : TableEntity
     {
         private int id;
+		private int idTeme;
         private string naslov;
         private string autor;
         private string sadrzaj;
 
         public int Id { get => id; set => id = value; }
-        public string Naslov { get => naslov; set => naslov = value; }
+		public int IdTeme { get => idTeme; set => idTeme = value; }
+		public string Naslov { get => naslov; set => naslov = value; }
         public string Autor { get => autor; set => autor = value; }
         public string Sadrzaj { get => sadrzaj; set => sadrzaj = value; }
 
-        public Komentar() { }
+		public Komentar() { }
 
-        public Komentar(int id, string naslov, string autor, string sadrzaj)
+        public Komentar(int id, int idTeme, string naslov, string autor, string sadrzaj)
         {
             PartitionKey = "Komentar";
             RowKey = id.ToString();
 
             Id = id;
+			IdTeme = idTeme;
             Naslov = naslov;
             Sadrzaj = sadrzaj;
             Autor = autor;

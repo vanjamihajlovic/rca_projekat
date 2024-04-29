@@ -15,7 +15,8 @@
       <Setting name="DataConnectionString" />
     </ConfigurationSettings>
     <Endpoints>
-      <InternalEndpoint name="HealtCheck" protocol="tcp" />
+      <InternalEndpoint name="HealthCheck" protocol="tcp" />
+      <InternalEndpoint name="NotificationInternal" protocol="tcp" />
     </Endpoints>
   </WorkerRole>
   <WebRole name="RedditService_WebRole" vmsize="Standard_D1_v2">
