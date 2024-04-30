@@ -2,6 +2,7 @@
 using Helpers;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using Microsoft.WindowsAzure.Storage.Queue;
+using ServiceData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using TableRepository;
 
 // Metode PosaljiZahtev, NapisiIzvestaj
 // Izveštaj se čuva u posebnoj tabeli HealthCheckTable, |vreme-datum|poruka (OK/NOT_OK)|
@@ -26,8 +28,9 @@ namespace HealthMonitoringService_WorkerRole
 
         static NetTcpBinding binding = new NetTcpBinding();
         private static string internalEndpointName = "HealthCheck";
-        
-        public bool HealthCheck()
+
+		#region IHealthCheck
+		public bool HealthCheck()
         {
             PerformCheckReddit();
             PerformCheckNotifications();
@@ -35,8 +38,10 @@ namespace HealthMonitoringService_WorkerRole
             // TODO promeni
             return true;
         }
+		#endregion
 
-        private void PerformCheckReddit()
+		#region Reddit
+		private void PerformCheckReddit()
         {
             binding.TransactionFlow = true;
             Trace.WriteLine(String.Format("Perfoming Health Check on RedditService"));
@@ -56,16 +61,33 @@ namespace HealthMonitoringService_WorkerRole
                 if (!alive) sveOkej = false;
             }
 
-			// Napravi izveštaj i upiši ga u tabelu
+			int idIzvestaja = SacuvajIzvestajRedit(sveOkej);
 
             if (!sveOkej)
             {
 				// Dodaj idIzvestaja u AdminNotificaionQueue
-				// queue.AddMessage(new CloudQueueMessage(idProvere));
+				//queue.AddMessage(new CloudQueueMessage(idIzvestaja));
 			}
 		}
 
-        private void PerformCheckNotifications()
+		private int SacuvajIzvestajRedit(bool sveOkej)
+		{
+			// Napravi izveštaj
+			string poruka = (sveOkej) ? "RedditService OK" : "RedditService NOT OK";
+			DateTime vreme = DateTime.Now;
+			int idIzvestaja = 1;    // TODO: promeniti
+			Izvestaj ri = new Izvestaj(idIzvestaja, vreme, poruka);
+
+			// Upiši izveštaj u tabelu
+			TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
+			tri.SacuvajIzvestaj(ri);
+
+			return idIzvestaja;
+		}
+		#endregion
+
+		#region Notifikacije
+		private void PerformCheckNotifications()
         {
             binding.TransactionFlow = true;
             Trace.WriteLine(String.Format("Perfoming Health Check on NotificationService"));
@@ -85,13 +107,29 @@ namespace HealthMonitoringService_WorkerRole
                 if (!alive) sveOkej = false;
             }
 
-			// Napravi izveštaj i upiši ga u tabelu
+			int idIzvestaja = SacuvajIzvestajNotifikacije(sveOkej);
 
 			if (!sveOkej)
             {
 				// Dodaj idIzvestaja u AdminNotificaionQueue
-				// queue.AddMessage(new CloudQueueMessage(idProvere));
+				//queue.AddMessage(new CloudQueueMessage(idIzvestaja));
 			}
 		}
-    }
+
+		private int SacuvajIzvestajNotifikacije(bool sveOkej)
+		{
+			// Napravi izveštaj
+			string poruka = (sveOkej) ? "NotificationService OK" : "NotificationService NOT OK";
+			DateTime vreme = DateTime.Now;
+			int idIzvestaja = 1;    // TODO: promeniti
+			Izvestaj ni = new Izvestaj(idIzvestaja, vreme, poruka);
+
+			// Upiši izveštaj u tabelu
+			TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
+			tri.SacuvajIzvestaj(ni);
+
+			return idIzvestaja;
+		}
+		#endregion
+	}
 }

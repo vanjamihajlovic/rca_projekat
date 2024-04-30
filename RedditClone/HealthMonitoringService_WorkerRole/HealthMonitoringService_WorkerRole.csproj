@@ -67,6 +67,14 @@
       <Project>{077B37FC-CF6A-4E68-83E6-B1A62B19DAAC}</Project>
       <Name>Helpers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ServiceData\ServiceData.csproj">
+      <Project>{D24FCE89-50C7-4A94-B64F-1A4C4C79A666}</Project>
+      <Name>ServiceData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TableRepository\TableRepository.csproj">
+      <Project>{B2B4461E-98BA-4A41-8285-ED9F9BC39943}</Project>
+      <Name>TableRepository</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
