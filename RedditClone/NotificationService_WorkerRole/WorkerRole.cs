@@ -1,4 +1,5 @@
-﻿using Microsoft.WindowsAzure;
+﻿using Helpers;
+using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using System;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+
 
 /*
 Prilikom postavljanja novog komentara na temu - RedditService rola šalje poruku u red (notifications) gde ubacuje ID komentara
@@ -20,6 +22,7 @@ Primer sistema za slanje mejlova jesu Postmark ili SendGrid.
 
 namespace NotificationService_WorkerRole
 {
+    //dvdvdv
     public class WorkerRole : RoleEntryPoint
     {
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -28,7 +31,9 @@ namespace NotificationService_WorkerRole
 		private HealthCheckService hcs = new HealthCheckService();
 		private NotificationService ns = new NotificationService();
 
-		public override void Run()
+        private readonly QueueHelper queueHelper;
+
+        public override void Run()
         {
             Trace.TraceInformation("NotificationService_WorkerRole is running");
 
@@ -77,9 +82,12 @@ namespace NotificationService_WorkerRole
 
             Trace.TraceInformation("NotificationService_WorkerRole has stopped");
         }
+        
 
+        //ovde u asinhronom ce ici citanje iz QUEUE
         private async Task RunAsync(CancellationToken cancellationToken)
         {
+            
             // TODO: Replace the following with your own logic.
             while (!cancellationToken.IsCancellationRequested)
             {

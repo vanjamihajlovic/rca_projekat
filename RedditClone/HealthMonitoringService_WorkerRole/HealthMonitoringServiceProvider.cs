@@ -29,7 +29,7 @@ namespace HealthMonitoringService_WorkerRole
         static NetTcpBinding binding = new NetTcpBinding();
         private static string internalEndpointName = "HealthCheck";
 
-		#region IHealthCheck
+		#region IHealthCheck 
 		public bool HealthCheck()
         {
             PerformCheckReddit();
@@ -38,7 +38,7 @@ namespace HealthMonitoringService_WorkerRole
             // TODO promeni
             return true;
         }
-		#endregion
+		#endregion   
 
 		#region Reddit
 		private void PerformCheckReddit()

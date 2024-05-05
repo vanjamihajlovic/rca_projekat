@@ -10,7 +10,10 @@ namespace Contracts
 	[ServiceContract]
 	public interface INotificationService
 	{
-		[OperationContract]
-		void PosaljiMejl();
-	}
+        [OperationContract]
+        Task PosaljiMejl(string korisnikEmail, string tekstKomentara, string autorKomentara, DateTime vreme);
+
+       
+
+    }
 }
