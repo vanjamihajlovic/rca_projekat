@@ -11,7 +11,7 @@ namespace Contracts
 	public interface INotificationService
 	{
         [OperationContract]
-        Task PosaljiMejl(string korisnikEmail, string tekstKomentara, string autorKomentara, DateTime vreme);
+        Task PosaljiMejl(string korisnikEmail, string tekstKomentara, string autorKomentara, DateTime vreme, string naslovTeme);
 
        
 

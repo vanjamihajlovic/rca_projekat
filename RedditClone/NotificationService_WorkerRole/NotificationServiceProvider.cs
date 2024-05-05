@@ -34,19 +34,19 @@ namespace NotificationService_WorkerRole
 		CloudQueue queueAdmins = QueueHelper.GetQueueReference("AdminNotificationsQueue");
 
 
-        public async Task PosaljiMejl(string korisnikEmail, string tekstKomentara, string autorKomentara, DateTime vreme)
+        public async Task PosaljiMejl(string korisnikEmail, string tekstKomentara, string autorKomentara, DateTime vreme, string naslovTeme)
         {
             var apiKey = "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";
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("cloudprojekat@gmail.com", "Example User");
-            var subject = "Sending with SendGrid is Fun";
-            var to = new EmailAddress("mihajlovicavanja@gmail.com", "Example User");
-            var plainTextContent = "and easy to do anywhere, even with C#";
+            var subject = "Novi komentar za temu : " + naslovTeme;
+            var to = new EmailAddress(korisnikEmail, "Example User");
+            var plainTextContent = autorKomentara + " commented: " + tekstKomentara;
             var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
-            Console.WriteLine(response.StatusCode);
-            Console.WriteLine(response.Body.ReadAsStringAsync());
+            //Console.WriteLine(response.StatusCode);
+            //Console.WriteLine(response.Body.ReadAsStringAsync());
         }
 
 
@@ -83,6 +83,7 @@ namespace NotificationService_WorkerRole
 
 				string tekstKomentara = k.Sadrzaj;
 				string autorKomentara = k.Autor;
+                string naslovTeme = t.Naslov;
 				int brojMejlova = t.PretplaceniKorisnici.Count;
 				DateTime vreme = DateTime.Now;
 
@@ -91,7 +92,7 @@ namespace NotificationService_WorkerRole
 				{
                     TableRepositoryKorisnik trkor = new TableRepositoryKorisnik();
                     Korisnik kor = trkor.DobaviKorisnika(pretplaceni.ToString());
-                    await PosaljiMejl(kor.Email, tekstKomentara, autorKomentara, vreme);
+                    await PosaljiMejl(kor.Email, tekstKomentara, autorKomentara, vreme, naslovTeme);
                 }
 
 				UpisiNotifikacijuUTabelu(k.Id, vreme, brojMejlova);
