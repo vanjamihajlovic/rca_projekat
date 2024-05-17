@@ -18,7 +18,7 @@ namespace TableRepository
         {
             storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("DataConnectionString"));
             CloudTableClient tableClient = new CloudTableClient(new Uri(storageAccount.TableEndpoint.AbsoluteUri), storageAccount.Credentials);
-            table = tableClient.GetTableReference("RedditKorisnikTabela");
+            table = tableClient.GetTableReference("Korisnici");
             table.CreateIfNotExists();
         }
 
