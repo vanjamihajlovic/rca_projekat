@@ -1,10 +1,13 @@
-﻿using Helpers.JWT;
+﻿using Helpers;
+using Helpers.JWT;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using RedditService_WebRole.Models;
 using ServiceData;
 using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
 using System.Web.Http;
 using TableRepository;
@@ -68,6 +71,53 @@ namespace RedditService_WebRole.Controllers
         }
 
         // register
+        [HttpPost]
+        [Route("register")]
+        public IHttpActionResult Register(Register data)
+        {
+            try
+            {
+                if(ModelState.IsValid == false || data == null)
+                {
+                    return BadRequest();
+                }
 
+                var korisnik = repo.DobaviKorisnika(data.Email);
+                if (korisnik == null || korisnik.Id == null)
+                {
+                    var novi = new Korisnik(data.Email, data.FirstName, data.LastName, data.Address, data.City, data.Country, data.Phone, data.Email, data.Password);
+
+                    Image image;
+                    using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(data.Image.Split(',')[1])))
+                    {
+                        image = Image.FromStream(ms);
+                    }
+                    novi.Slika = new BlobHelper().UploadImage(image, "slike"
+                       ,
+                        Guid.NewGuid().ToString() + ".jpg");
+
+                    bool result = repo.DodajKorisnika(novi);
+
+                    if(result)
+                    {
+                        var token = JwtToken.GenerateToken(data.Email);
+                        return Ok(token);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                    
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch(Exception)
+            {
+                return BadRequest();
+            }
+        }
     }
 }
