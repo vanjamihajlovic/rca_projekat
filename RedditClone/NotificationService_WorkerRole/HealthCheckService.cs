@@ -1,12 +1,8 @@
 ﻿using Contracts;
 using Microsoft.WindowsAzure.ServiceRuntime;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NotificationService_WorkerRole
 {
@@ -17,7 +13,7 @@ namespace NotificationService_WorkerRole
 
         public HealthCheckService()
         {
-			// Interni endpoint koji će biti pingovan da bi se proverila dostupnost servisa
+            // Interni endpoint koji će biti pingovan da bi se proverila dostupnost servisa
             RoleInstanceEndpoint inputEndPoint = RoleEnvironment.CurrentRoleInstance.InstanceEndpoints[endPointName];
             string endpoint = string.Format("net.tcp://{0}/{1}", inputEndPoint.IPEndpoint, endPointName);
 

@@ -1,17 +1,13 @@
 ﻿using Contracts;
 using Helpers;
 using Microsoft.WindowsAzure.Storage.Queue;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using ServiceData;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Text;
 using System.Threading.Tasks;
 using TableRepository;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 
 // Metode: PosaljiMejl, ProcitajIzReda, DobaviTekstKomentara, IspisiIzvestaj
 // Iz reda (notifications) dobija ID komentara i iz tabele čita mejlove svih korisnika koji su pretplaćeni na temu
@@ -27,11 +23,11 @@ using SendGrid.Helpers.Mail;
 
 
 namespace NotificationService_WorkerRole
-{ 
+{
     public class NotificationServiceProvider : INotificationService
     {
-		CloudQueue queueComments = QueueHelper.GetQueueReference("CommentNotificationsQueue");
-		CloudQueue queueAdmins = QueueHelper.GetQueueReference("AdminNotificationsQueue");
+        CloudQueue queueComments = QueueHelper.GetQueueReference("CommentNotificationsQueue");
+        CloudQueue queueAdmins = QueueHelper.GetQueueReference("AdminNotificationsQueue");
 
 
         public async Task PosaljiMejl(string korisnikEmail, string tekstKomentara, string autorKomentara, DateTime vreme, string naslovTeme)
@@ -69,67 +65,67 @@ namespace NotificationService_WorkerRole
 
         #region Komentari
         private async Task ProveriQueueKomentari()
-		{
-			if (queueComments.ApproximateMessageCount > 0)
-			{
-				string idKomentara = queueComments.GetMessage().AsString;
+        {
+            if (queueComments.ApproximateMessageCount > 0)
+            {
+                string idKomentara = queueComments.GetMessage().AsString;
 
-				TableRepositoryKomentar trk = new TableRepositoryKomentar();
-				Komentar k = trk.DobaviKomentar(idKomentara);
+                TableRepositoryKomentar trk = new TableRepositoryKomentar();
+                Komentar k = trk.DobaviKomentar(idKomentara);
 
-				TableRepositoryTema trt = new TableRepositoryTema();
-				Tema t = trt.DobaviTemu(k.IdTeme.ToString());
+                TableRepositoryTema trt = new TableRepositoryTema();
+                Tema t = trt.DobaviTemu(k.IdTeme.ToString());
 
 
-				string tekstKomentara = k.Sadrzaj;
-				string autorKomentara = k.Autor;
+                string tekstKomentara = k.Sadrzaj;
+                string autorKomentara = k.Autor;
                 string naslovTeme = t.Naslov;
-				int brojMejlova = t.PretplaceniKorisnici.Count;
-				DateTime vreme = DateTime.Now;
+                int brojMejlova = t.PretplaceniKorisnici.Count;
+                DateTime vreme = DateTime.Now;
 
-				List<int> pretplaceni = t.PretplaceniKorisnici;   
-				foreach (int i in pretplaceni)
-				{
+                List<int> pretplaceni = t.PretplaceniKorisnici;
+                foreach (int i in pretplaceni)
+                {
                     TableRepositoryKorisnik trkor = new TableRepositoryKorisnik();
                     Korisnik kor = trkor.DobaviKorisnika(pretplaceni.ToString());
                     await PosaljiMejl(kor.Email, tekstKomentara, autorKomentara, vreme, naslovTeme);
                 }
 
-				UpisiNotifikacijuUTabelu(k.Id, vreme, brojMejlova);
-			}
-		}
+                UpisiNotifikacijuUTabelu(k.Id, vreme, brojMejlova);
+            }
+        }
 
-		private void UpisiNotifikacijuUTabelu(int idKomentara, DateTime vreme, int brojPoslatihMejlova)
-		{
-			Notifikacija n = new Notifikacija(idKomentara, vreme, brojPoslatihMejlova);
-			TableRepositoryNotifikacije trn = new TableRepositoryNotifikacije();
-			trn.SacuvajNotifikaciju(n);
-		}
-		#endregion
+        private void UpisiNotifikacijuUTabelu(int idKomentara, DateTime vreme, int brojPoslatihMejlova)
+        {
+            Notifikacija n = new Notifikacija(idKomentara, vreme, brojPoslatihMejlova);
+            TableRepositoryNotifikacije trn = new TableRepositoryNotifikacije();
+            trn.SacuvajNotifikaciju(n);
+        }
+        #endregion
 
-		#region Provere
-		private void ProveriQueueProvere()
-		{
-			if (queueComments.ApproximateMessageCount > 0)
-			{
-				string idIzvestaja = queueAdmins.GetMessage().AsString;
+        #region Provere
+        private void ProveriQueueProvere()
+        {
+            if (queueComments.ApproximateMessageCount > 0)
+            {
+                string idIzvestaja = queueAdmins.GetMessage().AsString;
 
-				TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
-				Izvestaj i = tri.DobaviIzvestaj(idIzvestaja);
+                TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
+                Izvestaj i = tri.DobaviIzvestaj(idIzvestaja);
 
-				string poruka = i.Sadrzaj;
-				DateTime vreme = i.Vreme;
+                string poruka = i.Sadrzaj;
+                DateTime vreme = i.Vreme;
 
-				// TODO dalju logiku
-			}
-		}
+                // TODO dalju logiku
+            }
+        }
 
-		private void UpisiIzvwstajUTabelu(int idIzvestaja, DateTime vreme, string poruka)
-		{
-			Izvestaj i = new Izvestaj(idIzvestaja, vreme, poruka);
-			TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
-			tri.SacuvajIzvestaj(i);
-		}
+        private void UpisiIzvwstajUTabelu(int idIzvestaja, DateTime vreme, string poruka)
+        {
+            Izvestaj i = new Izvestaj(idIzvestaja, vreme, poruka);
+            TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
+            tri.SacuvajIzvestaj(i);
+        }
 
 
         #endregion

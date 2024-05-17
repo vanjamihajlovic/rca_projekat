@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using TableRepository;
 
 // Metode PosaljiZahtev, NapisiIzvestaj
@@ -22,15 +20,15 @@ namespace HealthMonitoringService_WorkerRole
     public class HealthMonitoringServiceProvider : IHealthCheck
     {
         CloudQueue queue = QueueHelper.GetQueueReference("AdminNotificationsQueue");
-        
+
         private static IHealthCheck proxy1;
         private static IHealthCheck proxy2;
 
         static NetTcpBinding binding = new NetTcpBinding();
         private static string internalEndpointName = "HealthCheck";
 
-		#region IHealthCheck 
-		public bool HealthCheck()
+        #region IHealthCheck 
+        public bool HealthCheck()
         {
             PerformCheckReddit();
             PerformCheckNotifications();
@@ -38,17 +36,17 @@ namespace HealthMonitoringService_WorkerRole
             // TODO promeni
             return true;
         }
-		#endregion   
+        #endregion
 
-		#region Reddit
-		private void PerformCheckReddit()
+        #region Reddit
+        private void PerformCheckReddit()
         {
             binding.TransactionFlow = true;
             Trace.WriteLine(String.Format("Perfoming Health Check on RedditService"));
 
             // Interni EP za RedditService
             List<EndpointAddress> redditEndpoints = RoleEnvironment.Roles["RedditService_WebRole"].
-                Instances.Select(process => new EndpointAddress(String.Format("net.tcp://{0}/{1}", 
+                Instances.Select(process => new EndpointAddress(String.Format("net.tcp://{0}/{1}",
                 process.InstanceEndpoints[internalEndpointName].IPEndpoint.ToString(), internalEndpointName))).ToList();
 
             int numOfInstances = redditEndpoints.Count;
@@ -61,40 +59,40 @@ namespace HealthMonitoringService_WorkerRole
                 if (!alive) sveOkej = false;
             }
 
-			int idIzvestaja = SacuvajIzvestajRedit(sveOkej);
+            int idIzvestaja = SacuvajIzvestajRedit(sveOkej);
 
             if (!sveOkej)
             {
-				// Dodaj idIzvestaja u AdminNotificaionQueue
-				//queue.AddMessage(new CloudQueueMessage(idIzvestaja));
-			}
-		}
+                // Dodaj idIzvestaja u AdminNotificaionQueue
+                //queue.AddMessage(new CloudQueueMessage(idIzvestaja));
+            }
+        }
 
-		private int SacuvajIzvestajRedit(bool sveOkej)
-		{
-			// Napravi izveštaj
-			string poruka = (sveOkej) ? "RedditService OK" : "RedditService NOT OK";
-			DateTime vreme = DateTime.Now;
-			int idIzvestaja = 1;    // TODO: promeniti
-			Izvestaj ri = new Izvestaj(idIzvestaja, vreme, poruka);
+        private int SacuvajIzvestajRedit(bool sveOkej)
+        {
+            // Napravi izveštaj
+            string poruka = (sveOkej) ? "RedditService OK" : "RedditService NOT OK";
+            DateTime vreme = DateTime.Now;
+            int idIzvestaja = 1;    // TODO: promeniti
+            Izvestaj ri = new Izvestaj(idIzvestaja, vreme, poruka);
 
-			// Upiši izveštaj u tabelu
-			TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
-			tri.SacuvajIzvestaj(ri);
+            // Upiši izveštaj u tabelu
+            TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
+            tri.SacuvajIzvestaj(ri);
 
-			return idIzvestaja;
-		}
-		#endregion
+            return idIzvestaja;
+        }
+        #endregion
 
-		#region Notifikacije
-		private void PerformCheckNotifications()
+        #region Notifikacije
+        private void PerformCheckNotifications()
         {
             binding.TransactionFlow = true;
             Trace.WriteLine(String.Format("Perfoming Health Check on NotificationService"));
 
             // Interni EP za NotificationService
             List<EndpointAddress> notificationEndpoints = RoleEnvironment.Roles["NotificationService_WorkerRole"].
-                Instances.Select(process => new EndpointAddress(String.Format("net.tcp://{0}/{1}", 
+                Instances.Select(process => new EndpointAddress(String.Format("net.tcp://{0}/{1}",
                 process.InstanceEndpoints[internalEndpointName].IPEndpoint.ToString(), internalEndpointName))).ToList();
 
             int numOfInstances = notificationEndpoints.Count;
@@ -107,29 +105,29 @@ namespace HealthMonitoringService_WorkerRole
                 if (!alive) sveOkej = false;
             }
 
-			int idIzvestaja = SacuvajIzvestajNotifikacije(sveOkej);
+            int idIzvestaja = SacuvajIzvestajNotifikacije(sveOkej);
 
-			if (!sveOkej)
+            if (!sveOkej)
             {
-				// Dodaj idIzvestaja u AdminNotificaionQueue
-				//queue.AddMessage(new CloudQueueMessage(idIzvestaja));
-			}
-		}
+                // Dodaj idIzvestaja u AdminNotificaionQueue
+                //queue.AddMessage(new CloudQueueMessage(idIzvestaja));
+            }
+        }
 
-		private int SacuvajIzvestajNotifikacije(bool sveOkej)
-		{
-			// Napravi izveštaj
-			string poruka = (sveOkej) ? "NotificationService OK" : "NotificationService NOT OK";
-			DateTime vreme = DateTime.Now;
-			int idIzvestaja = 1;    // TODO: promeniti
-			Izvestaj ni = new Izvestaj(idIzvestaja, vreme, poruka);
+        private int SacuvajIzvestajNotifikacije(bool sveOkej)
+        {
+            // Napravi izveštaj
+            string poruka = (sveOkej) ? "NotificationService OK" : "NotificationService NOT OK";
+            DateTime vreme = DateTime.Now;
+            int idIzvestaja = 1;    // TODO: promeniti
+            Izvestaj ni = new Izvestaj(idIzvestaja, vreme, poruka);
 
-			// Upiši izveštaj u tabelu
-			TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
-			tri.SacuvajIzvestaj(ni);
+            // Upiši izveštaj u tabelu
+            TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
+            tri.SacuvajIzvestaj(ni);
 
-			return idIzvestaja;
-		}
-		#endregion
-	}
+            return idIzvestaja;
+        }
+        #endregion
+    }
 }

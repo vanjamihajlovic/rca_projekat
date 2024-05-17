@@ -1,10 +1,5 @@
-﻿using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.Diagnostics;
-using Microsoft.WindowsAzure.ServiceRuntime;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.WindowsAzure.ServiceRuntime;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +21,7 @@ namespace HealthMonitoringService_WorkerRole
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
 
-		private HealthMonitoringService hms = new HealthMonitoringService();
+        private HealthMonitoringService hms = new HealthMonitoringService();
 
         public override void Run()
         {
@@ -55,7 +50,7 @@ namespace HealthMonitoringService_WorkerRole
 
             bool result = base.OnStart();
 
-			hms.Open();
+            hms.Open();
 
             Trace.TraceInformation("HealthMonitoringService_WorkerRole has been started");
 
@@ -71,7 +66,7 @@ namespace HealthMonitoringService_WorkerRole
 
             base.OnStop();
 
-			hms.Close();
+            hms.Close();
 
             Trace.TraceInformation("HealthMonitoringService_WorkerRole has stopped");
         }

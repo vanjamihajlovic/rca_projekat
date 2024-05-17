@@ -1,9 +1,5 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 /*
 Korisnik:
@@ -28,7 +24,7 @@ namespace ServiceData
 {
     public class Korisnik : TableEntity
     {
-        private int id;
+        private string id;
         private string ime;
         private string prezime;
         private string adresa;
@@ -40,7 +36,7 @@ namespace ServiceData
         private string slika;   // url slike
         private List<int> teme;
 
-        public int Id { get => id; set => id = value; }
+        public string Id { get => id; set => id = value; }
         public string Ime { get => ime; set => ime = value; }
         public string Prezime { get => prezime; set => prezime = value; }
         public string Adresa { get => adresa; set => adresa = value; }
@@ -54,10 +50,10 @@ namespace ServiceData
 
         public Korisnik() { }
 
-        public Korisnik(int id, string ime, string prezime, string adresa, string grad, string drzava, string brTel, string email, string lozinka)
+        public Korisnik(string id, string ime, string prezime, string adresa, string grad, string drzava, string brTel, string email, string lozinka)
         {
             PartitionKey = "Korisnik";
-            RowKey = id.ToString();
+            RowKey = email;
 
             Id = id;
             Ime = ime;

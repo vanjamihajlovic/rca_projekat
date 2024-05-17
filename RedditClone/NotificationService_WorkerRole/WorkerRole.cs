@@ -1,11 +1,6 @@
 ﻿using Helpers;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.Diagnostics;
 using Microsoft.WindowsAzure.ServiceRuntime;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,8 +23,8 @@ namespace NotificationService_WorkerRole
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
 
-		private HealthCheckService hcs = new HealthCheckService();
-		private NotificationService ns = new NotificationService();
+        private HealthCheckService hcs = new HealthCheckService();
+        private NotificationService ns = new NotificationService();
 
         private readonly QueueHelper queueHelper;
 
@@ -60,10 +55,10 @@ namespace NotificationService_WorkerRole
 
             bool result = base.OnStart();
 
-			hcs.Open();
-			ns.Open();
+            hcs.Open();
+            ns.Open();
 
-			Trace.TraceInformation("NotificationService_WorkerRole has been started");
+            Trace.TraceInformation("NotificationService_WorkerRole has been started");
 
             return result;
         }
@@ -77,17 +72,17 @@ namespace NotificationService_WorkerRole
 
             base.OnStop();
 
-			hcs.Close();
-			ns.Close();
+            hcs.Close();
+            ns.Close();
 
             Trace.TraceInformation("NotificationService_WorkerRole has stopped");
         }
-        
+
 
         //ovde u asinhronom ce ici citanje iz QUEUE
         private async Task RunAsync(CancellationToken cancellationToken)
         {
-            
+
             // TODO: Replace the following with your own logic.
             while (!cancellationToken.IsCancellationRequested)
             {
