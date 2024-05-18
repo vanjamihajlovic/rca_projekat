@@ -44,5 +44,34 @@ namespace RedditService_WebRole.Controllers
                 return InternalServerError(ex);
             }
         }
+
+        [HttpPost]
+        [Route("delete/{id}")]
+        public async Task<IHttpActionResult> DeletePost(string id)
+        {
+            try
+            {
+
+                if (string.IsNullOrEmpty(id))
+                {
+                    return BadRequest("Invalid post ID.");
+                }
+
+                // Delete comment using repository
+                bool isDeleted = await Task.FromResult(repo.ObrisiTemu(id));
+                if (!isDeleted)
+                {
+                    return BadRequest("Failed to delete post.");
+                }
+
+                return Ok("Post deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details for troubleshooting          
+                return InternalServerError(ex);
+            }
+        }
+
     }
 }

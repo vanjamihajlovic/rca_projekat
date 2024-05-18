@@ -173,7 +173,6 @@
     <Compile Include="HealthCheckServiceProvider.cs" />
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Login.cs" />
-    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\Register.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
