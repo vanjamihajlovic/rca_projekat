@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
+using System;
 
 // Ako TableEntity ne radi, ručno preko NuGet instalirati:
 // Microsoft.WindowsAzure.Storage.Table v8.0.1
@@ -19,27 +20,23 @@ namespace ServiceData
     public class Komentar : TableEntity
     {
         private int id;
-        private int idTeme;
-        private string naslov;
+        private string idTeme;
         private string autor;
         private string sadrzaj;
 
         public int Id { get => id; set => id = value; }
-        public int IdTeme { get => idTeme; set => idTeme = value; }
-        public string Naslov { get => naslov; set => naslov = value; }
+        public string IdTeme { get => idTeme; set => idTeme = value; }
         public string Autor { get => autor; set => autor = value; }
         public string Sadrzaj { get => sadrzaj; set => sadrzaj = value; }
 
         public Komentar() { }
 
-        public Komentar(int id, int idTeme, string naslov, string autor, string sadrzaj)
+        public Komentar(string idTeme, string autor, string sadrzaj)
         {
             PartitionKey = "Komentar";
-            RowKey = id.ToString();
+            RowKey = Guid.NewGuid().ToString();
 
-            Id = id;
             IdTeme = idTeme;
-            Naslov = naslov;
             Sadrzaj = sadrzaj;
             Autor = autor;
         }

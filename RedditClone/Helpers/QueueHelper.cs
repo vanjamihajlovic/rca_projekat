@@ -11,7 +11,7 @@ namespace Helpers
         {
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("DataConnectionString"));
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-            CloudQueue queue = queueClient.GetQueueReference(queueName);
+            CloudQueue queue = queueClient.GetQueueReference(queueName.Trim().ToLower());
             queue.CreateIfNotExists();
 
             return queue;

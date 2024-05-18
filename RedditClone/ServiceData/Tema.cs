@@ -17,7 +17,8 @@ namespace ServiceData
 {
     public class Tema : TableEntity
     {
-        private int id;
+        private string id;
+        private string userId; // ko je kreirao
         private string naslov;
         private string sadrzaj;
         private string slika;   // url slike
@@ -26,7 +27,7 @@ namespace ServiceData
         private List<int> glasoviProtiv;  // isto to ovde
         private List<int> pretplaceniKorisnici;
 
-        public int Id { get => id; set => id = value; }
+        public string Id { get => id; set => id = value; }
         public string Naslov { get => naslov; set => naslov = value; }
         public string Sadrzaj { get => sadrzaj; set => sadrzaj = value; }
         public string Slika { get => slika; set => slika = value; }
@@ -34,15 +35,17 @@ namespace ServiceData
         public List<int> GlasoviZa { get => glasoviZa; set => glasoviZa = value; }
         public List<int> GlasoviProtiv { get => glasoviProtiv; set => glasoviProtiv = value; }
         public List<int> PretplaceniKorisnici { get => pretplaceniKorisnici; set => pretplaceniKorisnici = value; }
+        public string UserId { get => userId; set => userId = value; }
 
         public Tema() { }
 
-        public Tema(int id, string naslov, string sadrzaj)
+        public Tema(string id, string naslov, string sadrzaj)
         {
             PartitionKey = "Tema";
-            RowKey = id.ToString();
+            RowKey = id;
 
             Id = id;
+            UserId = userId;
             Naslov = naslov;
             Sadrzaj = sadrzaj;
             Slika = "";
