@@ -26,6 +26,37 @@ namespace TableRepository
             table.CreateIfNotExists();
         }
 
+        public IQueryable<Subscribe> DobaviSve()
+        {
+            try
+            {
+                var results = from g in table.CreateQuery<Subscribe>()
+                              where g.PartitionKey == "Subscribe"
+                              select g;
+                return results;
+            }
+            catch (Exception)
+            {
+                return Enumerable.Empty<Subscribe>().AsQueryable();
+            }
+        }
+
+        public Subscribe DobaviSubscribe(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return new Subscribe();
+
+            try
+            {
+                var subscribe = (from g in table.CreateQuery<Subscribe>() where g.PartitionKey == "Subscribe" && g.RowKey == id select g).FirstOrDefault();
+                return subscribe ?? new Subscribe();
+            }
+            catch (Exception)
+            {
+                return new Subscribe();
+            }
+        }
+
         public bool SubscribeToPost(Subscribe s)
         {
             if (s == null) return false;

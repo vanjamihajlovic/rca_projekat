@@ -16,6 +16,7 @@ namespace ServiceData
         public string PostId { get => postId; set => postId = value; }
 
         public Subscribe() { }
+       
 
         public Subscribe(string userId, string postId)
         {

@@ -16,5 +16,11 @@ namespace Contracts
 
         [OperationContract]
         bool UnsubscribeFromPost(Subscribe s);
+
+        [OperationContract]
+        IQueryable<Subscribe> DobaviSve();
+
+        [OperationContract]
+        Subscribe DobaviSubscribe(string id);
     }
 }
