@@ -21,19 +21,18 @@ namespace HealthMonitoringService_WorkerRole
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
 
-        private HealthMonitoringService hms = new HealthMonitoringService();
+        private HealthMonitoringFunctions hmf = new HealthMonitoringFunctions();
 
         public override void Run()
         {
             Trace.TraceInformation("HealthMonitoringService_WorkerRole is running");
 
-            try
+            while (true)
             {
-                this.RunAsync(this.cancellationTokenSource.Token).Wait();
-            }
-            finally
-            {
-                this.runCompleteEvent.Set();
+                hmf.HealthCheck();
+
+                Thread.Sleep(5000);
+                Trace.TraceInformation("Working", "Information");
             }
         }
 
@@ -50,8 +49,6 @@ namespace HealthMonitoringService_WorkerRole
 
             bool result = base.OnStart();
 
-            hms.Open();
-
             Trace.TraceInformation("HealthMonitoringService_WorkerRole has been started");
 
             return result;
@@ -66,18 +63,16 @@ namespace HealthMonitoringService_WorkerRole
 
             base.OnStop();
 
-            hms.Close();
-
             Trace.TraceInformation("HealthMonitoringService_WorkerRole has stopped");
         }
 
-        private async Task RunAsync(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                Trace.TraceInformation("Working");
-                await Task.Delay(10000);
-            }
-        }
+        //private async Task RunAsync(CancellationToken cancellationToken)
+        //{
+        //    while (!cancellationToken.IsCancellationRequested)
+        //    {
+        //        Trace.TraceInformation("Working");
+        //        await Task.Delay(10000);
+        //    }
+        //}
     }
 }

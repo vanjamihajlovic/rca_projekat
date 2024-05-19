@@ -70,6 +70,7 @@
     <Compile Include="TableRepositoryKomentar.cs" />
     <Compile Include="TableRepositoryKorisnik.cs" />
     <Compile Include="TableRepositoryNotifikacije.cs" />
+    <Compile Include="TableRepositorySubscribe.cs" />
     <Compile Include="TableRepositoryTema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

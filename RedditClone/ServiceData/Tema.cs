@@ -25,7 +25,18 @@ namespace ServiceData
         private List<string> komentari;
         private List<int> glasoviZa;      // za broj glasova, samo izvucemo Count
         private List<int> glasoviProtiv;  // isto to ovde
-        private List<int> pretplaceniKorisnici;
+        private List<string> pretplaceniKorisnici;
+
+        public List<string> PretplaceniKorisnici
+        {
+            get
+            {
+                if (pretplaceniKorisnici == null)
+                    pretplaceniKorisnici = new List<string>();
+                return pretplaceniKorisnici;
+            }
+            set { pretplaceniKorisnici = value; }
+        }
 
         public string Id { get => id; set => id = value; }
         public string Naslov { get => naslov; set => naslov = value; }
@@ -34,7 +45,7 @@ namespace ServiceData
         public List<string> Komentari { get => komentari; set => komentari = value; }
         public List<int> GlasoviZa { get => glasoviZa; set => glasoviZa = value; }
         public List<int> GlasoviProtiv { get => glasoviProtiv; set => glasoviProtiv = value; }
-        public List<int> PretplaceniKorisnici { get => pretplaceniKorisnici; set => pretplaceniKorisnici = value; }
+    //    public List<string> PretplaceniKorisnici { get => pretplaceniKorisnici; set => pretplaceniKorisnici = value; }
         public string UserId { get => userId; set => userId = value; }
 
         public Tema() { }
@@ -52,7 +63,9 @@ namespace ServiceData
             Komentari = new List<string>();
             GlasoviZa = new List<int>();
             GlasoviProtiv = new List<int>();
-            PretplaceniKorisnici = new List<int>();
+            PretplaceniKorisnici = new List<string>();
         }
+
+
     }
 }

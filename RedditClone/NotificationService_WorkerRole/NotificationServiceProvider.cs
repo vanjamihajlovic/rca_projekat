@@ -83,8 +83,8 @@ namespace NotificationService_WorkerRole
                 int brojMejlova = t.PretplaceniKorisnici.Count;
                 DateTime vreme = DateTime.Now;
 
-                List<int> pretplaceni = t.PretplaceniKorisnici;
-                foreach (int i in pretplaceni)
+                List<string> pretplaceni = t.PretplaceniKorisnici;
+                foreach (string i in pretplaceni)
                 {
                     TableRepositoryKorisnik trkor = new TableRepositoryKorisnik();
                     Korisnik kor = trkor.DobaviKorisnika(pretplaceni.ToString());

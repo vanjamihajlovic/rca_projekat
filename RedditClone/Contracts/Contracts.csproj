@@ -50,6 +50,7 @@
     <Compile Include="INotificationService.cs" />
     <Compile Include="INotifikacije.cs" />
     <Compile Include="IRedditService.cs" />
+    <Compile Include="ISubscribe.cs" />
     <Compile Include="ITema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

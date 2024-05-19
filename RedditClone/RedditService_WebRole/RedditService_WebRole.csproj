@@ -166,6 +166,7 @@
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PostController.cs" />
+    <Compile Include="Controllers\SubscriptionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -175,6 +176,7 @@
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\Register.cs" />
+    <Compile Include="Models\SubscriptionRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedditService.cs" />
     <Compile Include="RedditServiceProvider.cs" />
@@ -237,6 +239,7 @@
     <Folder Include="Views\Auth\" />
     <Folder Include="Views\Comment\" />
     <Folder Include="Views\Post\" />
+    <Folder Include="Views\Subscription\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
