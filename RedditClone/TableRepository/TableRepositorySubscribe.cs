@@ -75,32 +75,6 @@ namespace TableRepository
             }
         }
 
-        public bool UnsubscribeFromPost(Subscribe s)
-        {
-            if (s == null)
-                return false;
-            try
-            {
-                // select
-                Subscribe tmp = (from g in table.CreateQuery<Subscribe>() where g.PartitionKey == "Subscribe" && g.RowKey == s.PostId select g).FirstOrDefault();
-
-                if (tmp == null)
-                {
-                    Trace.WriteLine("Post with id " + s.PostId + " does not exist.");
-                    return false;
-                }
-
-                // delete
-                TableOperation deleteOperation = TableOperation.Delete(tmp);
-                table.Execute(deleteOperation);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Trace.WriteLine(ex.Message);
-                return false;
-            }
-        }
-    
+       
     }
 }

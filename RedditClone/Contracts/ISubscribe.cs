@@ -15,9 +15,6 @@ namespace Contracts
         bool SubscribeToPost(Subscribe s);
 
         [OperationContract]
-        bool UnsubscribeFromPost(Subscribe s);
-
-        [OperationContract]
         IQueryable<Subscribe> DobaviSve();
 
         [OperationContract]
