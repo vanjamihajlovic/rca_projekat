@@ -33,7 +33,7 @@ namespace TableRepository
             try
             {
                 // Kreiranje operacije za insert ili replace entiteta u tabelu
-                TableOperation insertOperation = TableOperation.InsertOrReplace(s); // ili INSERT ?
+                TableOperation insertOperation = TableOperation.Insert(s); // ili INSERT ?
                 table.Execute(insertOperation);
                 return true;
             }
