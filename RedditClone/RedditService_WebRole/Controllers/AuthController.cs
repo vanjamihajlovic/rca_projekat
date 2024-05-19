@@ -10,11 +10,13 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using TableRepository;
 
 namespace RedditService_WebRole.Controllers
 {
     [RoutePrefix("auth")]
+    [EnableCors(origins: "http://localhost:3000/", headers: "*", methods: "*")]
     public class AuthController : ApiController
     {
         private JwtToken JwtToken;
