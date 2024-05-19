@@ -15,6 +15,7 @@ namespace RedditService_WebRole.Controllers
     public class PostController : ApiController
     {
         TableRepositoryTema repo = new TableRepositoryTema();
+        TableRepositoryKomentar repoKom = new TableRepositoryKomentar();
 
         [HttpPost]
         [Route("create")]
@@ -57,7 +58,34 @@ namespace RedditService_WebRole.Controllers
                     return BadRequest("Invalid post ID.");
                 }
 
-                // Delete comment using repository
+                // Pronađi temu po Id-u
+                Tema temaToDelete = await Task.FromResult(repo.DobaviTemu(id));
+                if (temaToDelete == null)
+                {                 
+                    return BadRequest("Failed to delete post.");
+                }
+                List<Komentar> svi = repoKom.DobaviSve().ToList();
+                var p = svi.Where(x => x.IdTeme == temaToDelete.Id).ToList();
+
+                temaToDelete.Komentari = p.Select(x => x.RowKey).ToList();
+
+
+                // Briši komentare povezane sa temom
+                if (temaToDelete.Komentari != null)
+                {
+                    // Briši komentare povezane sa temom
+                    foreach (string komentarId in temaToDelete.Komentari)
+                    {
+                        bool isCommentDeleted = await Task.FromResult(repoKom.ObrisiKomentar(komentarId));
+                        if (!isCommentDeleted)
+                        {
+                            // Ukoliko nije uspeo da obrise komentar, vrati false
+                            return BadRequest("Failed to delete comment.");
+                        }
+                    }
+                }
+
+                // Delete post using repository
                 bool isDeleted = await Task.FromResult(repo.ObrisiTemu(id));
                 if (!isDeleted)
                 {
@@ -72,6 +100,8 @@ namespace RedditService_WebRole.Controllers
                 return InternalServerError(ex);
             }
         }
+
+
 
     }
 }
