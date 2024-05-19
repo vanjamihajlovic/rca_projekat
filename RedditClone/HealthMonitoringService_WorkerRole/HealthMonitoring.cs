@@ -8,18 +8,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
+using System.Text;
+using System.Threading.Tasks;
 using TableRepository;
-
-// Metode PosaljiZahtev, NapisiIzvestaj
-// Izveštaj se čuva u posebnoj tabeli HealthCheckTable, |vreme-datum|poruka (OK/NOT_OK)|
-
-// HealthCheck se vrši svakih 1-5 sekundo
 
 namespace HealthMonitoringService_WorkerRole
 {
-    public class HealthMonitoringServiceProvider : IHealthCheck
+    public  class HealthMonitoring
     {
-        CloudQueue queue = QueueHelper.GetQueueReference("AdminNotificationsQueue");
+        private static CloudQueue queue = QueueHelper.GetQueueReference("AdminNotificationsQueue");
 
         private static IHealthCheck proxy1;
         private static IHealthCheck proxy2;
@@ -27,14 +24,12 @@ namespace HealthMonitoringService_WorkerRole
         static NetTcpBinding binding = new NetTcpBinding();
         private static string internalEndpointName = "HealthCheck";
 
-        #region IHealthCheck 
-        public bool HealthCheck()
+
+        #region Main Function 
+        public void HealthCheck()
         {
             PerformCheckReddit();
             PerformCheckNotifications();
-
-            // TODO promeni
-            return true;
         }
         #endregion
 
@@ -84,6 +79,9 @@ namespace HealthMonitoringService_WorkerRole
         }
         #endregion
 
+
+
+
         #region Notifikacije
         private void PerformCheckNotifications()
         {
@@ -129,5 +127,6 @@ namespace HealthMonitoringService_WorkerRole
             return idIzvestaja;
         }
         #endregion
+
     }
 }

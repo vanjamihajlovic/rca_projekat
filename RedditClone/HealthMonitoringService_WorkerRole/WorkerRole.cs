@@ -16,68 +16,64 @@ npr. 2023-11-03:12:23.33.3333_OK ili 2023-11-03:12:23.33.3333_NOT_OK
 
 namespace HealthMonitoringService_WorkerRole
 {
-    public class WorkerRole : RoleEntryPoint
-    {
-        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
+	public class WorkerRole : RoleEntryPoint
+	{
+		private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+		private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
 
-        private HealthMonitoringService hms = new HealthMonitoringService();
+		private HealthMonitoring hf = new HealthMonitoring();
 
-        public override void Run()
-        {
-            Trace.TraceInformation("HealthMonitoringService_WorkerRole is running");
+		public override void Run()
+		{
+			Trace.TraceInformation("HealthMonitoringService_WorkerRole is running");
 
-            try
-            {
-                this.RunAsync(this.cancellationTokenSource.Token).Wait();
-            }
-            finally
-            {
-                this.runCompleteEvent.Set();
-            }
-        }
+			while (true)
+			{
+				//TODO uncomment
+				hf.HealthCheck();
 
-        public override bool OnStart()
-        {
-            // Use TLS 1.2 for Service Bus connections
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+				Thread.Sleep(5000);
+				Trace.TraceInformation("Working", "Information");
+			}
+		}
 
-            // Set the maximum number of concurrent connections
-            ServicePointManager.DefaultConnectionLimit = 12;
+		public override bool OnStart()
+		{
+			// Use TLS 1.2 for Service Bus connections
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            // For information on handling configuration changes
-            // see the MSDN topic at https://go.microsoft.com/fwlink/?LinkId=166357.
+			// Set the maximum number of concurrent connections
+			ServicePointManager.DefaultConnectionLimit = 12;
 
-            bool result = base.OnStart();
+			// For information on handling configuration changes
+			// see the MSDN topic at https://go.microsoft.com/fwlink/?LinkId=166357.
 
-            hms.Open();
+			bool result = base.OnStart();
 
-            Trace.TraceInformation("HealthMonitoringService_WorkerRole has been started");
+			Trace.TraceInformation("HealthMonitoringService_WorkerRole has been started");
 
-            return result;
-        }
+			return result;
+		}
 
-        public override void OnStop()
-        {
-            Trace.TraceInformation("HealthMonitoringService_WorkerRole is stopping");
+		public override void OnStop()
+		{
+			Trace.TraceInformation("HealthMonitoringService_WorkerRole is stopping");
 
-            this.cancellationTokenSource.Cancel();
-            this.runCompleteEvent.WaitOne();
+			this.cancellationTokenSource.Cancel();
+			this.runCompleteEvent.WaitOne();
 
-            base.OnStop();
+			base.OnStop();
 
-            hms.Close();
+			Trace.TraceInformation("HealthMonitoringService_WorkerRole has stopped");
+		}
 
-            Trace.TraceInformation("HealthMonitoringService_WorkerRole has stopped");
-        }
-
-        private async Task RunAsync(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                Trace.TraceInformation("Working");
-                await Task.Delay(10000);
-            }
-        }
-    }
+		//private async Task RunAsync(CancellationToken cancellationToken)
+		//{
+		//    while (!cancellationToken.IsCancellationRequested)
+		//    {
+		//        Trace.TraceInformation("Working");
+		//        await Task.Delay(10000);
+		//    }
+		//}
+	}
 }

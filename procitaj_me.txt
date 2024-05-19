@@ -1,3 +1,11 @@
 Mora se skinuti Visual Studio 2017, pokrenuti ga kao admin
 Kada se pokrene projekat, desno u Solution Explorer-u desni klik na projekat i izabrati "Restore NuGet packages" - to će instalirati Azure.Storage i ostalo
-I to je to za sad u suštini
+I na kraju, desni klik na Cloud -> Web -> Use Full Emulator
+
+
+** verzije paketa **
+
+ [2.0.3] microsoft.windowsazure.configurationmanager 2.0.3
+ [8.0.1] windowsazure.storage 8.0.1
+ [5.6.0] system.identitymodel.tokens.jwt 5.6.0
+[latest] sendgrid (ili 8.0.0)

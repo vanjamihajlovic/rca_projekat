@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NotificationService_WorkerRole</RootNamespace>
     <AssemblyName>NotificationService_WorkerRole</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <RoleType>Worker</RoleType>
     <TargetFrameworkProfile />
