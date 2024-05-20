@@ -5,7 +5,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-
 /*
 Prilikom postavljanja novog komentara na temu - RedditService rola šalje poruku u red (notifications) gde ubacuje ID komentara
 
@@ -77,13 +76,10 @@ namespace NotificationService_WorkerRole
 
             Trace.TraceInformation("NotificationService_WorkerRole has stopped");
         }
-
-
-        //ovde u asinhronom ce ici citanje iz QUEUE
+		
+        // Ovde u asinhronom ce ici citanje iz QUEUE
         private async Task RunAsync(CancellationToken cancellationToken)
         {
-
-            // TODO: Replace the following with your own logic.
             while (!cancellationToken.IsCancellationRequested)
             {
                 Trace.TraceInformation("Working");

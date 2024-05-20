@@ -7,12 +7,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using TableRepository;
 
 namespace RedditService_WebRole.Controllers
 {
     [RoutePrefix("post")]
-    public class PostController : ApiController
+	[EnableCors(origins: "*", headers: "*", methods: "*")]
+	public class PostController : ApiController
     {
         TableRepositoryTema repo = new TableRepositoryTema();
         TableRepositoryKomentar repoKom = new TableRepositoryKomentar();

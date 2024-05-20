@@ -9,12 +9,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using TableRepository;
 
 namespace RedditService_WebRole.Controllers
 {
     [RoutePrefix("comment")]
-    public class CommentController : ApiController
+	[EnableCors(origins: "*", headers: "*", methods: "*")]
+	public class CommentController : ApiController
     {
         TableRepositoryKomentar repoKom = new TableRepositoryKomentar();
 
