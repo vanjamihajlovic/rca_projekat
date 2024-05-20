@@ -163,6 +163,7 @@
     <Compile Include="Controllers\CommentController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PostController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\SubscriptionController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -172,6 +173,7 @@
     <Compile Include="Models\Comment.cs" />
     <Compile Include="Models\Login.cs" />
     <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\ProfileChange.cs" />
     <Compile Include="Models\Register.cs" />
     <Compile Include="Models\SubscriptionRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -236,6 +238,7 @@
     <Folder Include="Views\Auth\" />
     <Folder Include="Views\Comment\" />
     <Folder Include="Views\Post\" />
+    <Folder Include="Views\Profile\" />
     <Folder Include="Views\Subscription\" />
   </ItemGroup>
   <ItemGroup>
@@ -301,7 +304,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50810</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44342/</IISUrl>
+          <IISUrl>https://localhost:80/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
