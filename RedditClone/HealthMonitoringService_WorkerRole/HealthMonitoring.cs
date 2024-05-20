@@ -24,7 +24,6 @@ namespace HealthMonitoringService_WorkerRole
         static NetTcpBinding binding = new NetTcpBinding();
         private static string internalEndpointName = "HealthCheck";
 
-
         #region Main Function 
         public void HealthCheck()
         {
@@ -32,7 +31,7 @@ namespace HealthMonitoringService_WorkerRole
             PerformCheckNotifications();
         }
         #endregion
-
+		
         #region Reddit
         private void PerformCheckReddit()
         {
@@ -47,19 +46,35 @@ namespace HealthMonitoringService_WorkerRole
             int numOfInstances = redditEndpoints.Count;
 
             bool sveOkej = true;
+			bool alive = false;
             for (int i = 0; i < numOfInstances; i++)
             {
-                proxy1 = new ChannelFactory<IHealthCheck>(binding, redditEndpoints[i]).CreateChannel();
-                bool alive = proxy1.HealthCheck();
-                if (!alive) sveOkej = false;
-            }
+				try
+				{
+					proxy1 = new ChannelFactory<IHealthCheck>(binding, redditEndpoints[i]).CreateChannel();
+					alive = proxy1.HealthCheck();
+				}
+				catch (Exception e)
+				{
+					Trace.WriteLine(e.Message);
+				}
+                
+				if (!alive)
+				{
+					Trace.WriteLine($"Reddit_Service {i} is unavailable.");
+					sveOkej = false;
+				}
 
+				Trace.WriteLine($"Reddit_Service {i} is available.");
+			}
+
+			// Cuvanje izvestaja u tabelu
             int idIzvestaja = SacuvajIzvestajRedit(sveOkej);
 
             if (!sveOkej)
             {
                 // Dodaj idIzvestaja u AdminNotificaionQueue
-                //queue.AddMessage(new CloudQueueMessage(idIzvestaja));
+                queue.AddMessage(new CloudQueueMessage(idIzvestaja.ToString()));
             }
         }
 
@@ -68,7 +83,7 @@ namespace HealthMonitoringService_WorkerRole
             // Napravi izveštaj
             string poruka = (sveOkej) ? "RedditService OK" : "RedditService NOT OK";
             DateTime vreme = DateTime.Now;
-            int idIzvestaja = 1;    // TODO: promeniti
+            int idIzvestaja = (int)DateTime.UtcNow.Ticks;    // TODO: promeniti
             Izvestaj ri = new Izvestaj(idIzvestaja, vreme, poruka);
 
             // Upiši izveštaj u tabelu
@@ -78,9 +93,6 @@ namespace HealthMonitoringService_WorkerRole
             return idIzvestaja;
         }
         #endregion
-
-
-
 
         #region Notifikacije
         private void PerformCheckNotifications()
@@ -96,19 +108,34 @@ namespace HealthMonitoringService_WorkerRole
             int numOfInstances = notificationEndpoints.Count;
 
             bool sveOkej = true;
+			bool alive = false;
             for (int i = 0; i < numOfInstances; i++)
             {
-                proxy2 = new ChannelFactory<IHealthCheck>(binding, notificationEndpoints[i]).CreateChannel();
-                bool alive = proxy2.HealthCheck();
-                if (!alive) sveOkej = false;
-            }
+				try
+				{
+					proxy2 = new ChannelFactory<IHealthCheck>(binding, notificationEndpoints[i]).CreateChannel();
+					alive = proxy2.HealthCheck();
+				}
+				catch (Exception e)
+				{
+					Trace.WriteLine(e.Message);
+				}
+                
+				if (!alive)
+				{
+					Trace.WriteLine($"Notification_Service {i} is unavailable.");
+					sveOkej = false;
+				}
 
-            int idIzvestaja = SacuvajIzvestajNotifikacije(sveOkej);
+				Trace.WriteLine($"Notification_Service {i} is available.");
+			}
+
+			int idIzvestaja = SacuvajIzvestajNotifikacije(sveOkej);
 
             if (!sveOkej)
             {
                 // Dodaj idIzvestaja u AdminNotificaionQueue
-                //queue.AddMessage(new CloudQueueMessage(idIzvestaja));
+                queue.AddMessage(new CloudQueueMessage(idIzvestaja.ToString()));
             }
         }
 
@@ -117,7 +144,7 @@ namespace HealthMonitoringService_WorkerRole
             // Napravi izveštaj
             string poruka = (sveOkej) ? "NotificationService OK" : "NotificationService NOT OK";
             DateTime vreme = DateTime.Now;
-            int idIzvestaja = 1;    // TODO: promeniti
+            int idIzvestaja = (int)DateTime.Now.Ticks;    // TODO: promeniti
             Izvestaj ni = new Izvestaj(idIzvestaja, vreme, poruka);
 
             // Upiši izveštaj u tabelu

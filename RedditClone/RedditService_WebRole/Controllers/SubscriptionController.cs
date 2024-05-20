@@ -6,12 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using TableRepository;
 
 namespace RedditService_WebRole.Controllers
 {
     [RoutePrefix("subscribe")]
-    public class SubscriptionController : ApiController
+	[EnableCors(origins: "*", headers: "*", methods: "*")]
+	public class SubscriptionController : ApiController
     {
         TableRepositorySubscribe repo = new TableRepositorySubscribe();
 

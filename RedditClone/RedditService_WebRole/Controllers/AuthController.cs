@@ -10,11 +10,13 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using TableRepository;
 
 namespace RedditService_WebRole.Controllers
 {
     [RoutePrefix("auth")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class AuthController : ApiController
     {
         private JwtToken JwtToken;
@@ -92,8 +94,7 @@ namespace RedditService_WebRole.Controllers
                     {
                         image = Image.FromStream(ms);
                     }
-                    novi.Slika = new BlobHelper().UploadImage(image, "slike"
-                       ,
+                    novi.Slika = new BlobHelper().UploadImage(image, "slike",
                         Guid.NewGuid().ToString() + ".jpg");
 
                     bool result = repo.DodajKorisnika(novi);

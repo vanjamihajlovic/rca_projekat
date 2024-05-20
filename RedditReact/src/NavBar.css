@@ -1,0 +1,18 @@
+.navbar {
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #e7e7e7;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-link {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #555;
+}
+
+.active-link {
+    color: #0275d8;
+}
