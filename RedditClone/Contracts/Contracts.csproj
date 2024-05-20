@@ -61,7 +61,6 @@
     <Compile Include="IRedditService.cs" />
     <Compile Include="ISubscribe.cs" />
     <Compile Include="ITema.cs" />
-    <Compile Include="IVote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

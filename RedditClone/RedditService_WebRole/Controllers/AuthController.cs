@@ -16,6 +16,7 @@ using TableRepository;
 namespace RedditService_WebRole.Controllers
 {
     [RoutePrefix("auth")]
+    //[EnableCors(origins: "*", headers: "*", methods: "*")]
     public class AuthController : ApiController
     {
         private JwtToken JwtToken;
@@ -35,6 +36,7 @@ namespace RedditService_WebRole.Controllers
         // GET: Auth
         [HttpPost]
         [Route("login")]
+
         public IHttpActionResult Login(Login data)
         {
             try

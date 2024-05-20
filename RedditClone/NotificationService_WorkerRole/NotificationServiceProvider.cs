@@ -77,18 +77,22 @@ namespace NotificationService_WorkerRole
                 Tema t = trt.DobaviTemu(k.IdTeme.ToString());
 
 
+                TableRepositorySubscribe trs = new TableRepositorySubscribe();
+                List<Subscribe> pretplaceni = trs.DobaviSvePrijavljene(t.Id.ToString());
+
+
                 string tekstKomentara = k.Sadrzaj;
                 string autorKomentara = k.Autor;
                 string naslovTeme = t.Naslov;
                 int brojMejlova = t.PretplaceniKorisnici.Count;
                 DateTime vreme = DateTime.Now;
 
-                List<string> pretplaceni = t.PretplaceniKorisnici;
-                foreach (string i in pretplaceni)
+                
+                foreach (Subscribe i in pretplaceni)
                 {
-                    TableRepositoryKorisnik trkor = new TableRepositoryKorisnik();
-                    Korisnik kor = trkor.DobaviKorisnika(pretplaceni.ToString());
-                    await PosaljiMejl(kor.Email, tekstKomentara, autorKomentara, vreme, naslovTeme);
+                    //TableRepositoryKorisnik trkor = new TableRepositoryKorisnik();
+                    //Korisnik kor = trkor.DobaviKorisnika(pretplaceni.ToString());
+                    await PosaljiMejl(i.UserId, tekstKomentara, autorKomentara, vreme, naslovTeme);
                 }
 
                 UpisiNotifikacijuUTabelu(k.Id, vreme, brojMejlova);

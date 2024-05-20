@@ -15,6 +15,7 @@ using TableRepository;
 namespace RedditService_WebRole.Controllers
 {
     [RoutePrefix("comment")]
+	[EnableCors(origins: "*", headers: "*", methods: "*")]
 	public class CommentController : ApiController
     {
         TableRepositoryKomentar repoKom = new TableRepositoryKomentar();

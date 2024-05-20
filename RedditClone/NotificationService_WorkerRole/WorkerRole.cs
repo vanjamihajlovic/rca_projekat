@@ -1,5 +1,6 @@
 ﻿using Helpers;
 using Microsoft.WindowsAzure.ServiceRuntime;
+using Microsoft.WindowsAzure.Storage.Queue;
 using System.Diagnostics;
 using System.Net;
 using System.Threading;
@@ -14,6 +15,13 @@ Primer sistema za slanje mejlova jesu Postmark ili SendGrid.
 
 // TODO kasnije dodati UI za korisnike (kao poseban projekat)
 
+
+
+//mejl cloudproj@gmail.com
+//sifra cloudproj123
+
+
+
 namespace NotificationService_WorkerRole
 {
     //dvdvdv
@@ -23,9 +31,16 @@ namespace NotificationService_WorkerRole
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
 
         private HealthCheckService hcs = new HealthCheckService();
-        private NotificationService ns = new NotificationService();
+
+        //ovo nam valjda vise nece trebati
+        // private NotificationService ns = new NotificationService();
 
         private readonly QueueHelper queueHelper;
+        CloudQueue queueSubs = QueueHelper.GetQueueReference("RedditSubscribeTabela");
+
+        
+
+        
 
         public override void Run()
         {
@@ -55,7 +70,7 @@ namespace NotificationService_WorkerRole
             bool result = base.OnStart();
 
             hcs.Open();
-            ns.Open();
+           // ns.Open();
 
             Trace.TraceInformation("NotificationService_WorkerRole has been started");
 
@@ -72,7 +87,7 @@ namespace NotificationService_WorkerRole
             base.OnStop();
 
             hcs.Close();
-            ns.Close();
+           // ns.Close();
 
             Trace.TraceInformation("NotificationService_WorkerRole has stopped");
         }
@@ -86,5 +101,8 @@ namespace NotificationService_WorkerRole
                 await Task.Delay(10000);
             }
         }
+
+
+
     }
 }

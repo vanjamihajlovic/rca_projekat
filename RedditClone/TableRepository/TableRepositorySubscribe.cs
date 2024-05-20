@@ -57,6 +57,15 @@ namespace TableRepository
             }
         }
 
+        //dodati metoddu koja prima id teme i vraca suba za tu temu
+        public List<Subscribe> DobaviSvePrijavljene(string post)
+        {
+            var results = from g in table.CreateQuery<Subscribe>()
+                          where g.PartitionKey == "Subscribe" && g.RowKey == post
+                          select g;
+            return results.ToList<Subscribe>();
+        }
+
         public bool SubscribeToPost(Subscribe s)
         {
             if (s == null) return false;
