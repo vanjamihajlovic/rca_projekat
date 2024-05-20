@@ -12,7 +12,7 @@ namespace RedditService_WebRole.App_Start
         public static void Register(HttpConfiguration config)
         {
             // Enable CORS globally
-            var cors = new EnableCorsAttribute("*", "*", "*");
+            var cors = new EnableCorsAttribute("http://localhost:3000", "*", "*");
             config.EnableCors(cors);
 
             // Web API configuration and services

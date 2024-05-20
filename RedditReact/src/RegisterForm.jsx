@@ -29,7 +29,7 @@ function RegisterForm() {
 
       try {
           console.log(userData);
-          const response = await axios.post('http://127.0.0.1:8787/auth/register', {...userData, Image: "", mode: 'cors'});
+          const response = await axios.post('http://localhost/auth/register', {...userData, Image: ""});
           console.log(response);
           console.log(response.data);
           navigate("/login")
