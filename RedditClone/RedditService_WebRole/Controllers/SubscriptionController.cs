@@ -12,7 +12,6 @@ using TableRepository;
 namespace RedditService_WebRole.Controllers
 {
     [RoutePrefix("subscribe")]
-	[EnableCors(origins: "*", headers: "*", methods: "*")]
 	public class SubscriptionController : ApiController
     {
         TableRepositorySubscribe repo = new TableRepositorySubscribe();

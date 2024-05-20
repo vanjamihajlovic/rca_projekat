@@ -13,7 +13,6 @@ using TableRepository;
 namespace RedditService_WebRole.Controllers
 {
     [RoutePrefix("post")]
-	[EnableCors(origins: "*", headers: "*", methods: "*")]
 	public class PostController : ApiController
     {
         TableRepositoryTema repo = new TableRepositoryTema();
