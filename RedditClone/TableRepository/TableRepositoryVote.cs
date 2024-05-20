@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 
 namespace TableRepository
 {
@@ -58,35 +59,38 @@ namespace TableRepository
 			}
 		}
 
-		public bool ObrisiGlas(string idGlasa)
-		{
-			if (idGlasa == null) return false;
+        public bool ObrisiGlas(string voteId)
+        {
+            if (string.IsNullOrEmpty(voteId))
+                return false;
 
-			try
-			{
-				TableOperation retrieveOperation = TableOperation.Retrieve<Vote>("Vote", idGlasa.ToString());
-				TableResult retrievedResult = table.Execute(retrieveOperation);
-				if (retrievedResult.Result != null)
-				{
-					Vote deleteEntity = (Vote)retrievedResult.Result;
-					TableOperation deleteOperation = TableOperation.Delete(deleteEntity);
-					table.Execute(deleteOperation);
-					return true;
-				}
-				else
-				{
-					Trace.WriteLine($"Vote with ID {idGlasa} does not exist.");
-					return false;
-				}
-			}
-			catch (Exception ex)
-			{
-				Trace.WriteLine(ex.Message);
-				return false;
-			}
-		}
+            try
+            {
+                // Koristimo LINQ upit za dohvaćanje glasa
+                Vote tmp = (from g in table.CreateQuery<Vote>()
+                            where g.PartitionKey == "Vote" && g.RowKey == voteId
+                            select g).FirstOrDefault();
 
-		public Vote DobaviGlas(string idGlasa)
+                if (tmp == null)
+                {
+                    Trace.WriteLine($"Vote with ID {voteId} does not exist.");
+                    return false;
+                }
+
+                // Kreiramo operaciju za brisanje
+                TableOperation deleteOperation = TableOperation.Delete(tmp);
+                table.Execute(deleteOperation);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+
+        public Vote DobaviGlas(string idGlasa)
 		{
 			if (idGlasa == null)
 				return null;
@@ -132,5 +136,7 @@ namespace TableRepository
 			}
 		}
 
-	}
+      
+
+    }
 }

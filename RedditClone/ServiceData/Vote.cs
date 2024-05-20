@@ -22,11 +22,11 @@ namespace ServiceData
 
 		public Vote(string voteId, string userId, string postId, bool isUpvote, DateTime votedAt)
 		{
-			PartitionKey = "Subscribe";
-			RowKey = Guid.NewGuid().ToString();
+			PartitionKey = "Vote";
+            RowKey = voteId;
 
-			VoteId = voteId;
-			UserId = userId;
+            VoteId = voteId;
+            UserId = userId;
 			PostId = postId;
 			IsUpvote = isUpvote;
 			VotedAt = votedAt;
