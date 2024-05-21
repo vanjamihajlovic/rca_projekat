@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TableRepositoryAdminEmail.cs" />
     <Compile Include="TableRepositoryIzvestaj.cs" />
     <Compile Include="TableRepositoryKomentar.cs" />
     <Compile Include="TableRepositoryKorisnik.cs" />

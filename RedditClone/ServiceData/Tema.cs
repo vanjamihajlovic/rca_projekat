@@ -65,7 +65,5 @@ namespace ServiceData
             GlasoviProtiv = new List<int>();
             PretplaceniKorisnici = new List<string>();
         }
-
-
     }
 }

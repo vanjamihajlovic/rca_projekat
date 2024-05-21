@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminEmail.cs" />
     <Compile Include="Izvestaj.cs" />
     <Compile Include="Komentar.cs" />
     <Compile Include="Korisnik.cs" />

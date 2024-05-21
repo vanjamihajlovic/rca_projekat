@@ -23,8 +23,7 @@ namespace ServiceData
             PartitionKey = "Subscribe";
             RowKey = PostId;
 
-            this.userId = userId;
-          
+            this.userId = userId;          
         }
     }
 }

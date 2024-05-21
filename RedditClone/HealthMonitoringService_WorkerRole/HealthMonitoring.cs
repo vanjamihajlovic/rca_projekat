@@ -83,8 +83,8 @@ namespace HealthMonitoringService_WorkerRole
             // Napravi izveštaj
             string poruka = (sveOkej) ? "RedditService OK" : "RedditService NOT OK";
             DateTime vreme = DateTime.Now;
-            int idIzvestaja = (int)DateTime.UtcNow.Ticks;    // TODO: promeniti
-            Izvestaj ri = new Izvestaj(idIzvestaja, vreme, poruka);
+			int idIzvestaja = (int)DateTime.UtcNow.Ticks;    // TODO: promeniti
+			Izvestaj ri = new Izvestaj(idIzvestaja, vreme, poruka);
 
             // Upiši izveštaj u tabelu
             TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
@@ -144,8 +144,8 @@ namespace HealthMonitoringService_WorkerRole
             // Napravi izveštaj
             string poruka = (sveOkej) ? "NotificationService OK" : "NotificationService NOT OK";
             DateTime vreme = DateTime.Now;
-            int idIzvestaja = (int)DateTime.Now.Ticks;    // TODO: promeniti
-            Izvestaj ni = new Izvestaj(idIzvestaja, vreme, poruka);
+			int idIzvestaja = (int)DateTime.UtcNow.Ticks;    // TODO: promeniti
+			Izvestaj ni = new Izvestaj(idIzvestaja, vreme, poruka);
 
             // Upiši izveštaj u tabelu
             TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
@@ -154,6 +154,5 @@ namespace HealthMonitoringService_WorkerRole
             return idIzvestaja;
         }
         #endregion
-
     }
 }

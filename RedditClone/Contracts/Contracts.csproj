@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IAdminEmail.cs" />
     <Compile Include="IIzvestaj.cs" />
     <Compile Include="IKomentar.cs" />
     <Compile Include="IKorisnik.cs" />

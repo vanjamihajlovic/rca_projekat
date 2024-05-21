@@ -112,9 +112,5 @@ namespace TableRepository
                 return false;
             }
         }
-
-       
-        
-
     }
 }

@@ -16,7 +16,6 @@ namespace TableRepository
     {
         private CloudStorageAccount storageAccount;
         private CloudTable table;
-       
 
         public TableRepositorySubscribe()
         {
@@ -83,7 +82,5 @@ namespace TableRepository
                 return false;
             }
         }
-
-       
     }
 }
