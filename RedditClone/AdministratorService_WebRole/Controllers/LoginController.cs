@@ -11,9 +11,11 @@ using System.Web.Http;
 
 namespace AdministratorService_WebRole.Controllers
 {
-    public class LoginController : ApiController
+	[RoutePrefix("login")]
+	public class LoginController : ApiController
     {
-		[HttpPost, Route("api/Login/SignIn")]
+		[HttpGet]
+		[Route("signin")]
 		public IHttpActionResult SignIn([FromBody] User loginData)
 		{
 			if (loginData.Username == "admin" && loginData.Password == "admin")
@@ -26,7 +28,8 @@ namespace AdministratorService_WebRole.Controllers
 			return BadRequest("Pogresno korisnicko ime i/ili lozinka.");
 		}
 
-		[HttpGet, Route("api/Login/SignOut")]
+		[HttpGet]
+		[Route("signout")]
 		public IHttpActionResult SignOut()
 		{
 			try

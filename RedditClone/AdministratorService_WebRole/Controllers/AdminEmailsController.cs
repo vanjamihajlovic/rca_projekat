@@ -17,7 +17,7 @@ namespace AdministratorService_WebRole.Controllers
 		TableRepositoryAdminEmail repo = new TableRepositoryAdminEmail();
 
 		[HttpGet]
-		[Route("getAll")]
+		[Route("all")]
 		public async Task<IHttpActionResult> GetAllEmails()
 		{
 			try
