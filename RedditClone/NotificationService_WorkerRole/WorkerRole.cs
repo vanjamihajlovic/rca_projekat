@@ -68,34 +68,41 @@ namespace NotificationService_WorkerRole
         {
             if (queueComments.ApproximateMessageCount > 0)
             {
-                string idKomentara = queueComments.GetMessage().AsString;
+                var message = queueComments.GetMessage();
 
-                TableRepositoryKomentar trk = new TableRepositoryKomentar();
-                Komentar k = trk.DobaviKomentar(idKomentara);
-
-                TableRepositoryTema trt = new TableRepositoryTema();
-                Tema t = trt.DobaviTemu(k.IdTeme.ToString());
-
-
-                TableRepositorySubscribe trs = new TableRepositorySubscribe();
-                List<Subscribe> pretplaceni = trs.DobaviSvePrijavljene(t.Id.ToString());
-
-
-                string tekstKomentara = k.Sadrzaj;
-                string autorKomentara = k.Autor;
-                string naslovTeme = t.Naslov;
-                int brojMejlova = t.PretplaceniKorisnici.Count;
-                DateTime vreme = DateTime.Now;
-
-
-                foreach (Subscribe i in pretplaceni)
+                if (message != null)
                 {
-                    //TableRepositoryKorisnik trkor = new TableRepositoryKorisnik();
-                    //Korisnik kor = trkor.DobaviKorisnika(pretplaceni.ToString());
-                    await PosaljiMejl(i.UserId, tekstKomentara, autorKomentara, vreme, naslovTeme);
-                }
+                    string idKomentara = queueComments.GetMessage().AsString;
 
-                UpisiNotifikacijuUTabelu(k.Id, vreme, brojMejlova);
+                    TableRepositoryKomentar trk = new TableRepositoryKomentar();
+                    Komentar k = trk.DobaviKomentar(idKomentara);
+
+                    TableRepositoryTema trt = new TableRepositoryTema();
+                    Tema t = trt.DobaviTemu(k.IdTeme.ToString());
+
+
+                    TableRepositorySubscribe trs = new TableRepositorySubscribe();
+                    List<Subscribe> pretplaceni = trs.DobaviSvePrijavljene(t.Id.ToString());
+
+
+                    string tekstKomentara = k.Sadrzaj;
+                    string autorKomentara = k.Autor;
+                    string naslovTeme = t.Naslov;
+                    int brojMejlova = t.PretplaceniKorisnici.Count;
+                    DateTime vreme = DateTime.Now;
+
+
+                    foreach (Subscribe i in pretplaceni)
+                    {
+                        //TableRepositoryKorisnik trkor = new TableRepositoryKorisnik();
+                        //Korisnik kor = trkor.DobaviKorisnika(pretplaceni.ToString());
+                        await PosaljiMejl(i.UserId, tekstKomentara, autorKomentara, vreme, naslovTeme);
+                    }
+
+                    UpisiNotifikacijuUTabelu(k.Id, vreme, brojMejlova);
+                    // Delete the message after processing
+                    queueComments.DeleteMessage(message.Id, message.PopReceipt);
+                }
             }
         }
 
@@ -191,12 +198,20 @@ namespace NotificationService_WorkerRole
             while (!cancellationToken.IsCancellationRequested)
             {
                 //ovo vrv moze i da se obrise
+
                 Trace.TraceInformation("Working");
-                await Task.Delay(10000);
+
+                // Call ProveriQueueKomentari to process messages from the queue
+                await ProveriQueueKomentari();
+
+                // Wait for a period before checking the queue again
+                await Task.Delay(10000, cancellationToken);
             }
+
         }
+    }
 
 
 
     }
-}
+
