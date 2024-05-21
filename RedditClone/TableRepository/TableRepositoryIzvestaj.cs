@@ -4,6 +4,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using ServiceData;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -52,6 +53,44 @@ namespace TableRepository
             catch (Exception)
             {
                 return new Izvestaj();
+            }
+        }
+
+        // Za prethodna 24 časa 
+        // 20 izveštaja u minuti - 1200 u satu - 28800 u danu (*4 servisa)
+        // Sreća pa neće raditi ceo dan
+        public List<Izvestaj> DobaviIzvestajeZaPrethodniDan()
+        {
+            DateTime odKada = DateTime.Now.Subtract(TimeSpan.FromDays(1));
+
+            try
+            {
+                var izv = (from g in table.CreateQuery<Izvestaj>() where g.PartitionKey == "Izvestaj" && g.Timestamp > odKada select g);
+                return izv.ToList<Izvestaj>();
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e.Message);
+                return new List<Izvestaj>();
+            }
+        }
+
+        // Za prethodnih sat vremena
+        // 20 izveštaja u minuti - 1200 u satu
+        // Biće 4800 u satu jer imamo 3+1 servis
+        public List<Izvestaj> DobaviIzvestajeZaPrethodniSat()
+        {
+            DateTime odKada = DateTime.Now.Subtract(TimeSpan.FromHours(1));
+
+            try
+            {
+                var izv = (from g in table.CreateQuery<Izvestaj>() where g.PartitionKey == "Izvestaj" && g.Timestamp > odKada select g);
+                return izv.ToList<Izvestaj>();
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e.Message);
+                return new List<Izvestaj>();
             }
         }
     }

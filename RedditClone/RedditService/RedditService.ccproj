@@ -40,6 +40,14 @@
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AdministratorService_WebRole\AdministratorService_WebRole.csproj">
+      <Name>AdministratorService_WebRole</Name>
+      <Project>{4e7008b4-31ce-4ae0-82db-f1578447dff2}</Project>
+      <Private>True</Private>
+      <RoleType>Web</RoleType>
+      <RoleName>AdministratorService_WebRole</RoleName>
+      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
+    </ProjectReference>
     <ProjectReference Include="..\HealthMonitoringService_WorkerRole\HealthMonitoringService_WorkerRole.csproj">
       <Name>HealthMonitoringService_WorkerRole</Name>
       <Project>{8b6e7d1e-4fb0-4aab-a954-35690c1682f0}</Project>
@@ -66,11 +74,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="AdministratorService_WebRoleContent\" />
     <Folder Include="HealthMonitoringService_WorkerRoleContent\" />
     <Folder Include="NotificationService_WorkerRoleContent\" />
     <Folder Include="RedditService_WebRoleContent\" />
   </ItemGroup>
   <ItemGroup>
+    <DiagnosticsConfiguration Include="AdministratorService_WebRoleContent\diagnostics.wadcfgx" />
     <DiagnosticsConfiguration Include="HealthMonitoringService_WorkerRoleContent\diagnostics.wadcfgx" />
     <DiagnosticsConfiguration Include="NotificationService_WorkerRoleContent\diagnostics.wadcfgx" />
     <DiagnosticsConfiguration Include="RedditService_WebRoleContent\diagnostics.wadcfgx" />

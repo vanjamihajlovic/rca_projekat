@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2050
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "RedditService", "RedditService\RedditService.ccproj", "{D7FFBAA0-F8A0-4DDB-82D0-C68C61B8099F}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableRepository", "TableRepository\TableRepository.csproj", "{B2B4461E-98BA-4A41-8285-ED9F9BC39943}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "Helpers\Helpers.csproj", "{077B37FC-CF6A-4E68-83E6-B1A62B19DAAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdministratorService_WebRole", "AdministratorService_WebRole\AdministratorService_WebRole.csproj", "{4E7008B4-31CE-4AE0-82DB-F1578447DFF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{077B37FC-CF6A-4E68-83E6-B1A62B19DAAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{077B37FC-CF6A-4E68-83E6-B1A62B19DAAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{077B37FC-CF6A-4E68-83E6-B1A62B19DAAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E7008B4-31CE-4AE0-82DB-F1578447DFF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E7008B4-31CE-4AE0-82DB-F1578447DFF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E7008B4-31CE-4AE0-82DB-F1578447DFF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E7008B4-31CE-4AE0-82DB-F1578447DFF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
