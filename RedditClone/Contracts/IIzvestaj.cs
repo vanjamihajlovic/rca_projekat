@@ -1,4 +1,5 @@
 ﻿using ServiceData;
+using System.Collections.Generic;
 using System.ServiceModel;
 
 namespace Contracts
@@ -11,5 +12,11 @@ namespace Contracts
 
         [OperationContract]
         Izvestaj DobaviIzvestaj(string id);
+
+        [OperationContract]
+        double DobaviProsekZaPrethodniDan();
+
+        [OperationContract]
+        List<Izvestaj> DobaviIzvestajeZaPrethodniSat();
     }
 }

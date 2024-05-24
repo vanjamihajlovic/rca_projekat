@@ -55,26 +55,7 @@ namespace TableRepository
                 return new Izvestaj();
             }
         }
-
-        // Za prethodna 24 časa 
-        // 20 izveštaja u minuti - 1200 u satu - 28800 u danu (*4 servisa)
-        // Sreća pa neće raditi ceo dan
-        public List<Izvestaj> DobaviIzvestajeZaPrethodniDan()
-        {
-            DateTime odKada = DateTime.Now.Subtract(TimeSpan.FromDays(1));
-
-            try
-            {
-                var izv = (from g in table.CreateQuery<Izvestaj>() where g.PartitionKey == "Izvestaj" && g.Timestamp > odKada select g);
-                return izv.ToList<Izvestaj>();
-            }
-            catch (Exception e)
-            {
-                Trace.WriteLine(e.Message);
-                return new List<Izvestaj>();
-            }
-        }
-
+        
         // Za prethodnih sat vremena
         // 20 izveštaja u minuti - 1200 u satu
         // Biće 4800 u satu jer imamo 3+1 servis
@@ -91,6 +72,38 @@ namespace TableRepository
             {
                 Trace.WriteLine(e.Message);
                 return new List<Izvestaj>();
+            }
+        }
+
+        public double DobaviProsekZaPrethodniDan()
+        {
+            DateTime odKada = DateTime.Now.Subtract(TimeSpan.FromDays(1));
+
+            try
+            {
+                var izv = (from g in table.CreateQuery<Izvestaj>() where g.PartitionKey == "Izvestaj" && g.Timestamp > odKada select g);
+                int suma = 0;
+                int broj = 0;
+                foreach (var i in izv)
+                {
+                    if (i.Sadrzaj.ToString() == "RedditService OK")
+                    {
+                        suma++;
+                        broj++;
+                    }
+                    else if (i.Sadrzaj.ToString() == "RedditService NOT OK")
+                    {
+                        broj++;
+                    }
+                }
+
+                double prosek = suma / broj;
+                return prosek;
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine(e.Message);
+                return 0;
             }
         }
     }

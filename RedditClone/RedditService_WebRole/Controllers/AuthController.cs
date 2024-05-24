@@ -16,7 +16,6 @@ using TableRepository;
 namespace RedditService_WebRole.Controllers
 {
     [RoutePrefix("auth")]
-
     public class AuthController : ApiController
     {
         private JwtToken JwtToken;
