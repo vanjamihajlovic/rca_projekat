@@ -1,23 +1,21 @@
 ﻿$(document).ready(function () {
     var username = sessionStorage.getItem("user_username");
 
+    // Ovo mislim da će možda praviti problem
     if (username == null) {
         $.ajax({
             url: '/login/signin',
-            method: 'GET',
+            method: 'POST',
             success: function (data) {
                 sessionStorage.setItem("user_username", data.Username);
-                Administrator();
             }
         });
-    } else {
-        Undefined();
     }
 
     $('#nav-logout').click(function () {
         $.ajax({
-            url: '/api/login/signout',
-            method: 'GET',
+            url: '/login/signout',
+            method: 'POST',
             success: function () {
                 Undefined();
                 sessionStorage.setItem("user_username", -1);
@@ -29,18 +27,3 @@
         });
     });
 });
-
-
-function Administrator() {
-    $('#nav-dashboard').show();
-    $('#nav-admin-emails').show();
-    $('#nav-login').hide();
-    $('#nav-logout').show();
-}
-
-function Undefined() {
-    $('#nav-dashboard').hide();
-    $('#nav-admin-emails').hide();
-    $('#nav-login').show();
-    $('#nav-logout').hide();
-}
