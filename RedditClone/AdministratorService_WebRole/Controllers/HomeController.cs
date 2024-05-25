@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
+using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace AdministratorService_WebRole.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ApiController
     {
-        public ActionResult Index()
+        [HttpGet, Route("")]
+        public RedirectResult Index()
         {
-            ViewBag.Title = "Home Page";
-
-            return View();
+            return Redirect(Request.RequestUri.AbsoluteUri + "Views/Index.html");
         }
     }
 }

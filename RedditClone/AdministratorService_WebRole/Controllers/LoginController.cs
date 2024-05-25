@@ -14,21 +14,22 @@ namespace AdministratorService_WebRole.Controllers
 	[RoutePrefix("login")]
 	public class LoginController : ApiController
     {
-		[HttpGet]
+		[HttpPost]
 		[Route("signin")]
 		public IHttpActionResult SignIn([FromBody] User loginData)
 		{
 			if (loginData.Username == "admin" && loginData.Password == "admin")
 			{
 				// TODO menjaj
-				HttpContext.Current.Session["User"] = loginData as User;
+                // Ovo ne može ovako, skontaj šta je greška
+				//HttpContext.Current.Session["User"] = loginData as User;
 				return Ok("Uspesna prijava");
 			}
 
 			return BadRequest("Pogresno korisnicko ime i/ili lozinka.");
 		}
 
-		[HttpGet]
+		[HttpPost]
 		[Route("signout")]
 		public IHttpActionResult SignOut()
 		{
