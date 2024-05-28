@@ -9,7 +9,7 @@ $(document).ready(function () {
     $.ajax({
         url: "/emails/all", 
         type: "GET",
-        dataType: "json",
+        //dataType: "json",
         contentType: "application/json",
 
         success: function (response) {
@@ -18,21 +18,16 @@ $(document).ready(function () {
         },
         error: function (xhr, status, error) {
             let result = JSON.parse(xhr.responseText);
-            ApiPoruka(result.Message, error);
+            alert(result);
         }
     });
 });
 
-
-
-
-
-
 // Popunjavanje tabelarnog prikaza za mejlove
 function PopuniPrikazMejlova(items) {
-
     let table = $(".users tbody");
     table.empty();
+    console.log(items);
 
     if (items.length == 0) {
         let tr = $("<tr></tr>");
@@ -43,14 +38,14 @@ function PopuniPrikazMejlova(items) {
     else {
         $.each(items, function (index, item) {
             let tr = $("<tr></tr>");
-            //tr.attr("id", "user-" + item.EmailAddress);
+            tr.attr("id", "user-" + item.RowKey);
             
-            let email = $("<td></td>").text(item.EmailAddress);
-            
+            let email = $("<td></td>").text(item.EmailAdresa);
+
             let action = $('<td></td>');
-            let deleteBtn = $('<button>Obriši</button>');
+            let deleteBtn = $('<button>Delete</button>');
             deleteBtn.addClass("red-btn");
-            deleteBtn.click({ email: item.EmailAddress }, DeleteEmail);
+            deleteBtn.click({ email: item.EmailAdresa }, DeleteEmail);
 
             action.append(deleteBtn);
             
@@ -60,11 +55,6 @@ function PopuniPrikazMejlova(items) {
         });
     }
 }
-
-
-
-
-
 
 // Button events - add
 function AddEmail(event) {
@@ -80,7 +70,8 @@ function AddEmail(event) {
         //headers: { "Authorization": token },
 
         success: function () {
-            alert(data.responseJSON.Message);
+            alert("New email address sucessfully added!");
+            location.reload();
         },
         error: function (xhr, status, error) {
             console.log(error);
@@ -92,15 +83,21 @@ function AddEmail(event) {
 function DeleteEmail(event) {
     event.preventDefault();
 
+    let email = event.data.email;
+    let emailDelete = {
+        EmailAddress: email
+    }
+
     $.ajax({
         url: '/emails/delete',
         method: 'POST',
-        data: JSON.stringify(event.data),
+        data: JSON.stringify(emailDelete),
         contentType: "application/json",
         //headers: { "Authorization": token },
 
         success: function () {
-            alert(data.responseJSON.Message);
+            alert("Email address has been removed.");
+            location.reload();
         },
         error: function (xhr, status, error) {
             console.log(error);
