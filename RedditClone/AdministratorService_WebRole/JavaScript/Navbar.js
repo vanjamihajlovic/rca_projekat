@@ -3,13 +3,7 @@
 
     // Ovo mislim da će možda praviti problem
     if (username == null) {
-        $.ajax({
-            url: '/login/signin',
-            method: 'POST',
-            success: function (data) {
-                sessionStorage.setItem("user_username", data.Username);
-            }
-        });
+        window.location.href = "Index.html";
     }
 
     $('#nav-logout').click(function () {
@@ -17,7 +11,6 @@
             url: '/login/signout',
             method: 'POST',
             success: function () {
-                Undefined();
                 sessionStorage.setItem("user_username", -1);
                 window.location.href = "Index.html";
             },

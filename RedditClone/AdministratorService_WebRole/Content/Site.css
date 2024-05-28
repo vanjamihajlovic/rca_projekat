@@ -137,3 +137,67 @@ button {
         color: #666;
         cursor: not-allowed;
     }
+
+
+.red-btn {
+    background-color: var(--crvena);
+}
+
+    .red-btn:hover {
+        background-color: var(--crvenasvetla);
+        color: var(--bela);
+        transition: background-color ease-out 0.3s;
+    }
+
+
+.content {
+    display: flex;
+    width: 60%;
+    height: 100%;
+    background-color: var(--siva1);
+    flex-direction: column;
+    align-content: center;
+    align-self: center;
+    padding: 10px;
+    margin: 10px auto;
+}
+
+
+
+.users {
+    width: 100%;
+    padding: 15px;
+    border-collapse: collapse;
+    max-height: 400px;
+    overflow: scroll;
+    scroll-behavior: smooth;
+}
+
+
+.datatable th,
+.datatable td {
+    font-size: 1.25rem;
+    padding: 8px;
+    text-align: left;
+    border-bottom: 3px solid #ddd;
+}
+
+.datatable th {
+    background-color: lightslategrey;
+    font-weight: bold;
+    text-align: center;
+    border-right: 2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+}
+
+    .datatable th:first-child {
+        border-left: 2px solid #ddd;
+    }
+
+.datatable tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.datatable tr:hover {
+    background-color: #e6e6e6;
+}
