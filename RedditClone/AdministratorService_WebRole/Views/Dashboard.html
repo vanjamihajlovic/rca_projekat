@@ -5,16 +5,36 @@
     <title>Dashboard</title>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="../JavaScript/Navbar.js" type="text/javascript"></script>
+    <script src="../JavaScript/Dashboard.js" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="../Content/Site.css" />
 </head>
 
 <body>
     <nav>
         <a id="nav-admin-emails" href="AdminEmails.html">Emails</a>
-        <a id="nav-logout" href="#">Odjava</a>
+        <a id="nav-logout" href="#">Logout</a>
     </nav>
 
     <!-- TODO Tabela sa izvestajima -->
+    <!-- Takođe se pored svake adrese nalazi dugme za brisanje -->
+    <main>
+        <div class="content">
+            <!-- Svi korisnici (neobrisani - logično) -->
+            <div class="items-container">
+                <!-- Tabela sa korisnicima -->
+                <table id="reports" class="users datatable">
+                    <thead>
+                        <tr>
+                            <th>Report</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dinamički popunjava JS funkcija -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
 
 </body>
 </html>

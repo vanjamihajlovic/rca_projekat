@@ -3,13 +3,11 @@
 $(document).ready(function () {
     // Dugme za dodavanje
     $('#btn-add').click(AddEmail);
-    //$('#btn-delete').click(DeleteEmail);
 
     // Slanje GET zahteva serveru - za sve adrese
     $.ajax({
         url: "/emails/all", 
         type: "GET",
-        //dataType: "json",
         contentType: "application/json",
 
         success: function (response) {

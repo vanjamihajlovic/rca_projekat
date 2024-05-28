@@ -55,10 +55,10 @@ namespace TableRepository
                 return new Izvestaj();
             }
         }
-        
+
         // Za prethodnih sat vremena
         // 20 izveštaja u minuti - 1200 u satu
-        // Biće 4800 u satu jer imamo 3+1 servis
+        // NOTE: samo za RedditServis
         public List<Izvestaj> DobaviIzvestajeZaPrethodniSat()
         {
             DateTime odKada = DateTime.Now.Subtract(TimeSpan.FromHours(1));
@@ -66,7 +66,16 @@ namespace TableRepository
             try
             {
                 var izv = (from g in table.CreateQuery<Izvestaj>() where g.PartitionKey == "Izvestaj" && g.Timestamp > odKada select g);
-                return izv.ToList<Izvestaj>();
+                List<Izvestaj> samoReddit = new List<Izvestaj>();
+                foreach (var i in izv)
+                {
+                    if (i.Sadrzaj.ToString().Contains("RedditService"))
+                    {
+                        samoReddit.Add(i);
+                    }
+                }
+
+                return samoReddit;
             }
             catch (Exception e)
             {
@@ -75,6 +84,7 @@ namespace TableRepository
             }
         }
 
+        // NOTE: samo za RedditServis
         public double DobaviProsekZaPrethodniDan()
         {
             DateTime odKada = DateTime.Now.Subtract(TimeSpan.FromDays(1));

@@ -23,17 +23,7 @@ namespace AdministratorService_WebRole.Controllers
         {
             try
             {
-                // TODO autorizacija
-                //if (HttpContext.Current.Session["User"] == null)
-                //{
-                //    return BadRequest("Niste ulogovani!");
-                //}
-
-                //User usr = HttpContext.Current.Session["User"] as User;
-                //if (usr.Username != "admin")
-                //{
-                //    return BadRequest("Vi niste admin!");
-                //}
+                // TODO autorizacija?
 
                 var allEmails = await Task.FromResult(repo.DobaviSveMejlove());
                 return Ok(allEmails);
@@ -57,7 +47,7 @@ namespace AdministratorService_WebRole.Controllers
 
                 var noviMejl = new AdminEmail(adresa.EmailAddress);
 
-                // Dodavanje posta korišćenjem servisa
+                // Dodavanje mejla korišćenjem servisa
                 bool isAdded = await Task.FromResult(repo.DodajMejlAdresu(noviMejl));
                 if (!isAdded)
                 {
@@ -84,7 +74,7 @@ namespace AdministratorService_WebRole.Controllers
                     return BadRequest();
                 }
 
-                // Delete post using repository
+                // Brisanje adrese korišćenjem repozitorijuma
                 bool isDeleted = await Task.FromResult(repo.ObrisiMejlAdresu(adresa.EmailAddress));
                 if (!isDeleted)
                 {
