@@ -92,8 +92,8 @@ namespace TableRepository
             try
             {
                 var izv = (from g in table.CreateQuery<Izvestaj>() where g.PartitionKey == "Izvestaj" && g.Timestamp > odKada select g);
-                int suma = 0;
-                int broj = 0;
+                double suma = 0;
+                double broj = 0;
                 foreach (var i in izv)
                 {
                     if (i.Sadrzaj.ToString() == "RedditService OK")

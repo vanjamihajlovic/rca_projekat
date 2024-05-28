@@ -12,7 +12,7 @@ $(document).ready(function () {
         success: function (response) {
             dailyAverage = response;
             console.log(dailyAverage);
-            //PopuniPrikazPrikaz(allReports);
+            document.getElementById("daily-avg").innerHTML = dailyAverage;
         },
         error: function (xhr, status, error) {
             let result = JSON.parse(xhr.responseText);
@@ -37,8 +37,7 @@ $(document).ready(function () {
     });
 });
 
-
-// Popunjavanje tabelarnog prikaza za mejlove
+// Popunjavanje tabelarnog prikaza za izvestaje
 function PopuniPrikazIzvestaja(items) {
     let table = $(".users tbody");
     table.empty();
@@ -56,34 +55,12 @@ function PopuniPrikazIzvestaja(items) {
             tr.attr("id", "report-" + item.RowKey);
 
             let report = $("<td></td>").text(item.Sadrzaj);
-            // substring Not-ok -> zacrveni red
-            
-            // Dodaj podatke u tabelu
-            tr.append(report);
-            table.append(tr);
-        });
-    }
-}
-
-function PopuniPrikazProsek(items) {
-    let table = $(".users tbody");
-    table.empty();
-    console.log(items);
-
-    if (items.length == 0) {
-        let tr = $("<tr></tr>");
-        let message = $('<td colspan=6></td>').text("No reports found!");
-        tr.append(message);
-        table.append(tr);
-    }
-    else {
-        $.each(items, function (index, item) {
-            let tr = $("<tr></tr>");
-            tr.attr("id", "report-" + item.RowKey);
-
-            let report = $("<td></td>").text(item.Sadrzaj);
-            // substring Not-ok -> zacrveni red
-
+            if (item.Sadrzaj.includes("NOT")) {
+                $(tr).css('color', 'red');
+            }
+            else {
+                $(tr).css('color', 'green');
+            }
             // Dodaj podatke u tabelu
             tr.append(report);
             table.append(tr);

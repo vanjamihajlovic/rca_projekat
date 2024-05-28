@@ -12,16 +12,19 @@
 <body>
     <nav>
         <a id="nav-admin-emails" href="AdminEmails.html">Emails</a>
-        <a id="nav-logout" href="#">Logout</a>
+        <a id="nav-logout" href="Index.html">Logout</a>
     </nav>
 
-    <!-- TODO Tabela sa izvestajima -->
-    <!-- Takođe se pored svake adrese nalazi dugme za brisanje -->
+    <!-- Tabela sa izvestajima i dnevni prosek -->
     <main>
+        <!-- Dnevni prosek -->
         <div class="content">
-            <!-- Svi korisnici (neobrisani - logično) -->
+            Daily uptime average for RedditService is:
+            <p id="daily-avg"></p>
+        </div>
+        <div class="content">
+            <!-- Svi izvestaji za RedditService -->
             <div class="items-container">
-                <!-- Tabela sa korisnicima -->
                 <table id="reports" class="users datatable">
                     <thead>
                         <tr>
