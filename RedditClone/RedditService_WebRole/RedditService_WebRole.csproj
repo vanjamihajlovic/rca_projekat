@@ -240,6 +240,7 @@
     <Folder Include="Views\Auth\" />
     <Folder Include="Views\Comment\" />
     <Folder Include="Views\Post\" />
+    <Folder Include="Views\Sort\" />
     <Folder Include="Views\Subscription\" />
   </ItemGroup>
   <ItemGroup>

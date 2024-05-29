@@ -103,7 +103,60 @@ namespace RedditService_WebRole.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("search")]
+        public async Task<IHttpActionResult> SearchPosts(string searchTerm)
+        {
+            try
+            {
+                // Validacija parametara pretrage
+                if (string.IsNullOrEmpty(searchTerm))
+                {
+                    return BadRequest("Search term is required.");
+                }
 
+                // Pretraživanje tema po naslovu
+                var results = await Task.FromResult(repo.PretraziTeme(searchTerm));
+
+                // Pretvorba rezultata u listu i vraćanje HTTP odgovora
+                var searchResults = results.ToList();
+                return Ok(searchResults);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("sort")]
+        public IHttpActionResult SortPosts(string sortBy = "Title", string sortOrder = "asc")
+        {
+            try
+            {
+                // Preuzmi sve teme iz repozitorijuma
+                var allPosts = repo.DobaviSve();
+
+                // Sortiranje rezultata
+                switch (sortBy.ToLower())
+                {
+                    case "title":
+                        allPosts = sortOrder.ToLower() == "desc" ? allPosts.OrderByDescending(t => t.Naslov) : allPosts.OrderBy(t => t.Naslov);
+                        break;
+                    // Dodati dodatne case-ove ako želite omogućiti sortiranje po drugim poljima
+                    default:
+                        return BadRequest("Invalid sort by parameter.");
+                }
+
+                // Pretvorba rezultata u listu i vraćanje HTTP odgovora
+                var sortedResults = allPosts.ToList();
+                return Ok(sortedResults);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
 
     }
 }

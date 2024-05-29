@@ -113,5 +113,24 @@ namespace TableRepository
                 return false;
             }
         }
+
+        public IQueryable<Tema> PretraziTeme(string searchTerm)
+        {
+            try
+            {
+                // Uzimanje svih tema iz tabele sa odgovarajućom PartitionKey i filtriranje po naslovu
+                var results = from g in table.CreateQuery<Tema>()
+                              where g.PartitionKey == "Tema" && g.Naslov.ToLower().Contains(searchTerm.ToLower())
+                              select g;
+
+                return results;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error while searching topics: {ex.Message}");
+                throw; // Prema potrebi možete dodati dalju obradu ili logovanje greške
+            }
+        }
+
     }
 }
