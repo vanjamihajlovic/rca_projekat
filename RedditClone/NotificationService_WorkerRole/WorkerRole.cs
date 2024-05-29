@@ -115,8 +115,23 @@ namespace NotificationService_WorkerRole
 			//Console.WriteLine(response.Body.ReadAsStringAsync());
 		}
 
-		// Komentari
-		private async Task ProveriQueueKomentari()
+        public async Task PosaljiMejlAdminima(string korisnikEmail, string tekstKomentara, DateTime vreme)
+        {
+            var apiKey = "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";
+            var client = new SendGridClient(apiKey);
+            var from = new EmailAddress("cloudprojekat@gmail.com", "CLOUD Projekat Mejl");
+            var subject = "Pao servis";
+            var to = new EmailAddress(korisnikEmail, "Example User");
+            var plainTextContent = tekstKomentara + " " + vreme;
+            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            var response = await client.SendEmailAsync(msg);
+            //Console.WriteLine(response.StatusCode);
+            //Console.WriteLine(response.Body.ReadAsStringAsync());
+        }
+
+        // Komentari
+        private async Task ProveriQueueKomentari()
 		{
 			if (queueComments.ApproximateMessageCount > 0)
 			{
@@ -154,8 +169,42 @@ namespace NotificationService_WorkerRole
 				}
 			}
 		}
+        private async Task ProveriQueueAdmini()
+        {
+            if (queueAdmins.ApproximateMessageCount > 0)
+            {
+                var message = queueAdmins.GetMessage();
 
-		private void UpisiNotifikacijuUTabelu(int idKomentara, DateTime vreme, int brojPoslatihMejlova)
+                if (message != null)
+                {
+                    string idIzvestaja = queueAdmins.GetMessage().AsString;
+
+                    TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
+                    Izvestaj i = tri.DobaviIzvestaj(idIzvestaja);
+
+                    TableRepositoryAdminEmail trae = new TableRepositoryAdminEmail();
+                    List<AdminEmail> aeList = trae.DobaviSveMejlove();
+
+                   
+                    string tekstIzvestaja = i.Sadrzaj;
+                  //  int brojMejlova = t.PretplaceniKorisnici.Count;
+                    DateTime vreme = DateTime.Now;
+
+                    foreach (AdminEmail ae in aeList)
+                    {
+                        //TableRepositoryKorisnik trkor = new TableRepositoryKorisnik();
+                        //Korisnik kor = trkor.DobaviKorisnika(pretplaceni.ToString());
+                       await PosaljiMejlAdminima(ae.EmailAdresa,i.Sadrzaj, i.Vreme);
+                    }
+
+                   // UpisiNotifikacijuUTabelu(k.Id, vreme, brojMejlova);
+                    // Delete the message after processing
+                    queueAdmins.DeleteMessage(message.Id, message.PopReceipt);
+                }
+            }
+        }
+
+        private void UpisiNotifikacijuUTabelu(int idKomentara, DateTime vreme, int brojPoslatihMejlova)
 		{
 			Notifikacija n = new Notifikacija(idKomentara, vreme, brojPoslatihMejlova);
 			TableRepositoryNotifikacije trn = new TableRepositoryNotifikacije();

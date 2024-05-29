@@ -18,6 +18,6 @@ namespace Contracts
 		bool ObrisiMejlAdresu(string adresa);
 
 		[OperationContract]
-		IQueryable<AdminEmail> DobaviSveMejlove();
+		List<AdminEmail> DobaviSveMejlove();
 	}
 }

@@ -25,18 +25,18 @@ namespace TableRepository
 			table.CreateIfNotExists();
 		}
 		
-		public IQueryable<AdminEmail> DobaviSveMejlove()
+		public List<AdminEmail> DobaviSveMejlove()
 		{
 			try
 			{
 				var results = from g in table.CreateQuery<AdminEmail>()
 							  where g.PartitionKey == "AdminEmail"
 							  select g;
-				return results;
+				return results.ToList();
 			}
 			catch (Exception)
 			{
-				return Enumerable.Empty<AdminEmail>().AsQueryable();
+				return new List<AdminEmail>();
 			}
 		}
 
