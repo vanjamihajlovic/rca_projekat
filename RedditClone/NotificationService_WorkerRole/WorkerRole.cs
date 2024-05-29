@@ -92,6 +92,7 @@ namespace NotificationService_WorkerRole
 
                 // Call ProveriQueueKomentari to process messages from the queue
                 await ProveriQueueKomentari();
+                await ProveriQueueAdmini();
 
                 // Wait for a period before checking the queue again
                 await Task.Delay(10000, cancellationToken);
