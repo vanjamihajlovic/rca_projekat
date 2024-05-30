@@ -50,7 +50,7 @@ namespace ServiceData
 
         public Tema() { }
 
-        public Tema(string id, string naslov, string sadrzaj)
+        public Tema(string id, string naslov, string sadrzaj, string userId)
         {
             PartitionKey = "Tema";
             RowKey = id;

@@ -30,7 +30,7 @@ namespace RedditService_WebRole.Controllers
                     return BadRequest();
                 }
 
-                var noviPost = new Tema(post.Id, post.Title, post.Content);
+                var noviPost = new Tema(post.Id, post.Title, post.Content, post.UserId);
 
                 // Dodavanje posta korišćenjem servisa
                 bool isAdded = await Task.FromResult(repo.DodajTemu(noviPost));
