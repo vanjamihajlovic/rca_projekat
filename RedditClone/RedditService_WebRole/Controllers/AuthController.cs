@@ -65,9 +65,9 @@ namespace RedditService_WebRole.Controllers
 
 
             }
-            catch
+            catch (Exception e)
             {
-                return BadRequest();
+                return BadRequest(e.Message);
             }
         }
 
@@ -114,9 +114,9 @@ namespace RedditService_WebRole.Controllers
                     return BadRequest();
                 }
             }
-            catch(Exception)
+            catch(Exception e)
             {
-                return BadRequest();
+                return BadRequest(e.Message);
             }
         }
     }
