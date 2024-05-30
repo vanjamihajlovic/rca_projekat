@@ -4,6 +4,7 @@ import axiosInstance from './axiosInstance';
 import './CreateTopic.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+const { v4: uuidv4} = require('uuid');
 
 function CreateTopic() {
     const [title, setTitle] = useState('');
@@ -13,16 +14,20 @@ function CreateTopic() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = {
-            title,
-            content,
+            Title: title,
+            Content: content,
+            Id: uuidv4(),
         };
 
         try {
-            const endpoint = `/topic/create`;
+            const endpoint = `http://localhost/post/create`;
             const response = await axiosInstance.post(endpoint, payload);
+            console.log('RESPONSE');
+            console.log(response);
+            console.log(response.status);
             if (response.status === 200) {
                 navigate("/");
-                toast(response.data.message);
+                toast(response.data);
             }
         } catch (error) {
             toast("Error Happened");

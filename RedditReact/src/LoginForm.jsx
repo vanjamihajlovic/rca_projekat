@@ -17,10 +17,8 @@ function LoginForm() {
         };
             axiosInstance.post('http://localhost/auth/login', loginData)
                 .then(response => {
-                const token = response.data.access_token;
-                console.log(token);
+                const token = response.data;
                 Cookies.set('jwt-token', token, { expires: 7, secure: true, sameSite: 'Strict' });
-                console.log("LOGGED IN");
                 navigate('/');
                 })
                 .catch(error => {

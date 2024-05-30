@@ -16,9 +16,6 @@ function RegisterForm() {
 
 
   const handleImageUploaded = (e) => {
-    console.log(e);
-    console.log(e.target);
-    console.log(e.target.files);
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -42,10 +39,7 @@ function RegisterForm() {
       };
 
       try {
-          console.log(userData)
           const response = await axios.post('http://localhost/auth/register', {...userData});
-          console.log(response);
-          console.log(response.data);
           navigate("/login")
       } catch (error) {
           console.error("There was an error!", error);
