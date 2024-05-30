@@ -11,8 +11,21 @@ function RegisterForm() {
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
   const [number, setNumber] = useState('');
+  const [image, setImage] = useState('');
   const navigate = useNavigate();
 
+
+  const handleImageUploaded = (e) => {
+    console.log(e);
+    console.log(e.target);
+    console.log(e.target.files);
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImage(reader.result);
+    }
+    reader.readAsDataURL(file);
+  }
 
   const handleSubmit = async (e) => {
       e.preventDefault();
@@ -24,12 +37,13 @@ function RegisterForm() {
         Country: country,
         City: city,
         Address: address,
-        Phone: number
+        Phone: number,
+        Image: image,
       };
 
       try {
-          console.log(userData);
-          const response = await axios.post('http://localhost/auth/register', {...userData, Image: ""});
+          console.log(userData)
+          const response = await axios.post('http://localhost/auth/register', {...userData});
           console.log(response);
           console.log(response.data);
           navigate("/login")
@@ -70,6 +84,9 @@ function RegisterForm() {
 
             <label htmlFor="number">Phone Number</label>
             <input value={number} onChange={(e) => setNumber(e.target.value)} id="number" placeholder="Phone Number" />
+
+            <label htmlFor="image">Image</label>
+            <input type="file" onChange={handleImageUploaded} />
 
             <button type="submit">Register</button>
         </form>

@@ -12,10 +12,10 @@ function LoginForm() {
         e.preventDefault();
 
         const loginData = {
-            email: email,
-            password: pass
+            Email: email,
+            Password: pass
         };
-            axiosInstance.post('http://localhost:5000/login', loginData)
+            axiosInstance.post('http://localhost/auth/login', loginData)
                 .then(response => {
                 const token = response.data.access_token;
                 console.log(token);
