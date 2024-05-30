@@ -15,10 +15,10 @@ function TopicPage() {
     const [newComment, setNewComment] = useState("");
 
     useEffect(() => {
-        axiosInstance.get(`/topic/${topicId}`).then(response => {
+        axiosInstance.get(`/post/read/${topicId}`).then(response => {
             console.log("fetched");
-            console.log(response.data.topic);
-            setTopic(response.data.topic);
+            console.log(response.data);
+            setTopic(response.data);
         }).catch(error => {
             console.error("Error fetching topic details: ", error);
         });
@@ -32,7 +32,7 @@ function TopicPage() {
 
     const handleAddComment = async () => {
         try {
-            const response = await axiosInstance.post(`/comments/add`, { topicId, content: newComment });
+            const response = await axiosInstance.post(`http://localhost/comment/create`, { TopicId: topicId, Text: newComment, UserEmail: ""});
             if (response.status === 200) {
                 setComments([...comments, response.data.comment]);
                 setNewComment("");
@@ -49,7 +49,7 @@ function TopicPage() {
             const endpoint = `/comments/${action}`;
             const response = await axiosInstance.post(endpoint, { commentId });
             if (response.status === 200) {
-                setComments(comments.map(comment => comment._id === commentId ? response.data.comment : comment));
+                setComments(comments.map(comment => comment.Id === commentId ? response.data.comment : comment));
                 toast(response.data.message);
             }
         } catch (error) {
@@ -87,24 +87,24 @@ function TopicPage() {
         <div className="topic-page">
             <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
             <div className={`topic-card ${topic.locked ? 'locked-topic' : ''}`}>
-                <h1 className="topic-title">{topic.title}</h1>
-                <p className="topic-content">{topic.content}</p>
-                <p className="topic-info">Created At: {topic.createdAt}</p>
+                <h1 className="topic-title">{topic.Naslov}</h1>
+                <p className="topic-content">{topic.Sadrzaj}</p>
+                <p className="topic-info">Created At: {topic.Timestamp}</p>
                     <p className="topic-info">Owner: {topic.ownerFullName}</p>
-                    <p className="topic-info">Upvotes: {topic.numOfUpvotes} | Downvotes: {topic.numOfDownvotes}</p>
+                    <p className="topic-info">Upvotes: {topic.GlazoviZa ? topic.GlasoviZa.length : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv.length : 0}</p>
                     <p className="topic-info">Locked: {topic.locked ? 'Yes' : 'No'}</p>
-                    <p className="topic-info">Comments: {topic.numOfComments}</p>
+                    <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari : 0}</p>
                     <div>
                         <button className={`vote-button ${topic.userAction === 'UPVOTED' ? 'active-upvote-button' : ''}`}
-                                onClick={() => handleTopicAction(topic._id, "upvote")}>
+                                onClick={() => handleTopicAction(topic.Id, "upvote")}>
                             {topic.userAction === 'UPVOTED' ? '✓ UPVOTED' : 'Upvote'}
                         </button>
                         <button className={`vote-button ${topic.userAction === 'DOWNVOTED' ? 'active-downvote-button' : ''}`}
-                                onClick={() => handleTopicAction(topic._id, "downvote")}>
+                                onClick={() => handleTopicAction(topic.Id, "downvote")}>
                             {topic.userAction === 'DOWNVOTED' ? '✕ DOWNVOTED' : 'Downvote'}
                         </button>
                         <button className={`vote-button ${topic.isSubscribed ? 'subscribed-button' : 'subscribe-button'}`}
-                                onClick={() => handleTopicAction(topic._id, "subscribe")}>
+                                onClick={() => handleTopicAction(topic.Id, "subscribe")}>
                             {topic.isSubscribed ? '✓ Subscribed' : 'Subscribe'}
                         </button>
                     </div>
@@ -112,12 +112,12 @@ function TopicPage() {
                         <div className="topic-controls">
                             <button
                                 className={`control-button ${topic.locked ? 'unlock-button' : 'lock-button'}`}
-                                onClick={() => handleTopicAction(topic._id, "lock")}>
+                                onClick={() => handleTopicAction(topic.Id, "lock")}>
                                 {topic.locked ? 'UNLOCK' : 'LOCK'}
                             </button>
                             <button
                                 className="control-button delete-button"
-                                onClick={() => handleTopicAction(topic._id, "delete")}>
+                                onClick={() => handleTopicAction(topic.Id, "delete")}>
                                 DELETE
                             </button>
                         </div>
@@ -141,16 +141,16 @@ function TopicPage() {
                     )
                 }
                 {comments.map(comment => (
-                <div key={comment._id} className="comment">
+                <div key={comment?.Id} className="comment">
                     <div className="comment-header">
-                        <span className="comment-author">{comment.ownerFullName}</span>
-                        <span className="comment-date"> at {new Date(comment.createdAt).toLocaleDateString()} {new Date(comment.createdAt).toLocaleTimeString()}</span>
+                        <span className="comment-author">{comment?.ownerFullName}</span>
+                        <span className="comment-date"> at {new Date(comment?.createdAt).toLocaleDateString()} {new Date(comment?.createdAt).toLocaleTimeString()}</span>
                     </div>
-                    <p className="comment-content">{comment.content}</p>
+                    <p className="comment-content">{comment?.Text}</p>
                     <div className="comment-votes">
-                        <button onClick={() => handleVoteComment(comment._id, "upvote")}>Upvote</button>
-                        <span>{comment.numOfUpvotes - comment.numOfDownvotes}</span>
-                        <button onClick={() => handleVoteComment(comment._id, "downvote")}>Downvote</button>
+                        <button onClick={() => handleVoteComment(comment?.Id, "upvote")}>Upvote</button>
+                        <span>{comment?.numOfUpvotes - comment?.numOfDownvotes}</span>
+                        <button onClick={() => handleVoteComment(comment?.Id, "downvote")}>Downvote</button>
                     </div>
                 </div>
         ))}

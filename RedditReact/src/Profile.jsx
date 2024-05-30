@@ -67,7 +67,7 @@ function Profile() {
                             value={value}
                             onChange={handleInputChange}
                             className="form-control"
-                            disabled={(key === "_id" || key === "user_id")}
+                            disabled={(key === "Id" || key === "userId")}
                         />
                     </div>
                 ))}

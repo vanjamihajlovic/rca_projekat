@@ -25,8 +25,8 @@ function HomePage() {
     const handleApiResponse = (updatedTopic, isDelete = false, deleteId = null) => {
         setTopics((prevTopics) =>
             isDelete
-                ? prevTopics.filter((topic) => topic._id !== deleteId)
-                : prevTopics.map((topic) => (topic._id === updatedTopic._id ? updatedTopic : topic))
+                ? prevTopics.filter((topic) => topic.Id !== deleteId)
+                : prevTopics.map((topic) => (topic.Id === updatedTopic.Id ? updatedTopic : topic))
         );
     };
 
@@ -54,7 +54,7 @@ function HomePage() {
     console.log(`${action} Topic ID: ${topicId}`);
 
     try {
-        const endpoint = `/topic/${action}`;
+        const endpoint = `/vote/${action}`;
         const response = await axiosInstance.post(endpoint, { topicId });
         if (response.status === 200) {
             const updatedTopic = response.data.topic;
@@ -70,9 +70,10 @@ function HomePage() {
 
     const fetchTopics = async () => {
         try {
-            const response = await axiosInstance.get('topics');
-            console.log(response.data.topics);
-            setTopics(response.data.topics);
+            const response = await axiosInstance.get('post/readall');
+            console.log(response);
+            console.log(response.data);
+            setTopics(response.data);
 
         } catch (error) {
             console.error("Error fetching data: ", error);
@@ -114,21 +115,21 @@ function HomePage() {
 
             <h1>{showMyTopics ? 'My Topics' : 'All Topics'}</h1>
             {filteredTopics().map((topic) => (
-                <div className={`topic-card ${topic.locked ? 'locked-topic' : ''}`} key={topic._id} onClick={() => navigateToTopic(topic._id)}>
+                <div className={`topic-card ${topic.locked ? 'locked-topic' : ''}`} key={topic.Id} onClick={() => navigateToTopic(topic.Id)}>
                 {topic.locked && <span className="lock-icon" role="img" aria-label="Locked">🔒</span>}
-                    <h1 className="topic-title">{topic.title}</h1>
-                    <p className="topic-content">{topic.content}</p>
-                    <p className="topic-info">Created At: {topic.createdAt}</p>
+                    <h1 className="topic-title">{topic.Naslov}</h1>
+                    <p className="topic-content">{topic.Sadrzaj}</p>
+                    <p className="topic-info">Created At: {topic.Timestamp}</p>
                     <p className="topic-info">Owner: {topic.ownerFullName}</p>
-                    <p className="topic-info">Upvotes: {topic.numOfUpvotes} | Downvotes: {topic.numOfDownvotes}</p>
+                    <p className="topic-info">Upvotes: {topic.GlazoviZa ? topic.GlasoviZa.length : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv.length : 0}</p>
                     <p className="topic-info">Locked: {topic.locked ? 'Yes' : 'No'}</p>
-                    <p className="topic-info">Comments: {topic.numOfComments}</p>
+                    <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari : 0}</p>
                     <div>
                         <button className={`vote-button ${topic.userAction === 'UPVOTED' ? 'active-upvote-button' : ''}`}
                                 onClick={(e) => 
                                 {
                                     e.stopPropagation(); 
-                                    handleTopicAction(topic._id, "upvote")}
+                                    handleTopicAction(topic.Id, "upvote")}
                                 }>
                             {topic.userAction === 'UPVOTED' ? '✓ UPVOTED' : 'Upvote'}
                         </button>
@@ -136,7 +137,7 @@ function HomePage() {
                                 onClick={(e) => 
                                     {
                                         e.stopPropagation(); 
-                                        handleTopicAction(topic._id, "downvote")}
+                                        handleTopicAction(topic.Id, "downvote")}
                                     }>
                             {topic.userAction === 'DOWNVOTED' ? '✕ DOWNVOTED' : 'Downvote'}
                         </button>
@@ -144,7 +145,7 @@ function HomePage() {
                                 onClick={(e) => 
                                     {
                                         e.stopPropagation(); 
-                                        handleTopicAction(topic._id, "subscribe")}
+                                        handleTopicAction(topic.Id, "subscribe")}
                                     }>
                             {topic.isSubscribed ? '✓ Subscribed' : 'Subscribe'}
                         </button>
@@ -156,7 +157,7 @@ function HomePage() {
                                 onClick={(e) => 
                                     {
                                         e.stopPropagation(); 
-                                        handleTopicAction(topic._id, "lock")}
+                                        handleTopicAction(topic.Id, "lock")}
                                     }>
                                 {topic.locked ? 'Unlock' : 'Lock'}
                             </button>
@@ -165,7 +166,7 @@ function HomePage() {
                                 onClick={(e) => 
                                     {
                                         e.stopPropagation(); 
-                                        handleTopicAction(topic._id, "delete")}
+                                        handleTopicAction(topic.Id, "delete")}
                                     }>
                                 Delete
                             </button>
