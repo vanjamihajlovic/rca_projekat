@@ -158,5 +158,44 @@ namespace RedditService_WebRole.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("read/{id}")]
+        public async Task<IHttpActionResult> ReadPost(string id)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    return BadRequest("Invalid post ID.");
+                }
+
+                Tema post = await Task.FromResult(repo.DobaviTemu(id));
+                if (post == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(post);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("readall")]
+        public async Task<IHttpActionResult> ReadAllPosts()
+        {
+            try
+            {
+                var allPosts = await Task.FromResult(repo.DobaviSve().ToList());
+                return Ok(allPosts);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
     }
 }
