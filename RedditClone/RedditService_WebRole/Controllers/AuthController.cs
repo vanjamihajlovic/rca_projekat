@@ -50,7 +50,7 @@ namespace RedditService_WebRole.Controllers
                     var korisnik = repo.DobaviKorisnika(data.Email);
                     if (korisnik != null && korisnik.Lozinka == data.Password)
                     {
-                        var token = JwtToken.GenerateToken(data.Email);
+                        var token = JwtToken.GenerateToken(data.Email, korisnik.Ime, korisnik.Prezime);
                         return Ok(token);
                     }
                     else
@@ -100,7 +100,7 @@ namespace RedditService_WebRole.Controllers
 
                     if(result)
                     {
-                        var token = JwtToken.GenerateToken(data.Email);
+                        var token = JwtToken.GenerateToken(data.Email, data.FirstName, data.LastName);
                         return Ok(token);
                     }
                     else

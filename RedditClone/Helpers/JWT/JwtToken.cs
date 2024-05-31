@@ -21,7 +21,7 @@ namespace Helpers.JWT
             _audience = audience;
         }
 
-        public string GenerateToken(string email, int expiryMinutes = 60)
+        public string GenerateToken(string email, string firstName, string lastName, int expiryMinutes = 60)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = _key.GetKey();
@@ -30,6 +30,8 @@ namespace Helpers.JWT
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Email, email),
+                    new Claim("firstName", firstName),
+                    new Claim("lastName", lastName),
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(expiryMinutes),
                 Issuer = _issuer,

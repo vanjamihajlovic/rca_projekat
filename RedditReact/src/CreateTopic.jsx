@@ -17,6 +17,7 @@ function CreateTopic() {
             Title: title,
             Content: content,
             Id: uuidv4(),
+            //UserId: userId
         };
 
         try {

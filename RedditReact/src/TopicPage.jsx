@@ -90,7 +90,7 @@ function TopicPage() {
                 <h1 className="topic-title">{topic.Naslov}</h1>
                 <p className="topic-content">{topic.Sadrzaj}</p>
                 <p className="topic-info">Created At: {topic.Timestamp}</p>
-                    <p className="topic-info">Owner: {topic.ownerFullName}</p>
+                    <p className="topic-info">Owner:  {topic.FirstName} {topic.LastName}</p>
                     <p className="topic-info">Upvotes: {topic.GlazoviZa ? topic.GlasoviZa.length : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv.length : 0}</p>
                     <p className="topic-info">Locked: {topic.locked ? 'Yes' : 'No'}</p>
                     <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari : 0}</p>

@@ -21,6 +21,8 @@ namespace ServiceData
         private string userId; // ko je kreirao
         private string naslov;
         private string sadrzaj;
+        private string firstName;
+        private string lastName;
         private string slika;   // url slike
         private List<string> komentari;
         private List<int> glasoviZa;      // za broj glasova, samo izvucemo Count
@@ -39,6 +41,8 @@ namespace ServiceData
         }
 
         public string Id { get => id; set => id = value; }
+        public string FirstName { get => firstName; set => firstName = value; }
+        public string LastName { get => lastName; set => lastName = value; }
         public string Naslov { get => naslov; set => naslov = value; }
         public string Sadrzaj { get => sadrzaj; set => sadrzaj = value; }
         public string Slika { get => slika; set => slika = value; }
@@ -50,13 +54,15 @@ namespace ServiceData
 
         public Tema() { }
 
-        public Tema(string id, string naslov, string sadrzaj, string userId)
+        public Tema(string id, string naslov, string sadrzaj) // string userId) //, string firstName, string lastName)
         {
             PartitionKey = "Tema";
             RowKey = id;
 
             Id = id;
             UserId = userId;
+            //FirstName = firstName;
+            //LastName = lastName;
             Naslov = naslov;
             Sadrzaj = sadrzaj;
             Slika = "";

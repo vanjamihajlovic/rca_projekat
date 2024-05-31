@@ -1,9 +1,12 @@
-﻿using Helpers;
+﻿using Contracts;
+using Helpers;
+using Helpers.JWT;
 using RedditService_WebRole.Models;
 using ServiceData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -18,6 +21,7 @@ namespace RedditService_WebRole.Controllers
     {
         TableRepositoryTema repo = new TableRepositoryTema();
         TableRepositoryKomentar repoKom = new TableRepositoryKomentar();
+        TableRepositoryKorisnik repoKor = new TableRepositoryKorisnik();
 
         [HttpPost]
         [Route("create")]
@@ -30,9 +34,48 @@ namespace RedditService_WebRole.Controllers
                     return BadRequest();
                 }
 
-                var noviPost = new Tema(post.Id, post.Title, post.Content, post.UserId);
 
-                // Dodavanje posta korišćenjem servisa
+                // Preuzimanje ID-a ulogovanog korisnika iz tokena
+                /*var identity = User.Identity as ClaimsIdentity;
+                if (identity == null)
+                {
+                    return Unauthorized();
+                }
+
+                var userIdClaim = identity.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userId = userIdClaim.Value;
+
+                // Preuzimanje korisnika iz repozitorijuma
+                Korisnik korisnik = repoKor.DobaviKorisnika(userId);
+                if (korisnik == null)
+                {
+                    return BadRequest("Korisnik ne postoji.");
+                }
+
+                // Kreiranje novog posta sa podacima korisnika
+                var noviPost = new Tema(post.Id, post.Title, post.Content, korisnik.Id)
+                {
+                    FirstName = korisnik.Ime,
+                    LastName = korisnik.Prezime
+                };
+                /*var header = Request.Headers;
+
+                var identity = User.Identity as ClaimsIdentity;
+                var userId = identity.FindFirst(ClaimTypes.Email).Value;
+                var firstName = identity.FindFirst("firstName").Value;
+                var lastName = identity.FindFirst("lastName").Value;*/
+                //Korisnik korisnik = repoKor.DobaviKorisnika(post.UserId);
+                //var noviPost = new Tema(post.Id, post.Title, post.Content, post.UserId, firstName, lastName);
+                //var noviPost = new Tema(post.Id, post.Title, post.Content, korisnik.Id);
+                //noviPost.FirstName = korisnik.Ime;
+                //noviPost.LastName = korisnik.Prezime;
+                // Dodavanje posta korišćenjem servisa*/
+                var noviPost = new Tema(post.Id, post.Title, post.Content);
                 bool isAdded = await Task.FromResult(repo.DodajTemu(noviPost));
                 if (!isAdded)
                 {
