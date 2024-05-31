@@ -3,7 +3,6 @@ let allReports = [];
 let dailyAverage = 0;
 
 $(document).ready(function () {
-    // TODO dnevni prosek
     $.ajax({
         url: "/dashboard/getDay",
         type: "GET",
@@ -54,6 +53,7 @@ function PopuniPrikazIzvestaja(items) {
             let tr = $("<tr></tr>");
             tr.attr("id", "report-" + item.RowKey);
 
+            // Sadrzaj
             let report = $("<td></td>").text(item.Sadrzaj);
             if (item.Sadrzaj.includes("NOT")) {
                 $(tr).css('color', 'red');
@@ -61,8 +61,12 @@ function PopuniPrikazIzvestaja(items) {
             else {
                 $(tr).css('color', 'green');
             }
+
+            // Timestamp
+            let ts = $("<td></td>").text(item.Vreme);
+
             // Dodaj podatke u tabelu
-            tr.append(report);
+            tr.append(report, ts);
             table.append(tr);
         });
     }
