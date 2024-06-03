@@ -75,7 +75,34 @@ namespace RedditService_WebRole.Controllers
                 //noviPost.FirstName = korisnik.Ime;
                 //noviPost.LastName = korisnik.Prezime;
                 // Dodavanje posta korišćenjem servisa*/
-                var noviPost = new Tema(post.Id, post.Title, post.Content);
+
+                // Preuzimanje ID-a ulogovanog korisnika iz tokena
+                var identity = User.Identity as ClaimsIdentity;
+                if (identity == null)
+                {
+                    return Unauthorized();
+                }
+
+                /*var userIdClaim = identity.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return Unauthorized();
+                }
+
+                string userId = userIdClaim.Value;
+
+                // Preuzimanje korisnika iz repozitorijuma
+                Korisnik korisnik = repoKor.DobaviKorisnika(userId);
+                if (korisnik == null)
+                {
+                    return BadRequest("Korisnik ne postoji.");
+                }
+                */
+                // Try to find the user ID claim from different claim types
+
+
+                // Korisnik korisnik = repoKor.DobaviKorisnika(post.UserId);
+                var noviPost = new Tema(post.Id, post.Title, post.Content); // korisnik.Id);
                 bool isAdded = await Task.FromResult(repo.DodajTemu(noviPost));
                 if (!isAdded)
                 {

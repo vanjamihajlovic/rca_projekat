@@ -9,15 +9,27 @@ const { v4: uuidv4} = require('uuid');
 function CreateTopic() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    //const [userId, setUserId] = useState('');
 
     const navigate = useNavigate();
+
+    /*useEffect(() => {
+        // Extract token from local storage
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Decode token to get user ID
+            const decodedToken = jwtDecode(token);
+            setUserId(decodedToken.sub); // Adjust according to your token structure
+        }
+    }, []);*/
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const payload = {
             Title: title,
             Content: content,
             Id: uuidv4(),
-            //UserId: userId
+            UserId: userId
         };
 
         try {
