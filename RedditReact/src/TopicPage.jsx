@@ -62,6 +62,36 @@ function TopicPage() {
     };
 
 
+    const handleTopicSubscribe = async (topicId, action) => {
+        console.log(`${action} Topic ID: ${topicId}`);
+    
+        try {
+            const endpoint = `/subscribe/subscribepost/`;
+            const response = await axiosInstance.post(endpoint, { PostId: topicId });
+            if (response.status === 200) {
+
+
+                // if (action !== 'delete') {
+                //     axiosInstance.get(`/post/read/${topicId}`).then(response => {
+                //         console.log("fetched");
+                //         console.log(response.data);
+                //         setTopic(response.data);
+                //         console.log(response.data.Komentari);
+                //         setComments(response.data.Komentari)
+                //     }).catch(error => {
+                //         console.error("Error fetching topic details: ", error);
+                //     });
+                //     toast(`${action} succesful`)
+                // } else {
+                //     navigate("/")
+                // }
+            }
+        } catch (error) {
+            toast("Error happened");
+            console.error(`Error ${action} topic: `, error);
+        }
+    };
+
     const handleTopicAction = async (topicId, action) => {
         console.log(`${action} Topic ID: ${topicId}`);
     
@@ -69,6 +99,8 @@ function TopicPage() {
             const endpoint = `/vote/${action}/${topicId}`;
             const response = await axiosInstance.post(endpoint, { topicId });
             if (response.status === 200) {
+
+
                 if (action !== 'delete') {
                     axiosInstance.get(`/post/read/${topicId}`).then(response => {
                         console.log("fetched");
@@ -121,7 +153,7 @@ function TopicPage() {
                             {topic.userAction === 'DOWNVOTED' ? '✕ DOWNVOTED' : 'Downvote'}
                         </button>
                         <button className={`vote-button ${topic.isSubscribed ? 'subscribed-button' : 'subscribe-button'}`}
-                                onClick={() => handleTopicAction(topic.Id, "subscribe")}>
+                                onClick={() => handleTopicSubscribe(topic.Id, "subscribe")}>
                             {topic.isSubscribed ? '✓ Subscribed' : 'Subscribe'}
                         </button>
                     </div>

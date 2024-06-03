@@ -2,12 +2,14 @@
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.WindowsAzure.Storage.Table.Queryable;
 using ServiceData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
+using System.Threading.Tasks;
 
 namespace TableRepository
 {
@@ -58,6 +60,42 @@ namespace TableRepository
 				return false;
 			}
 		}
+
+        public async Task<bool> ObrisiGlasAsync(string voteId)
+        {
+            if (string.IsNullOrEmpty(voteId))
+                return false;
+
+            try
+            {
+                var query = table.CreateQuery<Vote>()
+                                 .Where(g => g.PartitionKey == "Vote" && g.RowKey == voteId)
+                                 .AsTableQuery();
+
+                var result = await table.ExecuteQuerySegmentedAsync(query, null);
+                Vote tmp = result.Results.FirstOrDefault();
+
+                if (tmp == null)
+                {
+                    Trace.WriteLine($"Vote with ID {voteId} does not exist.");
+                    return false;
+                }
+
+                TableOperation deleteOperation = TableOperation.Delete(tmp);
+                await table.ExecuteAsync(deleteOperation);
+                return true;
+            }
+            catch (StorageException ex)
+            {
+                Trace.WriteLine($"Azure Table Storage error: {ex.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"General error: {ex.Message}");
+                return false;
+            }
+        }
 
         public bool ObrisiGlas(string voteId)
         {
@@ -135,6 +173,23 @@ namespace TableRepository
 				return new List<Vote>();
 			}
 		}
+
+		public Vote DobaviGlasovaNaPostZaKorisnik(string korisnikId, string postId)
+		{
+            try
+            {
+                string userIdFilter = TableQuery.GenerateFilterCondition("UserId", QueryComparisons.Equal, korisnikId);
+                string postIdFilter = TableQuery.GenerateFilterCondition("PostId", QueryComparisons.Equal, postId);
+                string combinedFilter = TableQuery.CombineFilters(userIdFilter, TableOperators.And, postIdFilter);
+                var query = new TableQuery<Vote>().Where(combinedFilter);
+                return table.ExecuteQuery(query).First();
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+				return null;
+            }
+        }
 
       
 

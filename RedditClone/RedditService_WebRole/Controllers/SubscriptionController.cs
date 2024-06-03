@@ -1,4 +1,5 @@
-﻿using RedditService_WebRole.Models;
+﻿using Helpers.JWT;
+using RedditService_WebRole.Models;
 using ServiceData;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace RedditService_WebRole.Controllers
 	public class SubscriptionController : ApiController
     {
         TableRepositorySubscribe repo = new TableRepositorySubscribe();
+        private readonly JwtTokenReader _jwtTokenReader = new JwtTokenReader();
+
 
         [HttpPost]
         [Route("subscribepost")]
@@ -27,8 +30,15 @@ namespace RedditService_WebRole.Controllers
                 {
                     return BadRequest();
                 }
+                var token = _jwtTokenReader.ExtractTokenFromAuthorizationHeader(Request.Headers.Authorization);
+                if (token == null)
+                    return Unauthorized();
 
-                var noviSub = new Subscribe(request.UserId, request.PostId);
+                var claims = _jwtTokenReader.GetClaimsFromToken(token);
+
+                var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
+
+                var noviSub = new Subscribe(emailClaim, request.PostId);
 
                 // Dodavanje posta korišćenjem servisa
                 bool isAdded = await Task.FromResult(repo.SubscribeToPost(noviSub));
