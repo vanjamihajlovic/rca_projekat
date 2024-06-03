@@ -5,17 +5,15 @@ namespace ServiceData
 {
     public class Izvestaj : TableEntity
     {
-        private int id;
-        private DateTime vreme;
-        private string sadrzaj;
+        public int Id { get; set; }
+        public DateTime Vreme { get; set; }
+        public string Sadrzaj { get; set; }
 
-        public int Id { get => id; set => id = value; }
-        public DateTime Vreme { get => vreme; set => vreme = value; }
-        public string Sadrzaj { get => sadrzaj; set => sadrzaj = value; }
+        public Izvestaj() {
+            PartitionKey = "Izvestaj";
+        }
 
-        public Izvestaj() { }
-
-        public Izvestaj(int id, DateTime vreme, string sadrzaj)
+        public Izvestaj(int id, DateTime vreme, string sadrzaj) : this()
         {
             PartitionKey = "Izvestaj";
             RowKey = id.ToString();
