@@ -16,7 +16,7 @@ using TableRepository;
 namespace RedditService_WebRole.Controllers
 {
 
-
+    [RoutePrefix("post")]
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class PostController : ApiController
     {
@@ -35,6 +35,7 @@ namespace RedditService_WebRole.Controllers
 
         [HttpPost]
         [Route("create")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public async Task<IHttpActionResult> CreatePost(Post post)
         {
             try
@@ -69,6 +70,8 @@ namespace RedditService_WebRole.Controllers
         
         [HttpPost]
         [Route("delete/{id}")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+
         public async Task<IHttpActionResult> DeletePost(string id)
         {
             try
@@ -85,14 +88,13 @@ namespace RedditService_WebRole.Controllers
                     return BadRequest("Failed to delete post.");
                 }
                 List<Komentar> svi = _repoKommentar.DobaviSve().ToList();
-                var p = svi.Where(x => x.IdTeme == temaToDelete.Id).ToList();
 
-                temaToDelete.Komentari = p.Select(x => x.RowKey).ToList();
+                temaToDelete.Komentari = svi.Where(x => x.IdTeme == temaToDelete.Id).ToList();
 
 
                 if (temaToDelete.Komentari != null)
                 {
-                    foreach (string komentarId in temaToDelete.Komentari)
+                    foreach (string komentarId in temaToDelete.Komentari.Select(x => x.RowKey).ToList())
                     {
                         bool isCommentDeleted = await Task.FromResult(_repoKommentar.ObrisiKomentar(komentarId));
                         if (!isCommentDeleted)
@@ -175,6 +177,8 @@ namespace RedditService_WebRole.Controllers
 
         [HttpGet]
         [Route("read/{id}")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+
         public async Task<IHttpActionResult> ReadPost(string id)
         {
             try
@@ -185,6 +189,9 @@ namespace RedditService_WebRole.Controllers
                 }
 
                 Tema post = await Task.FromResult(_repo.DobaviTemu(id));
+                List<Komentar> svi = _repoKommentar.DobaviSve().ToList();
+
+                post.Komentari = svi.Where(x => x.IdTeme == post.Id).ToList();
                 if (post == null)
                 {
                     return NotFound();
@@ -200,6 +207,7 @@ namespace RedditService_WebRole.Controllers
 
         [HttpGet]
         [Route("readall")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public async Task<IHttpActionResult> ReadAllPosts()
         {
             try

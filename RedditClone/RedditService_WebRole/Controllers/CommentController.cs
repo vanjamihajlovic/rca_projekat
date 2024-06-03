@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Helpers;
+using Helpers.JWT;
 using Microsoft.WindowsAzure.Storage.Queue;
 using RedditService_WebRole.Models;
 using ServiceData;
@@ -19,6 +20,7 @@ namespace RedditService_WebRole.Controllers
 	public class CommentController : ApiController
     {
         TableRepositoryKomentar repoKom = new TableRepositoryKomentar();
+        private readonly JwtTokenReader _jwtTokenReader = new JwtTokenReader();
 
 
         // GET: Comment
@@ -32,8 +34,18 @@ namespace RedditService_WebRole.Controllers
             }
             try
             {
+
+                var token = _jwtTokenReader.ExtractTokenFromAuthorizationHeader(Request.Headers.Authorization);
+                if (token == null)
+                    return Unauthorized();
+
+                var claims = _jwtTokenReader.GetClaimsFromToken(token);
+
+                var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
+                var firstName = _jwtTokenReader.GetClaimValue(claims, "firstName");
+                var lastName = _jwtTokenReader.GetClaimValue(claims, "lastName");
                 // Kreiranje novog komentara
-                var noviKomentar = new Komentar(comment.TopicId, comment.UserEmail, comment.Text);
+                var noviKomentar = new Komentar(comment.TopicId, comment.UserEmail, comment.Text, firstName + " " + lastName);
 
 
                 // Dodavanje komentara korišćenjem servisa
@@ -45,7 +57,7 @@ namespace RedditService_WebRole.Controllers
 
                 await QueueHelper.GetQueueReference("CommentNotificationsQueue").AddMessageAsync(new CloudQueueMessage(noviKomentar.RowKey));
 
-                return Ok("Comment posted and notifications sent successfully.");
+                return Ok(noviKomentar);
             }
             catch (Exception ex)
             {

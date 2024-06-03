@@ -19,22 +19,25 @@ function TopicPage() {
             console.log("fetched");
             console.log(response.data);
             setTopic(response.data);
+            console.log(response.data.Komentari);
+            setComments(response.data.Komentari)
         }).catch(error => {
             console.error("Error fetching topic details: ", error);
         });
 
-        axiosInstance.get(`/comments/${topicId}`).then(response => {
-            setComments(response.data.comments);
-        }).catch(error => {
-            console.error("Error fetching comments: ", error);
-        });
+        // axiosInstance.get(`/comments/${topicId}`).then(response => {
+        //     setComments(response.data.comments);
+        // }).catch(error => {
+        //     console.error("Error fetching comments: ", error);
+        // });
     }, [topicId]);
 
     const handleAddComment = async () => {
         try {
             const response = await axiosInstance.post(`http://localhost:8080/comment/create`, { TopicId: topicId, Text: newComment, UserEmail: ""});
             if (response.status === 200) {
-                setComments([...comments, response.data.comment]);
+                console.log(response);
+                setComments([...comments, response.data]);
                 setNewComment("");
                 toast("Comment added successfully");
             }
@@ -49,7 +52,7 @@ function TopicPage() {
             const endpoint = `/comments/${action}`;
             const response = await axiosInstance.post(endpoint, { commentId });
             if (response.status === 200) {
-                setComments(comments.map(comment => comment.Id === commentId ? response.data.comment : comment));
+                setComments(comments.map(comment => comment.RowKey === commentId ? response.data.comment : comment));
                 toast(response.data.message);
             }
         } catch (error) {
@@ -79,6 +82,12 @@ function TopicPage() {
         }
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
+        return new Intl.DateTimeFormat('en-US', options).format(date);
+      };
+
     if (!topic) {
         return <div>Loading...</div>; 
     }
@@ -89,11 +98,11 @@ function TopicPage() {
             <div className={`topic-card ${topic.locked ? 'locked-topic' : ''}`}>
                 <h1 className="topic-title">{topic.Naslov}</h1>
                 <p className="topic-content">{topic.Sadrzaj}</p>
-                <p className="topic-info">Created At: {topic.Timestamp}</p>
+                <p className="topic-info">Created At: {formatDate(topic.Timestamp)}</p>
                     <p className="topic-info">Owner:  {topic.FirstName} {topic.LastName}</p>
                     <p className="topic-info">Upvotes: {topic.GlazoviZa ? topic.GlasoviZa.length : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv.length : 0}</p>
                     <p className="topic-info">Locked: {topic.locked ? 'Yes' : 'No'}</p>
-                    <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari : 0}</p>
+                    <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari.length : 0}</p>
                     <div>
                         <button className={`vote-button ${topic.userAction === 'UPVOTED' ? 'active-upvote-button' : ''}`}
                                 onClick={() => handleTopicAction(topic.Id, "upvote")}>
@@ -141,16 +150,16 @@ function TopicPage() {
                     )
                 }
                 {comments.map(comment => (
-                <div key={comment?.Id} className="comment">
+                <div key={comment?.RowKey} className="comment">
                     <div className="comment-header">
-                        <span className="comment-author">{comment?.ownerFullName}</span>
-                        <span className="comment-date"> at {new Date(comment?.createdAt).toLocaleDateString()} {new Date(comment?.createdAt).toLocaleTimeString()}</span>
+                        <span className="comment-author">{comment?.AuthorName}</span>
+                        <span className="comment-date"> at {formatDate(comment?.Timestamp)}</span>
                     </div>
-                    <p className="comment-content">{comment?.Text}</p>
+                    <p className="comment-content">{comment?.Sadrzaj}</p>
                     <div className="comment-votes">
-                        <button onClick={() => handleVoteComment(comment?.Id, "upvote")}>Upvote</button>
-                        <span>{comment?.numOfUpvotes - comment?.numOfDownvotes}</span>
-                        <button onClick={() => handleVoteComment(comment?.Id, "downvote")}>Downvote</button>
+                        <button onClick={() => handleVoteComment(comment?.RowKey, "upvote")}>Upvote</button>
+                        {/* <span>{comment?.numOfUpvotes - comment?.numOfDownvotes}</span> */}
+                        <button onClick={() => handleVoteComment(comment?.RowKey, "downvote")}>Downvote</button>
                     </div>
                 </div>
         ))}

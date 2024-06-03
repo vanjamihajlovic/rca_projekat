@@ -23,15 +23,15 @@ namespace ServiceData
         private string idTeme;
         private string autor;
         private string sadrzaj;
-
+        private string authorName;
         public int Id { get => id; set => id = value; }
         public string IdTeme { get => idTeme; set => idTeme = value; }
         public string Autor { get => autor; set => autor = value; }
         public string Sadrzaj { get => sadrzaj; set => sadrzaj = value; }
-
+        public string AuthorName { get => authorName; set => authorName = value; }
         public Komentar() { }
 
-        public Komentar(string idTeme, string autor, string sadrzaj)
+        public Komentar(string idTeme, string autor, string sadrzaj, string authorName)
         {
             PartitionKey = "Komentar";
             RowKey = Guid.NewGuid().ToString();
@@ -39,6 +39,7 @@ namespace ServiceData
             IdTeme = idTeme;
             Sadrzaj = sadrzaj;
             Autor = autor;
+            AuthorName = authorName;
         }
     }
 }

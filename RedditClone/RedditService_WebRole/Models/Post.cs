@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServiceData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -15,7 +16,7 @@ namespace RedditService_WebRole.Models
         public DateTime CreatedAt { get; set; }  // Vreme kada je post kreiran
 
         // Lista komentara - pretpostavka da je lista sa ID-jevima komentara
-        public List<int> Comments { get; set; }
+        public List<Komentar> Comments { get; set; }
 
         // Lista korisnika koji su pretplaćeni - pretpostavka da je lista sa ID-jevima korisnika
         public List<int> SubscribedUsers { get; set; }
@@ -26,7 +27,7 @@ namespace RedditService_WebRole.Models
 
         public Post()
         {
-            Comments = new List<int>();
+            Comments = new List<Komentar>();
             SubscribedUsers = new List<int>();
         }
     }

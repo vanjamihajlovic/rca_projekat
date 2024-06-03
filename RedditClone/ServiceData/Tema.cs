@@ -24,7 +24,7 @@ namespace ServiceData
         private string firstName;
         private string lastName;
         private string slika;   // url slike
-        private List<string> komentari;
+        private List<Komentar> komentari;
         private List<int> glasoviZa;      // za broj glasova, samo izvucemo Count
         private List<int> glasoviProtiv;  // isto to ovde
         private List<string> pretplaceniKorisnici;
@@ -46,7 +46,7 @@ namespace ServiceData
         public string Naslov { get => naslov; set => naslov = value; }
         public string Sadrzaj { get => sadrzaj; set => sadrzaj = value; }
         public string Slika { get => slika; set => slika = value; }
-        public List<string> Komentari { get => komentari; set => komentari = value; }
+        public List<Komentar> Komentari { get => komentari; set => komentari = value; }
         public List<int> GlasoviZa { get => glasoviZa; set => glasoviZa = value; }
         public List<int> GlasoviProtiv { get => glasoviProtiv; set => glasoviProtiv = value; }
     //    public List<string> PretplaceniKorisnici { get => pretplaceniKorisnici; set => pretplaceniKorisnici = value; }
@@ -66,7 +66,7 @@ namespace ServiceData
             Naslov = naslov;
             Sadrzaj = sadrzaj;
             Slika = "";
-            Komentari = new List<string>();
+            Komentari = new List<Komentar>();
             GlasoviZa = new List<int>();
             GlasoviProtiv = new List<int>();
             PretplaceniKorisnici = new List<string>();
