@@ -54,15 +54,15 @@ namespace ServiceData
 
         public Tema() { }
 
-        public Tema(string id, string naslov, string sadrzaj) // string userId) //, string firstName, string lastName)
+        public Tema(string id, string naslov, string sadrzaj, string userId,string firstName,string lastName) // string userId) //, string firstName, string lastName)
         {
             PartitionKey = "Tema";
             RowKey = id;
 
             Id = id;
             UserId = userId;
-            //FirstName = firstName;
-            //LastName = lastName;
+            FirstName = firstName;
+            LastName = lastName;
             Naslov = naslov;
             Sadrzaj = sadrzaj;
             Slika = "";

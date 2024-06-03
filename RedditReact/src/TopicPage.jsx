@@ -32,7 +32,7 @@ function TopicPage() {
 
     const handleAddComment = async () => {
         try {
-            const response = await axiosInstance.post(`http://localhost/comment/create`, { TopicId: topicId, Text: newComment, UserEmail: ""});
+            const response = await axiosInstance.post(`http://localhost:8080/comment/create`, { TopicId: topicId, Text: newComment, UserEmail: ""});
             if (response.status === 200) {
                 setComments([...comments, response.data.comment]);
                 setNewComment("");

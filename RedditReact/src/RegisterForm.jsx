@@ -39,7 +39,7 @@ function RegisterForm() {
       };
 
       try {
-          const response = await axios.post('http://localhost/auth/register', {...userData});
+          const response = await axios.post('http://localhost:8080/auth/register', {...userData});
           navigate("/login")
       } catch (error) {
           console.error("There was an error!", error);

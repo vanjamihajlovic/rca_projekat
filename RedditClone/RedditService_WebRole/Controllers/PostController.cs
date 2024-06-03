@@ -35,53 +35,23 @@ namespace RedditService_WebRole.Controllers
                 }
 
 
-                // Preuzimanje ID-a ulogovanog korisnika iz tokena
-                /*var identity = User.Identity as ClaimsIdentity;
-                if (identity == null)
+                var authHeader = Request.Headers.Authorization;
+
+                if (authHeader == null || authHeader.Scheme != "Bearer" )
                 {
                     return Unauthorized();
                 }
 
-                var userIdClaim = identity.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim == null)
-                {
-                    return Unauthorized();
-                }
+                var token = authHeader.Parameter;
 
-                string userId = userIdClaim.Value;
+                var jwtReader = new ReadJWTKey();
 
-                // Preuzimanje korisnika iz repozitorijuma
-                Korisnik korisnik = repoKor.DobaviKorisnika(userId);
-                if (korisnik == null)
-                {
-                    return BadRequest("Korisnik ne postoji.");
-                }
+                var claims = jwtReader.GetJWTClaimsFromKey(token);
 
-                // Kreiranje novog posta sa podacima korisnika
-                var noviPost = new Tema(post.Id, post.Title, post.Content, korisnik.Id)
-                {
-                    FirstName = korisnik.Ime,
-                    LastName = korisnik.Prezime
-                };
-                /*var header = Request.Headers;
 
-                var identity = User.Identity as ClaimsIdentity;
-                var userId = identity.FindFirst(ClaimTypes.Email).Value;
-                var firstName = identity.FindFirst("firstName").Value;
-                var lastName = identity.FindFirst("lastName").Value;*/
-                //Korisnik korisnik = repoKor.DobaviKorisnika(post.UserId);
-                //var noviPost = new Tema(post.Id, post.Title, post.Content, post.UserId, firstName, lastName);
-                //var noviPost = new Tema(post.Id, post.Title, post.Content, korisnik.Id);
-                //noviPost.FirstName = korisnik.Ime;
-                //noviPost.LastName = korisnik.Prezime;
-                // Dodavanje posta korišćenjem servisa*/
-
-                // Preuzimanje ID-a ulogovanog korisnika iz tokena
-                var identity = User.Identity as ClaimsIdentity;
-                if (identity == null)
-                {
-                    return Unauthorized();
-                }
+                var emailClaim = claims.First(c => c.Type == "email").Value;
+                var firstName = claims.First(c => c.Type == "firstName").Value;
+                var lastName = claims.First(c => c.Type == "lastName").Value;
 
                 /*var userIdClaim = identity.FindFirst(ClaimTypes.NameIdentifier);
                 if (userIdClaim == null)
@@ -102,7 +72,7 @@ namespace RedditService_WebRole.Controllers
 
 
                 // Korisnik korisnik = repoKor.DobaviKorisnika(post.UserId);
-                var noviPost = new Tema(post.Id, post.Title, post.Content); // korisnik.Id);
+                var noviPost = new Tema(post.Id, post.Title, post.Content, emailClaim, firstName, lastName);
                 bool isAdded = await Task.FromResult(repo.DodajTemu(noviPost));
                 if (!isAdded)
                 {

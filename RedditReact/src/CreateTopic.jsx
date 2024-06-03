@@ -9,19 +9,8 @@ const { v4: uuidv4} = require('uuid');
 function CreateTopic() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    //const [userId, setUserId] = useState('');
 
     const navigate = useNavigate();
-
-    /*useEffect(() => {
-        // Extract token from local storage
-        const token = localStorage.getItem('token');
-        if (token) {
-            // Decode token to get user ID
-            const decodedToken = jwtDecode(token);
-            setUserId(decodedToken.sub); // Adjust according to your token structure
-        }
-    }, []);*/
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,11 +18,10 @@ function CreateTopic() {
             Title: title,
             Content: content,
             Id: uuidv4(),
-            UserId: userId
         };
 
         try {
-            const endpoint = `http://localhost/post/create`;
+            const endpoint = `http://localhost:8080/post/create`;
             const response = await axiosInstance.post(endpoint, payload);
             console.log('RESPONSE');
             console.log(response);
