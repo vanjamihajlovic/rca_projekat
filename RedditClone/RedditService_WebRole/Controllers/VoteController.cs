@@ -1,4 +1,5 @@
 ﻿using Helpers;
+using Helpers.JWT;
 using Microsoft.WindowsAzure.Storage.Queue;
 using RedditService_WebRole.Models;
 using ServiceData;
@@ -8,44 +9,52 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using TableRepository;
 
 namespace RedditService_WebRole.Controllers
 {
     [RoutePrefix("vote")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class VoteController : ApiController
     {
-        TableRepositoryVote repo = new TableRepositoryVote();
+        private readonly TableRepositoryVote _repo;
+        private readonly JwtTokenReader _jwtTokenReader;
+
+        public VoteController()
+        {
+            _repo = new TableRepositoryVote();
+            _jwtTokenReader = new JwtTokenReader();
+        }
 
         [HttpPost]
-        [Route("upvote")]
-        public async Task<IHttpActionResult> Upvote(Voting voteModel)
+        [Route("upvote/{id}")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public async Task<IHttpActionResult> Upvote(string id)
         {
-            if (voteModel == null || string.IsNullOrEmpty(voteModel.UserId) || string.IsNullOrEmpty(voteModel.PostId))
-            {
-                return BadRequest("Invalid vote data.");
-            }
+            if (string.IsNullOrEmpty(id))
+                return BadRequest("Invalid vote ID.");
 
             try
             {
-                // Provera da li je korisnik već upvotovao ovaj post
-                var existingVotes = repo.DobaviSveGlasoveZaKorisnika(voteModel.UserId);
-                bool hasVoted = existingVotes.Any(v => v.PostId == voteModel.PostId);
+                var token = _jwtTokenReader.ExtractTokenFromAuthorizationHeader(Request.Headers.Authorization);
+                if (token == null)
+                    return Unauthorized();
+
+                var claims = _jwtTokenReader.GetClaimsFromToken(token);
+                var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
+
+                var existingVotes = _repo.DobaviSveGlasoveZaKorisnika(emailClaim);
+                bool hasVoted = existingVotes.Any(v => v.PostId == id);
                 if (hasVoted)
-                {
                     return BadRequest("User has already upvoted this post.");
-                }
 
-                var vote = new Vote(Guid.NewGuid().ToString(), voteModel.UserId, voteModel.PostId, true, DateTime.UtcNow);
-
-                bool isAdded = repo.DodajGlas(vote);
+                var vote = new Vote(Guid.NewGuid().ToString(), emailClaim, id, true, DateTime.UtcNow);
+                bool isAdded = _repo.DodajGlas(vote);
                 if (!isAdded)
-                {
                     return BadRequest("Failed to upvote.");
-                }
 
                 await QueueHelper.GetQueueReference("VoteNotificationsQueue").AddMessageAsync(new CloudQueueMessage(vote.RowKey));
-
                 return Ok("Upvote successful and notification sent.");
             }
             catch (Exception ex)
@@ -56,32 +65,28 @@ namespace RedditService_WebRole.Controllers
 
         [HttpPost]
         [Route("downvote/{id}")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public async Task<IHttpActionResult> Downvote(string id)
         {
+            if (string.IsNullOrEmpty(id))
+                return BadRequest("Invalid vote ID.");
+
             try
             {
+                var token = _jwtTokenReader.ExtractTokenFromAuthorizationHeader(Request.Headers.Authorization);
+                if (token == null)
+                    return Unauthorized();
 
-                if (string.IsNullOrEmpty(id))
-                {
-                    return BadRequest("Invalid vote ID.");
-                }
-
-                // Delete comment using repository
-                bool isDeleted = await Task.FromResult(repo.ObrisiGlas(id));
+                bool isDeleted = await Task.FromResult(_repo.ObrisiGlas(id));
                 if (!isDeleted)
-                {
                     return BadRequest("Failed to delete vote.");
-                }
 
                 return Ok("Vote deleted successfully.");
             }
             catch (Exception ex)
             {
-                // Log the exception details for troubleshooting
-                Console.WriteLine($"Exception occurred in vote: {ex.Message}");
                 return InternalServerError(ex);
             }
         }
     }
-    
 }

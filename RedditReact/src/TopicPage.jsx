@@ -66,12 +66,20 @@ function TopicPage() {
         console.log(`${action} Topic ID: ${topicId}`);
     
         try {
-            const endpoint = `/topic/${action}`;
+            const endpoint = `/vote/${action}/${topicId}`;
             const response = await axiosInstance.post(endpoint, { topicId });
             if (response.status === 200) {
                 if (action !== 'delete') {
-                    setTopic(response.data.topic);
-                    toast(response.data.message);
+                    axiosInstance.get(`/post/read/${topicId}`).then(response => {
+                        console.log("fetched");
+                        console.log(response.data);
+                        setTopic(response.data);
+                        console.log(response.data.Komentari);
+                        setComments(response.data.Komentari)
+                    }).catch(error => {
+                        console.error("Error fetching topic details: ", error);
+                    });
+                    toast(`${action} succesful`)
                 } else {
                     navigate("/")
                 }
