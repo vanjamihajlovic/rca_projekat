@@ -133,8 +133,9 @@ namespace NotificationService_WorkerRole
 
         // Komentari
         private async Task ProveriQueueKomentari()
-		{
-			if (queueComments.ApproximateMessageCount > 0)
+        {
+            await queueComments.FetchAttributesAsync();
+            if (queueComments.ApproximateMessageCount > 0)
 			{
 				var message = queueComments.GetMessage();
 
@@ -172,6 +173,7 @@ namespace NotificationService_WorkerRole
 		}
         private async Task ProveriQueueAdmini()
         {
+            await queueComments.FetchAttributesAsync();
             if (queueAdmins.ApproximateMessageCount > 0)
             {
                 var message = queueAdmins.GetMessage();
@@ -213,9 +215,11 @@ namespace NotificationService_WorkerRole
 		}
 
 		// HealthCheck mejlovi
-		private void ProveriQueueProvere()
+		async private void ProveriQueueProvere()
 		{
-			if (queueComments.ApproximateMessageCount > 0)
+            await queueComments.FetchAttributesAsync();
+
+            if (queueComments.ApproximateMessageCount > 0)
 			{
 				string idIzvestaja = queueAdmins.GetMessage().AsString;
 
