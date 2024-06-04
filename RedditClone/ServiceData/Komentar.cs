@@ -29,11 +29,12 @@ namespace ServiceData
         public string Autor { get => autor; set => autor = value; }
         public string Sadrzaj { get => sadrzaj; set => sadrzaj = value; }
         public string AuthorName { get => authorName; set => authorName = value; }
-        public Komentar() { }
-
-        public Komentar(string idTeme, string autor, string sadrzaj, string authorName)
-        {
+        public Komentar() {
             PartitionKey = "Komentar";
+        }
+
+        public Komentar(string idTeme, string autor, string sadrzaj, string authorName) : this()
+        {
             RowKey = Guid.NewGuid().ToString();
 
             IdTeme = idTeme;

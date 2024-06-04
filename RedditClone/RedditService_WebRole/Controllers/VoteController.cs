@@ -28,11 +28,11 @@ namespace RedditService_WebRole.Controllers
         }
 
         [HttpPost]
-        [Route("upvote/{id}")]
+        [Route("upvote/{postId}")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public async Task<IHttpActionResult> Upvote(string id)
+        public async Task<IHttpActionResult> Upvote(string postId)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(postId))
                 return BadRequest("Invalid vote ID.");
 
             try
@@ -44,12 +44,21 @@ namespace RedditService_WebRole.Controllers
                 var claims = _jwtTokenReader.GetClaimsFromToken(token);
                 var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
 
-                var existingVotes = _repo.DobaviSveGlasoveZaKorisnika(emailClaim);
-                bool hasVoted = existingVotes.Any(v => v.PostId == id);
-                if (hasVoted)
-                    return BadRequest("User has already upvoted this post.");
+                Vote userVote = _repo.DobaviGlasovaNaPostZaKorisnik(emailClaim, postId);
 
-                var vote = new Vote(Guid.NewGuid().ToString(), emailClaim, id, true, DateTime.UtcNow);
+                if (userVote != null)
+                {
+                    // Use case when user already voted. Now the vote gets 'de-voted' 
+                    // If the deleted vote is a downvote, we add an upvote, if it was an upvote we just remove the upvote
+
+                    bool isDeleted = await _repo.ObrisiGlasAsync(userVote.VoteId);
+
+                    if (userVote.IsUpvote) {
+                        return Ok();
+                    }
+                }
+
+                var vote = new Vote(Guid.NewGuid().ToString(), emailClaim, postId, true, DateTime.UtcNow);
                 bool isAdded = _repo.DodajGlas(vote);
                 if (!isAdded)
                     return BadRequest("Failed to upvote.");
@@ -64,11 +73,11 @@ namespace RedditService_WebRole.Controllers
         }
 
         [HttpPost]
-        [Route("downvote/{id}")]
+        [Route("downvote/{postId}")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public async Task<IHttpActionResult> Downvote(string id)
+        public async Task<IHttpActionResult> Downvote(string postId)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(postId))
                 return BadRequest("Invalid vote ID.");
 
             try
@@ -77,11 +86,30 @@ namespace RedditService_WebRole.Controllers
                 if (token == null)
                     return Unauthorized();
 
-                bool isDeleted = await Task.FromResult(_repo.ObrisiGlas(id));
-                if (!isDeleted)
-                    return BadRequest("Failed to delete vote.");
+                var claims = _jwtTokenReader.GetClaimsFromToken(token);
+                var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
 
-                return Ok("Vote deleted successfully.");
+                Vote userVote = _repo.DobaviGlasovaNaPostZaKorisnik(emailClaim, postId);
+
+                if (userVote != null)
+                {
+                    // Use case when user already voted. Now the vote gets 'de-voted' 
+                    // If the deleted vote is a upvote, we add a downvote, if it was an downvote we just remove it
+
+                    bool isDeleted = await _repo.ObrisiGlasAsync(userVote.VoteId);
+
+                    if (userVote.IsUpvote)
+                    {
+                        return Ok();
+                    }
+                }
+
+                var vote = new Vote(Guid.NewGuid().ToString(), emailClaim, postId, false, DateTime.UtcNow);
+                bool isAdded = _repo.DodajGlas(vote);
+                if (!isAdded)
+                    return BadRequest("Failed to upvote.");
+                return Ok("Downvote successful.");
+
             }
             catch (Exception ex)
             {

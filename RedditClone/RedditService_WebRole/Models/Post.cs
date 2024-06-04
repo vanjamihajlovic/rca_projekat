@@ -13,12 +13,10 @@ namespace RedditService_WebRole.Models
         public string Title { get; set; }
         public string Content { get; set; }
         public string ImageUrl { get; set; }
-        public DateTime CreatedAt { get; set; }  // Vreme kada je post kreiran
+        public DateTime CreatedAt { get; set; } 
 
-        // Lista komentara - pretpostavka da je lista sa ID-jevima komentara
         public List<Komentar> Comments { get; set; }
 
-        // Lista korisnika koji su pretplaćeni - pretpostavka da je lista sa ID-jevima korisnika
         public List<int> SubscribedUsers { get; set; }
 
         // Broj glasova

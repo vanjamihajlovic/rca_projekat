@@ -20,16 +20,16 @@ namespace RedditService_WebRole.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class PostController : ApiController
     {
-        private readonly TableRepositoryTema _repo;
-        private readonly TableRepositoryKorisnik _repoKorisnik;
-        private readonly TableRepositoryKomentar _repoKommentar;
+        private readonly TableRepositoryTema _postRepository;
+        private readonly TableRepositoryKorisnik _userRepository;
+        private readonly TableRepositoryKomentar _commentRepository;
         private readonly JwtTokenReader _jwtTokenReader;
 
         public PostController()
         {
-            _repo = new TableRepositoryTema();
-            _repoKorisnik = new TableRepositoryKorisnik();
-            _repoKommentar = new TableRepositoryKomentar();
+            _postRepository = new TableRepositoryTema();
+            _userRepository = new TableRepositoryKorisnik();
+            _commentRepository = new TableRepositoryKomentar();
             _jwtTokenReader = new JwtTokenReader();
         }
 
@@ -54,7 +54,7 @@ namespace RedditService_WebRole.Controllers
                 var lastName = _jwtTokenReader.GetClaimValue(claims, "lastName");
 
                 var newPost = new Tema(post.Id, post.Title, post.Content, emailClaim, firstName, lastName);
-                bool isAdded = await Task.FromResult(_repo.DodajTemu(newPost));
+                bool isAdded = await Task.FromResult(_postRepository.DodajTemu(newPost));
 
                 if (!isAdded)
                     return BadRequest();
@@ -82,12 +82,12 @@ namespace RedditService_WebRole.Controllers
                     return BadRequest("Invalid post ID.");
                 }
 
-                Tema temaToDelete = await Task.FromResult(_repo.DobaviTemu(id));
+                Tema temaToDelete = await Task.FromResult(_postRepository.DobaviTemu(id));
                 if (temaToDelete == null)
                 {                 
                     return BadRequest("Failed to delete post.");
                 }
-                List<Komentar> svi = _repoKommentar.DobaviSve().ToList();
+                List<Komentar> svi = _commentRepository.DobaviSve().ToList();
 
                 temaToDelete.Komentari = svi.Where(x => x.IdTeme == temaToDelete.Id).ToList();
 
@@ -96,7 +96,7 @@ namespace RedditService_WebRole.Controllers
                 {
                     foreach (string komentarId in temaToDelete.Komentari.Select(x => x.RowKey).ToList())
                     {
-                        bool isCommentDeleted = await Task.FromResult(_repoKommentar.ObrisiKomentar(komentarId));
+                        bool isCommentDeleted = await Task.FromResult(_commentRepository.ObrisiKomentar(komentarId));
                         if (!isCommentDeleted)
                         {
                             return BadRequest("Failed to delete comment.");
@@ -105,7 +105,7 @@ namespace RedditService_WebRole.Controllers
                 }
 
                 // Delete post using repository
-                bool isDeleted = await Task.FromResult(_repo.ObrisiTemu(id));
+                bool isDeleted = await Task.FromResult(_postRepository.ObrisiTemu(id));
                 if (!isDeleted)
                 {
                     return BadRequest("Failed to delete post.");
@@ -133,7 +133,7 @@ namespace RedditService_WebRole.Controllers
                 }
 
                 // Pretraživanje tema po naslovu
-                var results = await Task.FromResult(_repo.PretraziTeme(searchTerm));
+                var results = await Task.FromResult(_postRepository.PretraziTeme(searchTerm));
 
                 // Pretvorba rezultata u listu i vraćanje HTTP odgovora
                 var searchResults = results.ToList();
@@ -152,7 +152,7 @@ namespace RedditService_WebRole.Controllers
             try
             {
                 // Preuzmi sve teme iz repozitorijuma
-                var allPosts = _repo.DobaviSve();
+                var allPosts = _postRepository.DobaviSve();
 
                 // Sortiranje rezultata
                 switch (sortBy.ToLower())
@@ -188,8 +188,8 @@ namespace RedditService_WebRole.Controllers
                     return BadRequest("Invalid post ID.");
                 }
 
-                Tema post = await Task.FromResult(_repo.DobaviTemu(id));
-                List<Komentar> svi = _repoKommentar.DobaviSve().ToList();
+                Tema post = await Task.FromResult(_postRepository.DobaviTemu(id));
+                List<Komentar> svi = _commentRepository.DobaviSve().ToList();
 
                 post.Komentari = svi.Where(x => x.IdTeme == post.Id).ToList();
                 if (post == null)
@@ -212,7 +212,7 @@ namespace RedditService_WebRole.Controllers
         {
             try
             {
-                var allPosts = await Task.FromResult(_repo.DobaviSve().ToList());
+                var allPosts = await Task.FromResult(_postRepository.DobaviSve().ToList());
                 return Ok(allPosts);
             }
             catch (Exception ex)

@@ -1,29 +1,22 @@
 ﻿using Microsoft.WindowsAzure.Storage.Table;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ServiceData
 {
     public class Subscribe : TableEntity
     {
-        private string userId;
-        private string postId;
+        public string UserId { get; set; }
+        public string PostId { get; set; }
 
-        public string UserId { get => userId; set => userId = value; }
-        public string PostId { get => postId; set => postId = value; }
-
-        public Subscribe() { }
-       
-
-        public Subscribe(string userId, string postId)
+        public Subscribe()
         {
             PartitionKey = "Subscribe";
-            RowKey = PostId;
+        }
 
-            this.userId = userId;          
+        public Subscribe(string userId, string postId) : this()
+        {
+            RowKey = postId;
+            UserId = userId;
         }
     }
 }

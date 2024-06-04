@@ -8,7 +8,6 @@ namespace RedditService_WebRole.Models
     public class Comment
     {
         public string TopicId { get; set; }
-        public string UserEmail { get; set; }
         public string Text { get; set; }
     }
 }

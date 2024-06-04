@@ -19,8 +19,8 @@ namespace RedditService_WebRole.Controllers
 	[EnableCors(origins: "*", headers: "*", methods: "*")]
 	public class CommentController : ApiController
     {
-        TableRepositoryKomentar repoKom = new TableRepositoryKomentar();
         private readonly JwtTokenReader _jwtTokenReader = new JwtTokenReader();
+        private readonly TableRepositoryKomentar _commentRepository = new TableRepositoryKomentar();
 
 
         // GET: Comment
@@ -44,12 +44,10 @@ namespace RedditService_WebRole.Controllers
                 var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
                 var firstName = _jwtTokenReader.GetClaimValue(claims, "firstName");
                 var lastName = _jwtTokenReader.GetClaimValue(claims, "lastName");
-                // Kreiranje novog komentara
-                var noviKomentar = new Komentar(comment.TopicId, comment.UserEmail, comment.Text, firstName + " " + lastName);
+                var noviKomentar = new Komentar(comment.TopicId, emailClaim, comment.Text, firstName + " " + lastName);
 
 
-                // Dodavanje komentara korišćenjem servisa
-                bool isAdded = repoKom.DodajKomentar(noviKomentar);
+                bool isAdded = _commentRepository.DodajKomentar(noviKomentar);
                 if (!isAdded)
                 {
                     return BadRequest();
@@ -61,7 +59,6 @@ namespace RedditService_WebRole.Controllers
             }
             catch (Exception ex)
             {
-                // U slučaju greške, vraćamo Internal Server Error
                 return InternalServerError(ex);
             }
 
@@ -79,8 +76,7 @@ namespace RedditService_WebRole.Controllers
                     return BadRequest("Invalid comment ID.");
                 }
                                       
-                // Delete comment using repository
-                bool isDeleted = await Task.FromResult(repoKom.ObrisiKomentar(id));
+                bool isDeleted = await Task.FromResult(_commentRepository.ObrisiKomentar(id));
                 if (!isDeleted)
                 {
                     return BadRequest("Failed to delete comment.");
@@ -90,7 +86,6 @@ namespace RedditService_WebRole.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception details for troubleshooting
                 Console.WriteLine($"Exception occurred in DeleteComment: {ex.Message}");
                 return InternalServerError(ex);
             }
