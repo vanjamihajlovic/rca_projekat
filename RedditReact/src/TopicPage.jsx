@@ -47,21 +47,6 @@ function TopicPage() {
         }
     };
 
-    const handleVoteComment = async (commentId, action) => {
-        try {
-            const endpoint = `/comments/${action}`;
-            const response = await axiosInstance.post(endpoint, { commentId });
-            if (response.status === 200) {
-                setComments(comments.map(comment => comment.RowKey === commentId ? response.data.comment : comment));
-                toast(response.data.message);
-            }
-        } catch (error) {
-            toast("Error voting on comment");
-            console.error(`Error ${action} comment: `, error);
-        }
-    };
-
-
     const handleTopicSubscribe = async (topicId, action) => {
         console.log(`${action} Topic ID: ${topicId}`);
     
@@ -69,25 +54,29 @@ function TopicPage() {
             const endpoint = `/subscribe/subscribepost/`;
             const response = await axiosInstance.post(endpoint, { PostId: topicId });
             if (response.status === 200) {
-
-
-                // if (action !== 'delete') {
-                //     axiosInstance.get(`/post/read/${topicId}`).then(response => {
-                //         console.log("fetched");
-                //         console.log(response.data);
-                //         setTopic(response.data);
-                //         console.log(response.data.Komentari);
-                //         setComments(response.data.Komentari)
-                //     }).catch(error => {
-                //         console.error("Error fetching topic details: ", error);
-                //     });
-                //     toast(`${action} succesful`)
-                // } else {
-                //     navigate("/")
-                // }
+                setTopic({...topic, IsSubscribed: topic.IsSubscribed})
             }
         } catch (error) {
             toast("Error happened");
+            console.error(`Error ${action} topic: `, error);
+        }
+    };
+
+    const handleDelete = async (topicId, action) => {
+        console.log(`${action} Topic ID: ${topicId}`);
+    
+        try {
+            const endpoint = `/delete/${topicId}`;
+            const response = await axiosInstance.post(endpoint, { topicId });
+            if (response.status === 200) {
+                navigate("/");
+                // const updatedTopic = response.data.topic;
+                // handleApiResponse(updatedTopic, action === 'delete', topicId);
+                toast(response.data.message);
+            }
+        } catch (error) {
+            toast("Error Happened");
+    
             console.error(`Error ${action} topic: `, error);
         }
     };
@@ -135,35 +124,29 @@ function TopicPage() {
     return (
         <div className="topic-page">
             <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
-            <div className={`topic-card ${topic.locked ? 'locked-topic' : ''}`}>
                 <h1 className="topic-title">{topic.Naslov}</h1>
                 <p className="topic-content">{topic.Sadrzaj}</p>
                 <p className="topic-info">Created At: {formatDate(topic.Timestamp)}</p>
                     <p className="topic-info">Owner:  {topic.FirstName} {topic.LastName}</p>
-                    <p className="topic-info">Upvotes: {topic.GlazoviZa ? topic.GlasoviZa.length : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv.length : 0}</p>
+                    <p className="topic-info">Upvotes: {topic.GlasoviZa ? topic.GlasoviZa : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv : 0}</p>
                     <p className="topic-info">Locked: {topic.locked ? 'Yes' : 'No'}</p>
                     <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari.length : 0}</p>
                     <div>
-                        <button className={`vote-button ${topic.userAction === 'UPVOTED' ? 'active-upvote-button' : ''}`}
+                        <button className={`vote-button ${topic.PostVoteStatus === 'UPVOTED' ? 'active-upvote-button' : ''}`}
                                 onClick={() => handleTopicAction(topic.Id, "upvote")}>
-                            {topic.userAction === 'UPVOTED' ? '✓ UPVOTED' : 'Upvote'}
+                            {topic.PostVoteStatus === 'UPVOTED' ? '✓ UPVOTED' : 'Upvote'}
                         </button>
-                        <button className={`vote-button ${topic.userAction === 'DOWNVOTED' ? 'active-downvote-button' : ''}`}
+                        <button className={`vote-button ${topic.PostVoteStatus === 'DOWNVOTED' ? 'active-downvote-button' : ''}`}
                                 onClick={() => handleTopicAction(topic.Id, "downvote")}>
-                            {topic.userAction === 'DOWNVOTED' ? '✕ DOWNVOTED' : 'Downvote'}
+                            {topic.PostVoteStatus === 'DOWNVOTED' ? '✕ DOWNVOTED' : 'Downvote'}
                         </button>
-                        <button className={`vote-button ${topic.isSubscribed ? 'subscribed-button' : 'subscribe-button'}`}
+                        <button className={`vote-button ${topic.IsSubscribed ? 'subscribed-button' : 'subscribe-button'}`}
                                 onClick={() => handleTopicSubscribe(topic.Id, "subscribe")}>
-                            {topic.isSubscribed ? '✓ Subscribed' : 'Subscribe'}
+                            {topic.IsSubscribed ? '✓ Subscribed' : 'Subscribe'}
                         </button>
                     </div>
-                    {topic.isOwner && (
+                    {topic.IsOwner && (
                         <div className="topic-controls">
-                            <button
-                                className={`control-button ${topic.locked ? 'unlock-button' : 'lock-button'}`}
-                                onClick={() => handleTopicAction(topic.Id, "lock")}>
-                                {topic.locked ? 'UNLOCK' : 'LOCK'}
-                            </button>
                             <button
                                 className="control-button delete-button"
                                 onClick={() => handleTopicAction(topic.Id, "delete")}>
@@ -171,12 +154,9 @@ function TopicPage() {
                             </button>
                         </div>
                     )}
-            </div>
             <div className="comment-section">
                 {
-                    topic.locked ? (
-                        <p className="locked-message">This topic is locked. Comments are disabled.</p>
-                    ) : (
+                    (
                         <>
                             <textarea 
                                 className="comment-box" 
@@ -196,11 +176,6 @@ function TopicPage() {
                         <span className="comment-date"> at {formatDate(comment?.Timestamp)}</span>
                     </div>
                     <p className="comment-content">{comment?.Sadrzaj}</p>
-                    <div className="comment-votes">
-                        <button onClick={() => handleVoteComment(comment?.RowKey, "upvote")}>Upvote</button>
-                        {/* <span>{comment?.numOfUpvotes - comment?.numOfDownvotes}</span> */}
-                        <button onClick={() => handleVoteComment(comment?.RowKey, "downvote")}>Downvote</button>
-                    </div>
                 </div>
         ))}
             </div>

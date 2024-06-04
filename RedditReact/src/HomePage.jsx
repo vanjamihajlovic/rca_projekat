@@ -30,35 +30,72 @@ function HomePage() {
         );
     };
 
+    const handleTopicSubscribe = async (topicId, action) => {
+        console.log(`${action} Topic ID: ${topicId}`);
+    
+        try {
+            const endpoint = `/subscribe/subscribepost/`;
+            const response = await axiosInstance.post(endpoint, { PostId: topicId });
+            if (response.status === 200) {
+                fetchTopics();
+            }
+        } catch (error) {
+            toast("Error happened");
+            console.error(`Error ${action} topic: `, error);
+        }
+    };
+
     const filteredTopics = () => {
         let filtered = topics;
         if (showMyTopics) {
-            filtered = filtered.filter(topic => topic.isOwner);
+            filtered = filtered.filter(topic => topic.IsOwner);
         }
 
         if (searchQuery.trim() !== '') {
             const lowerCaseQuery = searchQuery.toLowerCase();
             filtered = filtered.filter(topic =>
-                topic.title.toLowerCase().includes(lowerCaseQuery) ||
-                topic.content.toLowerCase().includes(lowerCaseQuery)
+                topic.Naslov.toLowerCase().includes(lowerCaseQuery) ||
+                topic.Sadrzaj.toLowerCase().includes(lowerCaseQuery)
             );
         }
 
+
         if (sortCriteria) {
+            console.log(filtered);
             filtered = [...filtered].sort((a, b) => b[sortCriteria] - a[sortCriteria]);
         }
         return filtered;
+    };
+
+    const handleDelete = async (topicId, action) => {
+        console.log(`${action} Topic ID: ${topicId}`);
+    
+        try {
+            const endpoint = `post/delete/${topicId}`;
+            const response = await axiosInstance.post(endpoint, { topicId });
+            if (response.status === 200) {
+                fetchTopics();
+                // const updatedTopic = response.data.topic;
+                // handleApiResponse(updatedTopic, action === 'delete', topicId);
+                toast(response.data.message);
+            }
+        } catch (error) {
+            toast("Error Happened");
+    
+            console.error(`Error ${action} topic: `, error);
+        }
     };
 
     const handleTopicAction = async (topicId, action) => {
     console.log(`${action} Topic ID: ${topicId}`);
 
     try {
-        const endpoint = `/vote/${action}`;
+        const endpoint = `/vote/${action}/${topicId}`;
         const response = await axiosInstance.post(endpoint, { topicId });
         if (response.status === 200) {
-            const updatedTopic = response.data.topic;
-            handleApiResponse(updatedTopic, action === 'delete', topicId);
+            fetchTopics();
+            // const updatedTopic = response.data.topic;
+            // handleApiResponse(updatedTopic, action === 'delete', topicId);
             toast(response.data.message);
         }
     } catch (error) {
@@ -106,8 +143,8 @@ function HomePage() {
                     <label htmlFor="sortSelect">Sort by:</label>
                     <select id="sortSelect" value={sortCriteria} onChange={(e) => setSortCriteria(e.target.value)}>
                         <option value="">Default</option>
-                        <option value="numOfUpvotes">Upvotes</option>
-                        <option value="numOfDownvotes">Downvotes</option>
+                        <option value="GlasoviZa">Upvotes</option>
+                        <option value="GlasoviProtiv">Downvotes</option>
                         <option value="numOfComments">Comments</option>
                     </select>
                 </div>
@@ -115,58 +152,47 @@ function HomePage() {
 
             <h1>{showMyTopics ? 'My Topics' : 'All Topics'}</h1>
             {filteredTopics().map((topic) => (
-                <div className={`topic-card ${topic.locked ? 'locked-topic' : ''}`} key={topic.Id} onClick={() => navigateToTopic(topic.Id)}>
-                {topic.locked && <span className="lock-icon" role="img" aria-label="Locked">🔒</span>}
+                <div className={`topic-card`} key={topic.Id} onClick={() => navigateToTopic(topic.Id)}>
                     <h1 className="topic-title">{topic.Naslov}</h1>
                     <p className="topic-content">{topic.Sadrzaj}</p>
                     <p className="topic-info">Created At: {topic.Timestamp}</p>
                     <p className="topic-info">Owner: {topic.FirstName} {topic.LastName}</p>
-                    <p className="topic-info">Upvotes: {topic.GlazoviZa ? topic.GlasoviZa.length : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv.length : 0}</p>
-                    <p className="topic-info">Locked: {topic.locked ? 'Yes' : 'No'}</p>
+                    <p className="topic-info">Upvotes: {topic.GlasoviZa ? topic.GlasoviZa : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv : 0}</p>
                     <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari : 0}</p>
                     <div>
-                        <button className={`vote-button ${topic.userAction === 'UPVOTED' ? 'active-upvote-button' : ''}`}
+                        <button className={`vote-button ${topic.PostVoteStatus === 'UPVOTED' ? 'active-upvote-button' : ''}`}
                                 onClick={(e) => 
                                 {
                                     e.stopPropagation(); 
                                     handleTopicAction(topic.Id, "upvote")}
                                 }>
-                            {topic.userAction === 'UPVOTED' ? '✓ UPVOTED' : 'Upvote'}
+                            {topic.PostVoteStatus === 'UPVOTED' ? '✓ UPVOTED' : 'Upvote'}
                         </button>
-                        <button className={`vote-button ${topic.userAction === 'DOWNVOTED' ? 'active-downvote-button' : ''}`}
+                        <button className={`vote-button ${topic.PostVoteStatus === 'DOWNVOTED' ? 'active-downvote-button' : ''}`}
                                 onClick={(e) => 
                                     {
                                         e.stopPropagation(); 
                                         handleTopicAction(topic.Id, "downvote")}
                                     }>
-                            {topic.userAction === 'DOWNVOTED' ? '✕ DOWNVOTED' : 'Downvote'}
+                            {topic.PostVoteStatus === 'DOWNVOTED' ? '✕ DOWNVOTED' : 'Downvote'}
                         </button>
-                        <button className={`vote-button ${topic.isSubscribed ? 'subscribed-button' : 'subscribe-button'}`}
+                        <button className={`vote-button ${topic.IsSubscribed ? 'subscribed-button' : 'subscribe-button'}`}
                                 onClick={(e) => 
                                     {
                                         e.stopPropagation(); 
-                                        handleTopicAction(topic.Id, "subscribe")}
+                                        handleTopicSubscribe(topic.Id, "subscribe")}
                                     }>
-                            {topic.isSubscribed ? '✓ Subscribed' : 'Subscribe'}
+                            {topic.IsSubscribed ? '✓ Subscribed' : 'Subscribe'}
                         </button>
                     </div>
-                    {topic.isOwner && (
+                    {topic.IsOwner && (
                         <div className="topic-controls">
-                            <button
-                                className={`control-button ${topic.locked ? 'unlock-button' : 'lock-button'}`}
-                                onClick={(e) => 
-                                    {
-                                        e.stopPropagation(); 
-                                        handleTopicAction(topic.Id, "lock")}
-                                    }>
-                                {topic.locked ? 'Unlock' : 'Lock'}
-                            </button>
                             <button
                                 className="control-button delete-button"
                                 onClick={(e) => 
                                     {
                                         e.stopPropagation(); 
-                                        handleTopicAction(topic.Id, "delete")}
+                                        handleDelete(topic.Id, "delete")}
                                     }>
                                 Delete
                             </button>

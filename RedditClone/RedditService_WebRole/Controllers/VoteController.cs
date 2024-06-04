@@ -98,7 +98,7 @@ namespace RedditService_WebRole.Controllers
 
                     bool isDeleted = await _repo.ObrisiGlasAsync(userVote.VoteId);
 
-                    if (userVote.IsUpvote)
+                    if (!userVote.IsUpvote)
                     {
                         return Ok();
                     }

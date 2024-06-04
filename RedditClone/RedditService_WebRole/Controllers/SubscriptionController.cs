@@ -38,6 +38,14 @@ namespace RedditService_WebRole.Controllers
 
                 var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
 
+                Subscribe userSubscription = repo.DobaviSubscribeNaPostZaUser(request.PostId, emailClaim);
+
+                if (userSubscription != null)
+                {
+                    repo.ObrisiSubscription(request.PostId, emailClaim);
+                    return Ok("Unsubscribed");
+                }
+
                 var noviSub = new Subscribe(emailClaim, request.PostId);
 
                 // Dodavanje posta korišćenjem servisa
@@ -47,7 +55,7 @@ namespace RedditService_WebRole.Controllers
                     return BadRequest();
                 }
 
-                return Ok("Post posted and notifications sent successfully.");
+                return Ok("Subscribed");
 
             }
             catch (Exception ex)
@@ -56,8 +64,6 @@ namespace RedditService_WebRole.Controllers
             }
         }
 
-        
-        
 
     }
 }

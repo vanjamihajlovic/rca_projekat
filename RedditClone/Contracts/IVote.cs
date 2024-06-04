@@ -34,5 +34,13 @@ namespace Contracts
 		// Dobavljanje svih glasova koje je dao određeni korisnik
 		[OperationContract]
 		List<Vote> DobaviSveGlasoveZaKorisnika(string idKorisnika);
-	}
+		[OperationContract]
+		Task<bool> ObrisiGlasAsync(string voteId);
+		[OperationContract]
+		Task<bool> DobaviSveGlasove();
+		[OperationContract]
+		List<Vote> DobaviSveGlasoveZaKorisnika();
+
+
+    }
 }
