@@ -3,6 +3,7 @@ using Microsoft.WindowsAzure.ServiceRuntime;
 using System;
 using System.Diagnostics;
 using System.ServiceModel;
+using System.Threading;
 
 namespace RedditService_WebRole
 {

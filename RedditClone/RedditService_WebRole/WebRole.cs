@@ -24,7 +24,7 @@ namespace RedditService_WebRole
             nit.Start();
 
             hcs.Open();
-
+            
             return base.OnStart();
         }
     }

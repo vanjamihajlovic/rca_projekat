@@ -3,6 +3,7 @@ using Microsoft.WindowsAzure.ServiceRuntime;
 using System;
 using System.Diagnostics;
 using System.ServiceModel;
+using System.Threading;
 
 // To bi trebalo da je to
 

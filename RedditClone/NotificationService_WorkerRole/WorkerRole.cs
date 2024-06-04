@@ -28,9 +28,8 @@ namespace NotificationService_WorkerRole
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
 
         private HealthCheckService hcs = new HealthCheckService();
-		
-        private readonly QueueHelper queueHelper;
 
+        //private readonly QueueHelper queueHelper;
         CloudQueue queueComments = QueueHelper.GetQueueReference("CommentNotificationsQueue");
         CloudQueue queueAdmins = QueueHelper.GetQueueReference("AdminNotificationsQueue");
 
@@ -160,8 +159,6 @@ namespace NotificationService_WorkerRole
 
 					foreach (Subscribe i in pretplaceni)
 					{
-						//TableRepositoryKorisnik trkor = new TableRepositoryKorisnik();
-						//Korisnik kor = trkor.DobaviKorisnika(pretplaceni.ToString());
 						await PosaljiMejl(i.UserId, tekstKomentara, autorKomentara, vreme, naslovTeme);
 					}
 
@@ -173,73 +170,43 @@ namespace NotificationService_WorkerRole
 		}
         private async Task ProveriQueueAdmini()
         {
-            await queueComments.FetchAttributesAsync();
+            await queueAdmins.FetchAttributesAsync();
             if (queueAdmins.ApproximateMessageCount > 0)
             {
                 var message = queueAdmins.GetMessage();
 
                 if (message != null)
                 {
-                    string idIzvestaja = queueAdmins.GetMessage().AsString;
+                    string idIzvestaja = message.AsString;
 
                     TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
                     Izvestaj i = tri.DobaviIzvestaj(idIzvestaja);
 
                     TableRepositoryAdminEmail trae = new TableRepositoryAdminEmail();
                     List<AdminEmail> aeList = trae.DobaviSveMejlove();
-
                    
                     string tekstIzvestaja = i.Sadrzaj;
-                  //  int brojMejlova = t.PretplaceniKorisnici.Count;
+                    int brojMejlova = aeList.Count;
                     DateTime vreme = DateTime.Now;
 
                     foreach (AdminEmail ae in aeList)
                     {
-                        //TableRepositoryKorisnik trkor = new TableRepositoryKorisnik();
-                        //Korisnik kor = trkor.DobaviKorisnika(pretplaceni.ToString());
-                       await PosaljiMejlAdminima(ae.EmailAdresa,i.Sadrzaj, i.Vreme);
+                        await PosaljiMejlAdminima(ae.EmailAdresa, i.Sadrzaj, i.Vreme);
                     }
 
-                   // UpisiNotifikacijuUTabelu(k.Id, vreme, brojMejlova);
+                    UpisiNotifikacijuUTabelu(i.Id, vreme, brojMejlova);
                     // Delete the message after processing
                     queueAdmins.DeleteMessage(message.Id, message.PopReceipt);
                 }
             }
         }
-
+        
         private void UpisiNotifikacijuUTabelu(int idKomentara, DateTime vreme, int brojPoslatihMejlova)
 		{
 			Notifikacija n = new Notifikacija(idKomentara, vreme, brojPoslatihMejlova);
 			TableRepositoryNotifikacije trn = new TableRepositoryNotifikacije();
 			trn.SacuvajNotifikaciju(n);
 		}
-
-		// HealthCheck mejlovi
-		async private void ProveriQueueProvere()
-		{
-            await queueComments.FetchAttributesAsync();
-
-            if (queueComments.ApproximateMessageCount > 0)
-			{
-				string idIzvestaja = queueAdmins.GetMessage().AsString;
-
-				TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
-				Izvestaj i = tri.DobaviIzvestaj(idIzvestaja);
-
-				string poruka = i.Sadrzaj;
-				DateTime vreme = i.Vreme;
-
-				// TODO dalju logiku
-			}
-		}
-
-		private void UpisiIzvestajUTabelu(int idIzvestaja, DateTime vreme, string poruka)
-		{
-			Izvestaj i = new Izvestaj(idIzvestaja, vreme, poruka);
-			TableRepositoryIzvestaj tri = new TableRepositoryIzvestaj();
-			tri.SacuvajIzvestaj(i);
-		}
-
 		#endregion NotificationService methods
 	}
 }
