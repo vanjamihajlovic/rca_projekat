@@ -109,8 +109,8 @@ namespace NotificationService_WorkerRole
 			var subject = "Novi komentar za temu : " + naslovTeme;
 			var to = new EmailAddress(korisnikEmail, "Example User");
 			var plainTextContent = autorKomentara + " commented: " + tekstKomentara;
-			var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
-			var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
+            var htmlContent = autorKomentara + " commented: ' <strong>" + tekstKomentara + "</strong> ' .";
+            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
 			var response = await client.SendEmailAsync(msg);
 			//Console.WriteLine(response.StatusCode);
 			//Console.WriteLine(response.Body.ReadAsStringAsync());
@@ -124,7 +124,7 @@ namespace NotificationService_WorkerRole
             var subject = "Pao servis";
             var to = new EmailAddress(korisnikEmail, "Example User");
             var plainTextContent = tekstKomentara + " " + vreme;
-            var htmlContent = "<strong>and easy to do anywhere, even with C#</strong>";
+            var htmlContent = "<strong>Service stopped working! </strong>" + tekstKomentara + " " + vreme;
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
             //Console.WriteLine(response.StatusCode);
