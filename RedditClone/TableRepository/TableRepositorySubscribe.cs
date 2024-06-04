@@ -56,6 +56,37 @@ namespace TableRepository
             }
         }
 
+        public Subscribe DobaviSubscribeNaPostZaUser(string postId, string userId)
+        {
+            var results = (from g in table.CreateQuery<Subscribe>()
+                          where g.PartitionKey == "Subscribe" && g.RowKey == postId && g.UserId == userId
+                          select g).FirstOrDefault();
+            return results;
+        }
+
+        public bool ObrisiSubscription(string postId, string userId)
+        {
+            if (string.IsNullOrEmpty(postId) || string.IsNullOrEmpty(userId))
+            {
+                return false;
+            }
+
+            Subscribe subscribe = (from g in table.CreateQuery<Subscribe>()
+                                   where g.PartitionKey == "Subscribe" && g.RowKey == postId && g.UserId == userId
+                                   select g).FirstOrDefault();
+                                   
+
+            if (subscribe == null)
+            {
+                return false;
+            }
+
+            TableOperation deleteOperation = TableOperation.Delete(subscribe);
+            table.Execute(deleteOperation);
+            return true;
+
+        }
+
         //dodati metoddu koja prima id teme i vraca suba za tu temu
         public List<Subscribe> DobaviSvePrijavljene(string post)
         {

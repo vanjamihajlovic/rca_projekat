@@ -61,7 +61,22 @@ namespace TableRepository
 			}
 		}
 
-        public async Task<bool> ObrisiGlasAsync(string voteId)
+		public async Task<List<Vote>> DobaviSveGlasoveAsync()
+		{
+               try
+                {
+                    var query = new TableQuery<Vote>();
+                    var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
+                    return queryResult.Results.ToList();
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine(ex.Message);
+                    return new List<Vote>();
+                }
+            }
+
+            public async Task<bool> ObrisiGlasAsync(string voteId)
         {
             if (string.IsNullOrEmpty(voteId))
                 return false;
@@ -191,7 +206,29 @@ namespace TableRepository
             }
         }
 
-      
+        public Task<bool> DobaviSveGlasove()
+        {
+            throw new NotImplementedException();
+        }
 
+        public IQueryable<Vote> DobaviSve()
+        {
+            try
+            {
+                var results = from g in table.CreateQuery<Vote>()
+                              where g.PartitionKey == "Vote"
+                              select g;
+                return results;
+            }
+            catch (Exception)
+            {
+                return Enumerable.Empty<Vote>().AsQueryable();
+            }
+        }
+
+        public List<Vote> DobaviSveGlasoveZaKorisnika()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

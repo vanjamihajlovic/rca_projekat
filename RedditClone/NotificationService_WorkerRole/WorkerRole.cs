@@ -141,7 +141,7 @@ namespace NotificationService_WorkerRole
 
 				if (message != null)
 				{
-					string idKomentara = queueComments.GetMessage().AsString;
+					string idKomentara = message.AsString;
 
 					TableRepositoryKomentar trk = new TableRepositoryKomentar();
 					Komentar k = trk.DobaviKomentar(idKomentara);

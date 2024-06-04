@@ -14,12 +14,18 @@ namespace ServiceData
         public string LastName { get; set; }
         public string Slika { get; set; }
         public List<Komentar> Komentari { get; set; } = new List<Komentar>();
-        public List<int> GlasoviZa { get; set; } = new List<int>();
-        public List<int> GlasoviProtiv { get; set; } = new List<int>();
+        public int GlasoviZa { get; set; }
+        public int GlasoviProtiv { get; set; }
+        public bool IsOwner { get; set; }
+        public bool IsSubscribed { get; set; }
+        public string PostVoteStatus { get; set; }
         public List<string> PretplaceniKorisnici { get; set; } = new List<string>();
 
         public Tema() {
             PartitionKey = "Tema";
+            IsOwner = false;
+            IsSubscribed = false;
+            PostVoteStatus = "NONE";
         }
 
         public Tema(string id, string naslov, string sadrzaj, string userId, string firstName, string lastName) : this()

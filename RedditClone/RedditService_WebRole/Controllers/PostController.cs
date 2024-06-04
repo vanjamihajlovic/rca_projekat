@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using System.Web.Security;
+using System.Web.Services.Description;
 using TableRepository;
 
 namespace RedditService_WebRole.Controllers
@@ -23,6 +25,8 @@ namespace RedditService_WebRole.Controllers
         private readonly TableRepositoryTema _postRepository;
         private readonly TableRepositoryKorisnik _userRepository;
         private readonly TableRepositoryKomentar _commentRepository;
+        private readonly TableRepositoryVote _voteRepository;
+        private readonly TableRepositorySubscribe _subscriptionRepository;
         private readonly JwtTokenReader _jwtTokenReader;
 
         public PostController()
@@ -30,6 +34,8 @@ namespace RedditService_WebRole.Controllers
             _postRepository = new TableRepositoryTema();
             _userRepository = new TableRepositoryKorisnik();
             _commentRepository = new TableRepositoryKomentar();
+            _voteRepository = new TableRepositoryVote();
+            _subscriptionRepository = new TableRepositorySubscribe();
             _jwtTokenReader = new JwtTokenReader();
         }
 
@@ -188,14 +194,59 @@ namespace RedditService_WebRole.Controllers
                     return BadRequest("Invalid post ID.");
                 }
 
+                var token = _jwtTokenReader.ExtractTokenFromAuthorizationHeader(Request.Headers.Authorization);
+                if (token == null)
+                    return Unauthorized();
+
+                var claims = _jwtTokenReader.GetClaimsFromToken(token);
+
+                var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
+
                 Tema post = await Task.FromResult(_postRepository.DobaviTemu(id));
-                List<Komentar> svi = _commentRepository.DobaviSve().ToList();
+                List<Komentar> svi = await Task.FromResult(_commentRepository.DobaviSve().ToList());
+                List<Vote> votes = await Task.FromResult(_voteRepository.DobaviSveGlasoveZaPost(id));
+                List<Subscribe> subscribes = await Task.FromResult(_subscriptionRepository.DobaviSvePrijavljene(id));
 
                 post.Komentari = svi.Where(x => x.IdTeme == post.Id).ToList();
                 if (post == null)
                 {
                     return NotFound();
                 }
+
+                if (emailClaim == post.UserId)
+                {
+                    post.IsOwner = true;
+                }
+
+                if (subscribes.Any(subscribe => subscribe.UserId == emailClaim))
+                {
+                    post.IsSubscribed = true;
+                } 
+
+                votes.ForEach(vote =>
+                {
+                    
+
+                    if (vote.UserId == emailClaim)
+                    {
+                        if (vote.IsUpvote)
+                        {
+                            post.PostVoteStatus = "UPVOTED";
+                        }
+                        else if (!vote.IsUpvote) {
+                            post.PostVoteStatus = "DOWNVOTED";
+                        }
+                    }
+
+                    if (vote.IsUpvote)
+                    {
+                        post.GlasoviZa++;
+
+                    } else if (!vote.IsUpvote)
+                    {
+                        post.GlasoviProtiv++;
+                    }
+                });
 
                 return Ok(post);
             }
@@ -212,8 +263,62 @@ namespace RedditService_WebRole.Controllers
         {
             try
             {
+                var token = _jwtTokenReader.ExtractTokenFromAuthorizationHeader(Request.Headers.Authorization);
+                if (token == null)
+                    return Unauthorized();
+
+                var claims = _jwtTokenReader.GetClaimsFromToken(token);
+
+                var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
+
                 var allPosts = await Task.FromResult(_postRepository.DobaviSve().ToList());
+                List<Vote> votes = await Task.FromResult(_voteRepository.DobaviSve().ToList());
+                List<Subscribe> subscribes = await Task.FromResult(_subscriptionRepository.DobaviSve().ToList());
+
+
+                foreach (var post in allPosts)
+                {
+                    if (emailClaim == post.UserId)
+                    {
+                        post.IsOwner = true;
+                    }
+
+                    if (subscribes.Any(subscribe => subscribe.UserId == emailClaim && subscribe.RowKey == post.Id))
+                    {
+                        post.IsSubscribed = true;
+                    }
+
+                    votes.Where(vote => vote.PostId == post.Id).ToList().ForEach(vote =>
+                    {
+
+                        if (vote.UserId == emailClaim)
+                        {
+                            if (vote.IsUpvote)
+                            {
+                                post.PostVoteStatus = "UPVOTED";
+                            }
+                            else if (!vote.IsUpvote)
+                            {
+                                post.PostVoteStatus = "DOWNVOTED";
+                            }
+                        }
+
+                        if (vote.IsUpvote)
+                        {
+                            post.GlasoviZa++;
+
+                        }
+                        else if (!vote.IsUpvote)
+                        {
+                            post.GlasoviProtiv++;
+                        }
+                    });
+                }
+                
+
                 return Ok(allPosts);
+
+
             }
             catch (Exception ex)
             {
