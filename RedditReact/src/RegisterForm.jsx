@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from "./axiosInstance";
 
 function RegisterForm() {
   const [firstName, setFirstName] = useState('');
@@ -39,7 +40,7 @@ function RegisterForm() {
       };
 
       try {
-          const response = await axios.post('http://localhost:8080/auth/register', {...userData});
+          const response = await axiosInstance.post("auth/register", {...userData});
           navigate("/login")
       } catch (error) {
           console.error("There was an error!", error);

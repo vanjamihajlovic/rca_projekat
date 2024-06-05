@@ -32,8 +32,7 @@ function CreateTopic() {
         };
 
         try {
-            const endpoint = `http://localhost:8080/post/create`;
-            const response = await axiosInstance.post(endpoint, payload);
+            const response = await axiosInstance.post("/post/create", payload);
             console.log('RESPONSE');
             console.log(response);
             console.log(response.status);
