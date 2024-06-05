@@ -5,6 +5,7 @@ using RedditService_WebRole.Models;
 using ServiceData;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,6 +15,8 @@ using System.Web.Http.Cors;
 using System.Web.Security;
 using System.Web.Services.Description;
 using TableRepository;
+using System.Drawing;
+
 
 namespace RedditService_WebRole.Controllers
 {
@@ -60,6 +63,15 @@ namespace RedditService_WebRole.Controllers
                 var lastName = _jwtTokenReader.GetClaimValue(claims, "lastName");
 
                 var newPost = new Tema(post.Id, post.Title, post.Content, emailClaim, firstName, lastName);
+
+                Image image;
+                using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(post.ImageUrl.Split(',')[1])))
+                {
+                    image = Image.FromStream(ms);
+                }
+                newPost.Slika = new BlobHelper().UploadImage(image, "slike",
+                        Guid.NewGuid().ToString() + ".jpg");
+
                 bool isAdded = await Task.FromResult(_postRepository.DodajTemu(newPost));
 
                 if (!isAdded)
