@@ -145,7 +145,6 @@ function HomePage() {
                         <option value="">Default</option>
                         <option value="GlasoviZa">Upvotes</option>
                         <option value="GlasoviProtiv">Downvotes</option>
-                        <option value="numOfComments">Comments</option>
                     </select>
                 </div>
             </div>
