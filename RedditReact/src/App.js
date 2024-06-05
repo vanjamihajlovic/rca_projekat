@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import LoginForm from './LoginForm';
@@ -11,7 +12,7 @@ import Profile from "./Profile";
 import NavBar from "./NavBar";
 
 function App() {
-  
+
   const checkAuth = () => {
     const token = Cookies.get('jwt-token');
     return token && token !== '';
@@ -22,6 +23,10 @@ function App() {
       return <Navigate to="/login" />;
     }
     return children;
+  };
+
+  ProtectedRoute.propTypes = {
+    children: PropTypes.node.isRequired,
   };
 
   return (
@@ -39,6 +44,7 @@ function App() {
   );
 }
 
+
 export default App;
 
-    
+
