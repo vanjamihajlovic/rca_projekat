@@ -119,5 +119,6 @@ namespace RedditService_WebRole.Controllers
                 return BadRequest(e.Message);
             }
         }
+      // implementirati logout na frontu tako da izbaci cookie iz storage-a
     }
 }

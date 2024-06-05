@@ -164,6 +164,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PostController.cs" />
     <Compile Include="Controllers\SubscriptionController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\VoteController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -175,6 +176,7 @@
     <Compile Include="Models\Post.cs" />
     <Compile Include="Models\Register.cs" />
     <Compile Include="Models\SubscriptionRequest.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Models\Voting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedditService.cs" />
@@ -242,6 +244,7 @@
     <Folder Include="Views\Post\" />
     <Folder Include="Views\Sort\" />
     <Folder Include="Views\Subscription\" />
+    <Folder Include="Views\User\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
