@@ -77,8 +77,6 @@ function HomePage() {
             const response = await axiosInstance.post(endpoint, { topicId });
             if (response.status === 200) {
                 fetchTopics();
-                // const updatedTopic = response.data.topic;
-                // handleApiResponse(updatedTopic, action === 'delete', topicId);
                 toast(response.data.message);
             }
         } catch (error) {
@@ -96,8 +94,6 @@ function HomePage() {
         const response = await axiosInstance.post(endpoint, { topicId });
         if (response.status === 200) {
             fetchTopics();
-            // const updatedTopic = response.data.topic;
-            // handleApiResponse(updatedTopic, action === 'delete', topicId);
             toast(response.data.message);
         }
     } catch (error) {
@@ -107,24 +103,6 @@ function HomePage() {
     }
 };
 
-    /*const fetchTopics = async () => {
-        try {
-            const response = await axiosInstance.get('post/readall');
-            console.log(response);
-            console.log(response.data);
-            setTopics(response.data);
-
-        } catch (error) {
-            console.error("Error fetching data: ", error);
-        }
-    };*/
-
-
-    /*useEffect(() => {
-        fetchTopics();
-    }, []);*/
-
-     // Fetch topics based on current page and page size
      const fetchTopics = async () => {
         try {
             const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}`);
@@ -136,14 +114,12 @@ function HomePage() {
 
     useEffect(() => {
         fetchTopics();
-    }, [currentPage, pageSize]); // Fetch topics whenever currentPage or pageSize changes
+    }, [currentPage, pageSize]);
 
-    // Function to handle page change
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
 
-    // Function to handle page size change
     const handlePageSizeChange = (size) => {
         setPageSize(size);
     };
