@@ -159,7 +159,12 @@ function TopicPage() {
                                 DELETE
                             </button>
                         </div>
+
                     )}
+                    {topic.Slika && (
+                        <img src={topic.Slika} alt="topic image"/>
+                    )}
+
             <div className="comment-section">
                 {
                     (

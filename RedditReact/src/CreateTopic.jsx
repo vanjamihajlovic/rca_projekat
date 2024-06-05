@@ -9,8 +9,18 @@ const { v4: uuidv4} = require('uuid');
 function CreateTopic() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [image, setImage] = useState('');
 
     const navigate = useNavigate();
+
+    const handleImageUploaded = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImage(reader.result);
+        }
+        reader.readAsDataURL(file);
+      }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,6 +28,7 @@ function CreateTopic() {
             Title: title,
             Content: content,
             Id: uuidv4(),
+            ImageUrl: image,
         };
 
         try {
@@ -47,6 +58,10 @@ function CreateTopic() {
                 <div className="form-group">
                     <label htmlFor="content">Content</label>
                     <textarea value={content} onChange={(e) => setContent(e.target.value)} id="content" placeholder="Content" className="form-control"></textarea>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="image">Image</label>
+                    <input type="file" onChange={handleImageUploaded} />
                 </div>
                 <button type="submit" className="submit-button">Create Topic</button>
             </form>

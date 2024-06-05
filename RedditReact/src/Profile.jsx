@@ -15,8 +15,9 @@ function Profile() {
     });
 
     useEffect(() => {
-        axiosInstance.get('/profile').then(response => {
-            setProfile(response.data.profile);
+        axiosInstance.get('/user/get').then(response => {
+            setProfile(response.data);
+            console.log(response.data);
         }).catch(error => {
             console.error("Error fetching profile: ", error);
             toast("Error fetching profile");
@@ -33,7 +34,16 @@ function Profile() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axiosInstance.post('/profile', profile);
+            console.log(profile);
+
+            Object.keys(profile).forEach(field => {
+                if (profile[field] == '' || profile[field] == undefined) {
+                    delete profile[field];
+                }
+
+            })
+
+            const response = await axiosInstance.put('/user/profile/update', profile);
             if (response.status === 200) {
                 toast("Profile updated successfully");
             }
@@ -44,12 +54,14 @@ function Profile() {
     };
 
     const labelMap = {
-        first_name: 'First Name',
-        last_name: 'Last Name',
-        country: 'Country',
-        address: 'Address',
-        city: 'City',
-        phone: 'Phone'
+        Ime: 'First Name',
+        Prezime: 'Last Name',
+        Drzava: 'Country',
+        Adresa: 'Address',
+        Grad: 'City',
+        BrTel: 'Phone',
+        Lozinka: 'Password',
+        Slika: 'Image',
     };
 
     return (
@@ -57,18 +69,31 @@ function Profile() {
             <ToastContainer position="top-right" autoClose={2000} />
             <h1>Edit Profile</h1>
             <form onSubmit={handleSubmit} className="profile-form">
-                {Object.entries(profile).map(([key, value]) => (
-                    <div key={key} className="form-group">
-                        <label htmlFor={key}>{labelMap[key] || key.replace('_', ' ')}</label>
-                        <input
-                            type="text"
-                            id={key}
-                            name={key}
-                            value={value}
-                            onChange={handleInputChange}
-                            className="form-control"
-                            disabled={(key === "Id" || key === "userId")}
-                        />
+                {Object.entries(labelMap).map(([labelKey, labelValue]) => (
+                    <div key={labelKey} className="form-group">
+                        <label htmlFor={labelKey}>{labelValue}</label>
+                        {labelKey === 'Slika' ? (
+                            <img src={profile[labelKey]} alt="profile image" className="profile-image" />
+                        ) : labelKey === 'Lozinka' || labelKey === 'Password' ? (
+                            <input
+                                type="password"
+                                id={labelKey}
+                                name={labelKey}
+                                value={profile[labelKey]}
+                                onChange={handleInputChange}
+                                className="form-control"
+                            />
+                        ) : (
+                            <input
+                                type="text"
+                                id={labelKey}
+                                name={labelKey}
+                                value={profile[labelKey]}
+                                onChange={handleInputChange}
+                                className="form-control"
+                                disabled={labelKey === "Id" || labelKey === "userId"}
+                            />
+                        )}
                     </div>
                 ))}
                 <button type="submit" className="submit-button">Update Profile</button>

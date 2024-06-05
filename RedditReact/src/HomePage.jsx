@@ -199,6 +199,9 @@ function HomePage() {
                             </button>
                         </div>
                     )}
+                    {topic.Slika && (
+                        <img src={topic.Slika} alt="topic image"/>
+                    )}
                 </div>
             ))}
             <div className="pagination">
