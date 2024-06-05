@@ -29,7 +29,7 @@ namespace RedditService_WebRole.Controllers
 
         [HttpPut]
         [Route("profile/update")]
-        public async Task<IHttpActionResult> UpdateUserProfile([FromBody] User updatedUser)
+        public async Task<IHttpActionResult> UpdateUserProfile([FromBody]Korisnik updatedUser)
         {
             try
             {
@@ -49,14 +49,14 @@ namespace RedditService_WebRole.Controllers
 
                 if (updatedUser != null)
                 {
-                    user.Ime = updatedUser.FirstName ?? user.Ime;
-                    user.Prezime = updatedUser.LastName ?? user.Prezime;
-                    user.Adresa = updatedUser.Address ?? user.Adresa;
-                    user.Grad = updatedUser.City ?? user.Grad;
-                    user.Drzava = updatedUser.Country ?? user.Drzava;
-                    user.BrTel = updatedUser.Phone ?? user.BrTel;
-                    user.Lozinka = updatedUser.Password ?? user.Lozinka;
-                    user.Slika = updatedUser.Image ?? user.Slika;
+                    user.Ime = updatedUser.Ime ?? user.Ime;
+                    user.Prezime = updatedUser.Prezime ?? user.Prezime;
+                    user.Adresa = updatedUser.Adresa ?? user.Adresa;
+                    user.Grad = updatedUser.Grad ?? user.Grad;
+                    user.Drzava = updatedUser.Drzava?? user.Drzava;
+                    user.BrTel = updatedUser.BrTel ?? user.BrTel;
+                    user.Lozinka = updatedUser.Lozinka ?? user.Lozinka;
+                    user.Slika = updatedUser.Slika ?? user.Slika;
 
                     bool isUpdated = await Task.FromResult(_userRepository.IzmeniKorisnika(user.RowKey, user));
                     if (!isUpdated)
@@ -73,6 +73,39 @@ namespace RedditService_WebRole.Controllers
                 return InternalServerError(ex);
             }
         }
+
+
+        [HttpGet]
+        [Route("get")]
+        public async Task<IHttpActionResult> GetUser()
+        {
+            try
+            {
+                var token = _jwtTokenReader.ExtractTokenFromAuthorizationHeader(Request.Headers.Authorization);
+                if (token == null)
+                    return Unauthorized();
+
+                var claims = _jwtTokenReader.GetClaimsFromToken(token);
+                var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
+
+                if (string.IsNullOrEmpty(emailClaim))
+                    return BadRequest("No Email Claim");
+
+                Korisnik user = await Task.FromResult(_userRepository.DobaviKorisnika(emailClaim));
+
+                if (user == null)
+                    return NotFound();
+
+                user.Lozinka = "";
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
     }
 
 }
