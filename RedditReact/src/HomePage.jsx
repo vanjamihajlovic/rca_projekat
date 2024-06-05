@@ -11,6 +11,8 @@ function HomePage() {
     const [showMyTopics, setShowMyTopics] = useState(false);
     const [sortCriteria, setSortCriteria] = useState(''); 
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1); // State to keep track of current page
+    const [pageSize, setPageSize] = useState(5); // State to keep track of page size
 
     let userId;
 
@@ -105,7 +107,7 @@ function HomePage() {
     }
 };
 
-    const fetchTopics = async () => {
+    /*const fetchTopics = async () => {
         try {
             const response = await axiosInstance.get('post/readall');
             console.log(response);
@@ -115,12 +117,36 @@ function HomePage() {
         } catch (error) {
             console.error("Error fetching data: ", error);
         }
-    };
+    };*/
 
+
+    /*useEffect(() => {
+        fetchTopics();
+    }, []);*/
+
+     // Fetch topics based on current page and page size
+     const fetchTopics = async () => {
+        try {
+            const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}`);
+            setTopics(response.data);
+        } catch (error) {
+            console.error("Error fetching data: ", error);
+        }
+    };
 
     useEffect(() => {
         fetchTopics();
-    }, []);
+    }, [currentPage, pageSize]); // Fetch topics whenever currentPage or pageSize changes
+
+    // Function to handle page change
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+    // Function to handle page size change
+    const handlePageSizeChange = (size) => {
+        setPageSize(size);
+    };
 
     return (
         <div className="homepage-container">
@@ -199,6 +225,18 @@ function HomePage() {
                     )}
                 </div>
             ))}
+            <div className="pagination">
+                <button onClick={() => setCurrentPage(prev => prev > 1 ? prev - 1 : prev)} disabled={currentPage === 1}>
+                    Previous
+                </button>
+                <span>Page {currentPage}</span>
+                <button onClick={() => setCurrentPage(prev => prev + 1)}>Next</button>
+                <select value={pageSize} onChange={(e) => setPageSize(Number(e.target.value))}>
+                    <option value={5}>5 per page</option>
+                    <option value={10}>10 per page</option>
+                    <option value={15}>15 per page</option>
+                </select>
+            </div>
     </div>
     );    
 }

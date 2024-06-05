@@ -325,5 +325,77 @@ namespace RedditService_WebRole.Controllers
                 return InternalServerError(ex);
             }
         }
+        [HttpGet]
+        [Route("readallpaginated")]
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public async Task<IHttpActionResult> ReadAllPostsPaginated(int page = 1, int pageSize = 5)
+        {
+            try
+            {
+                var token = _jwtTokenReader.ExtractTokenFromAuthorizationHeader(Request.Headers.Authorization);
+                if (token == null)
+                    return Unauthorized();
+
+                var claims = _jwtTokenReader.GetClaimsFromToken(token);
+                var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
+
+
+
+                var paginatedPostsTask = _postRepository.DobaviSvePaginirano(page, pageSize);
+                var paginatedPosts = await paginatedPostsTask;
+
+
+                // Dohvati dodatne informacije o postovima (glasovi, pretplate)
+                var votes = await Task.FromResult(_voteRepository.DobaviSve().ToList());
+                var subscribes = await Task.FromResult(_subscriptionRepository.DobaviSve().ToList());
+
+                // Dodaj dodatne informacije u svaki post
+                foreach (var post in paginatedPosts)
+                {
+                    if (emailClaim == post.UserId)
+                    {
+                        post.IsOwner = true;
+                    }
+
+                    if (subscribes.Any(subscribe => subscribe.UserId == emailClaim && subscribe.PostId == post.Id))
+                    {
+                        post.IsSubscribed = true;
+                    }
+
+                    votes.Where(vote => vote.PostId == post.Id).ToList().ForEach(vote =>
+                    {
+                        if (vote.UserId == emailClaim)
+                        {
+                            if (vote.IsUpvote)
+                            {
+                                post.PostVoteStatus = "UPVOTED";
+                            }
+                            else if (!vote.IsUpvote)
+                            {
+                                post.PostVoteStatus = "DOWNVOTED";
+                            }
+                        }
+
+                        if (vote.IsUpvote)
+                        {
+                            post.GlasoviZa++;
+                        }
+                        else if (!vote.IsUpvote)
+                        {
+                            post.GlasoviProtiv++;
+                        }
+                    });
+                }
+
+                return Ok(paginatedPosts);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+
     }
+
+
 }

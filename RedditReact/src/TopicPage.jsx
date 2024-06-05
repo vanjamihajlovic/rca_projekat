@@ -13,6 +13,7 @@ function TopicPage() {
     const [topic, setTopic] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
+    
 
     useEffect(() => {
         axiosInstance.get(`/post/read/${topicId}`).then(response => {
@@ -116,6 +117,11 @@ function TopicPage() {
         const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
         return new Intl.DateTimeFormat('en-US', options).format(date);
       };
+
+    
+   
+    
+    
 
     if (!topic) {
         return <div>Loading...</div>; 

@@ -4,8 +4,10 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using ServiceData;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace TableRepository
 {
@@ -36,6 +38,33 @@ namespace TableRepository
                 return Enumerable.Empty<Tema>().AsQueryable();
             }
         }
+
+        public async Task<IQueryable<Tema>> DobaviSvePaginirano(int page, int pageSize)
+        {
+            try
+            {
+                TableQuerySegment<Tema> currentSegment = null;
+                TableContinuationToken continuationToken = null;
+                var results = new List<Tema>();
+
+                var tableQuery = new TableQuery<Tema>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "Tema")).Take(pageSize);
+
+                do
+                {
+                    currentSegment = await table.ExecuteQuerySegmentedAsync(tableQuery, continuationToken);
+                    results.AddRange(currentSegment.Results);
+                    continuationToken = currentSegment.ContinuationToken;
+                } while (continuationToken != null && results.Count < page * pageSize);
+
+                return results.AsQueryable();
+            }
+            catch (Exception)
+            {
+                // Ovdje je preporučljivo zabilježiti ili obraditi iznimke, ali za ovaj primjer vraćamo prazan rezultat.
+                return Enumerable.Empty<Tema>().AsQueryable();
+            }
+        }
+
 
         public Tema DobaviTemu(string id)
         {
