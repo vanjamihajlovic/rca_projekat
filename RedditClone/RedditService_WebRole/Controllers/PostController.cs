@@ -283,7 +283,7 @@ namespace RedditService_WebRole.Controllers
                         post.IsOwner = true;
                     }
 
-                    if (subscribes.Any(subscribe => subscribe.UserId == emailClaim && subscribe.RowKey == post.Id))
+                    if (subscribes.Any(subscribe => subscribe.UserId == emailClaim && subscribe.PostId == post.Id))
                     {
                         post.IsSubscribed = true;
                     }

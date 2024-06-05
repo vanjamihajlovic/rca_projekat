@@ -59,7 +59,7 @@ namespace TableRepository
         public Subscribe DobaviSubscribeNaPostZaUser(string postId, string userId)
         {
             var results = (from g in table.CreateQuery<Subscribe>()
-                          where g.PartitionKey == "Subscribe" && g.RowKey == postId && g.UserId == userId
+                          where g.PartitionKey == "Subscribe" && g.PostId == postId && g.UserId == userId
                           select g).FirstOrDefault();
             return results;
         }
@@ -72,7 +72,7 @@ namespace TableRepository
             }
 
             Subscribe subscribe = (from g in table.CreateQuery<Subscribe>()
-                                   where g.PartitionKey == "Subscribe" && g.RowKey == postId && g.UserId == userId
+                                   where g.PartitionKey == "Subscribe" && g.PostId == postId && g.UserId == userId
                                    select g).FirstOrDefault();
                                    
 
@@ -91,7 +91,7 @@ namespace TableRepository
         public List<Subscribe> DobaviSvePrijavljene(string post)
         {
             var results = from g in table.CreateQuery<Subscribe>()
-                          where g.PartitionKey == "Subscribe" && g.RowKey == post
+                          where g.PartitionKey == "Subscribe" && g.PostId == post
                           select g;
             return results.ToList<Subscribe>();
         }

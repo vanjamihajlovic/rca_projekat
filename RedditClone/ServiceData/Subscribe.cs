@@ -15,8 +15,13 @@ namespace ServiceData
 
         public Subscribe(string userId, string postId) : this()
         {
-            RowKey = postId;
+            PartitionKey = "Subscribe";
+            RowKey = Guid.NewGuid().ToString();
+
+            PostId = postId;
             UserId = userId;
+
+
         }
     }
 }

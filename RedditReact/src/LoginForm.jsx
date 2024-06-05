@@ -15,7 +15,7 @@ function LoginForm() {
             Email: email,
             Password: pass
         };
-            axiosInstance.post('http://localhost:8080/auth/login', loginData)
+            axiosInstance.post('http://localhost/auth/login', loginData)
                 .then(response => {
                 const token = response.data;
                 Cookies.set('jwt-token', token, { expires: 7, secure: true, sameSite: 'Strict' });
