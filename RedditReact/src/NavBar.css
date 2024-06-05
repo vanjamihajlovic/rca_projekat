@@ -13,6 +13,17 @@
     color: #555;
 }
 
-.active-link {
-    color: #0275d8;
-}
+.logout-button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    margin-left: 15px;
+  }
+
+  .logout-button:hover {
+    text-decoration: none;
+  }
