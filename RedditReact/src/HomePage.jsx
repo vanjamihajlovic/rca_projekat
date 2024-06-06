@@ -8,13 +8,12 @@ import 'react-toastify/dist/ReactToastify.css';
 function HomePage() {
     const navigate = useNavigate();
     const [topics, setTopics] = useState([]);
-    const [showMyTopics, setShowMyTopics] = useState(false);
+    const [showMyTopics, setShowMyTopics] = useState(true);
     const [sortCriteria, setSortCriteria] = useState(''); 
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1); // State to keep track of current page
     const [pageSize, setPageSize] = useState(5); // State to keep track of page size
     
-
     let userId;
 
     const navigateToCreateTopic = () => {
@@ -92,6 +91,8 @@ function HomePage() {
 
     try {
         const endpoint = `/vote/${action}/${topicId}`;
+        console.log(endpoint);
+        console.log({topicId});
         const response = await axiosInstance.post(endpoint, { topicId });
         if (response.status === 200) {
             fetchTopics();

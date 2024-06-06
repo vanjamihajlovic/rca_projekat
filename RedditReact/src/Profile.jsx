@@ -31,6 +31,18 @@ function Profile() {
         });
     };
 
+    const handleImageUploaded = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setProfile({
+                ...profile,
+                Slika: reader.result,
+            })
+        }
+        reader.readAsDataURL(file);
+      }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -43,6 +55,7 @@ function Profile() {
 
             })
 
+            console.log(profile);
             const response = await axiosInstance.put('/user/profile/update', profile);
             if (response.status === 200) {
                 toast("Profile updated successfully");
@@ -73,7 +86,10 @@ function Profile() {
                     <div key={labelKey} className="form-group">
                         <label htmlFor={labelKey}>{labelValue}</label>
                         {labelKey === 'Slika' ? (
+                            <div>
                             <img src={profile[labelKey]} alt="profile image" className="profile-image" />
+                            <input type="file" id={labelKey} name={labelKey} onChange={handleImageUploaded} />
+                            </div>
                         ) : labelKey === 'Lozinka' || labelKey === 'Password' ? (
                             <input
                                 type="password"

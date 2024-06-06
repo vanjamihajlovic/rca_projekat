@@ -9,7 +9,9 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using TableRepository;
-
+using System.Drawing;
+using System.IO;
+using Helpers;
 
 namespace RedditService_WebRole.Controllers
 {
@@ -56,7 +58,17 @@ namespace RedditService_WebRole.Controllers
                     user.Drzava = updatedUser.Drzava?? user.Drzava;
                     user.BrTel = updatedUser.BrTel ?? user.BrTel;
                     user.Lozinka = updatedUser.Lozinka ?? user.Lozinka;
-                    user.Slika = updatedUser.Slika ?? user.Slika;
+
+                    if (!updatedUser.Slika.StartsWith("http")) {
+                        Image image;
+                        string slikaB64 = updatedUser.Slika;
+                        using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(slikaB64.Split(',')[1])))
+                        {
+                            image = Image.FromStream(ms);
+                        }
+                        user.Slika = new BlobHelper().UploadImage(image, "slike",
+                            Guid.NewGuid().ToString() + ".jpg");
+                    }
 
                     bool isUpdated = await Task.FromResult(_userRepository.IzmeniKorisnika(user.RowKey, user));
                     if (!isUpdated)

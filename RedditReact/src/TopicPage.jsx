@@ -90,7 +90,7 @@ function TopicPage() {
         console.log(`${action} Topic ID: ${topicId}`);
     
         try {
-            const endpoint = `/post/${action}/${topicId}`;
+            const endpoint = `/vote/${action}/${topicId}`;
             const response = await axiosInstance.post(endpoint, { topicId });
             if (response.status === 200) {
 
