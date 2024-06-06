@@ -43,3 +43,9 @@
 .submit-button:hover {
     background-color: #0056b3;
 }
+
+.profile-image {
+    max-width: 60%; 
+    height: 200px; 
+    margin-top: 20px; 
+}

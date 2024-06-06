@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 
 const url = "http://localhost";
 const port = "8080";
-const usePort = true
+const usePort = false
 
 const axiosInstance = axios.create({
   baseURL: url + (usePort ? `:${port}` : ''),

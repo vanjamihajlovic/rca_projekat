@@ -159,7 +159,7 @@ function HomePage() {
                     <p className="topic-info">Created At: {topic.Timestamp}</p>
                     <p className="topic-info">Owner: {topic.FirstName} {topic.LastName}</p>
                     <p className="topic-info">Upvotes: {topic.GlasoviZa ? topic.GlasoviZa : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv : 0}</p>
-                    <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari : 0}</p>
+                    <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari.length : 0}</p>
                     <div>
                         <button className={`vote-button ${topic.PostVoteStatus === 'UPVOTED' ? 'active-upvote-button' : ''}`}
                                 onClick={(e) => 
@@ -200,7 +200,7 @@ function HomePage() {
                         </div>
                     )}
                     {topic.Slika && (
-                        <img src={topic.Slika} alt="topic image"/>
+                        <img src={topic.Slika} alt="topic image" className="topic-image"/>
                     )}
                 </div>
             ))}

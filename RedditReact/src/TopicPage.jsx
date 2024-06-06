@@ -55,7 +55,11 @@ function TopicPage() {
             const endpoint = `/subscribe/subscribepost/`;
             const response = await axiosInstance.post(endpoint, { PostId: topicId });
             if (response.status === 200) {
-                setTopic({...topic, IsSubscribed: topic.IsSubscribed})
+                //setTopic({...topic, IsSubscribed: topic.IsSubscribed})
+                setTopic(prevTopic => ({
+                    ...prevTopic,
+                    IsSubscribed: !prevTopic.IsSubscribed
+                }))
             }
         } catch (error) {
             toast("Error happened");
@@ -86,7 +90,7 @@ function TopicPage() {
         console.log(`${action} Topic ID: ${topicId}`);
     
         try {
-            const endpoint = `/vote/${action}/${topicId}`;
+            const endpoint = `/post/${action}/${topicId}`;
             const response = await axiosInstance.post(endpoint, { topicId });
             if (response.status === 200) {
 
@@ -135,7 +139,6 @@ function TopicPage() {
                 <p className="topic-info">Created At: {formatDate(topic.Timestamp)}</p>
                     <p className="topic-info">Owner:  {topic.FirstName} {topic.LastName}</p>
                     <p className="topic-info">Upvotes: {topic.GlasoviZa ? topic.GlasoviZa : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv : 0}</p>
-                    <p className="topic-info">Locked: {topic.locked ? 'Yes' : 'No'}</p>
                     <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari.length : 0}</p>
                     <div>
                         <button className={`vote-button ${topic.PostVoteStatus === 'UPVOTED' ? 'active-upvote-button' : ''}`}
@@ -162,7 +165,7 @@ function TopicPage() {
 
                     )}
                     {topic.Slika && (
-                        <img src={topic.Slika} alt="topic image"/>
+                        <img src={topic.Slika} alt="topic image" className="topic-image"/>
                     )}
 
             <div className="comment-section">
