@@ -10,6 +10,7 @@ function TopicPage() {
     const navigate = useNavigate();
 
     const { topicId } = useParams();
+    const { commentId } = useParams();
     const [topic, setTopic] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
@@ -49,6 +50,7 @@ function TopicPage() {
     };
 
     
+    
 
     const handleTopicSubscribe = async (topicId, action) => {
         console.log(`${action} Topic ID: ${topicId}`);
@@ -85,6 +87,23 @@ function TopicPage() {
             toast("Error Happened");
     
             console.error(`Error ${action} topic: `, error);
+        }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+    
+        try {
+            const endpoint = `comment/delete/${commentId}`;
+            const response = await axiosInstance.post(endpoint, { commentId });
+            if (response.status === 200) {
+                //navigate("/");
+                setComments(comments.filter(comment => comment.RowKey !== commentId))
+                toast(response.data.message);
+            }
+        } catch (error) {
+            toast("Error Happened");
+    
+            
         }
     };
 
@@ -190,6 +209,11 @@ function TopicPage() {
                     <div className="comment-header">
                         <span className="comment-author">{comment?.AuthorName}</span>
                         <span className="comment-date"> at {formatDate(comment?.Timestamp)}</span>
+                            <button
+                                className="delete-comment-button"
+                                onClick={() => handleDeleteComment(comment?.RowKey)}>
+                                Delete
+                            </button>
                     </div>
                     <p className="comment-content">{comment?.Sadrzaj}</p>
                     

@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function HomePage() {
     const navigate = useNavigate();
     const [topics, setTopics] = useState([]);
-    const [showMyTopics, setShowMyTopics] = useState(true);
+    const [showMyTopics, setShowMyTopics] = useState('');
     const [sortCriteria, setSortCriteria] = useState(''); 
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1); // State to keep track of current page

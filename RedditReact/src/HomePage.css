@@ -220,3 +220,16 @@
     height: 200px; 
     margin-top: 20px; 
 }
+
+.delete-comment-button {
+    margin-left: 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.delete-comment-button:hover {
+    background-color: darkred;
+}
