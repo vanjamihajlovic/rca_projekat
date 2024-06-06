@@ -48,6 +48,8 @@ function TopicPage() {
         }
     };
 
+    
+
     const handleTopicSubscribe = async (topicId, action) => {
         console.log(`${action} Topic ID: ${topicId}`);
     
@@ -71,7 +73,7 @@ function TopicPage() {
         console.log(`${action} Topic ID: ${topicId}`);
     
         try {
-            const endpoint = `/delete/${topicId}`;
+            const endpoint = `post/delete/${topicId}`;
             const response = await axiosInstance.post(endpoint, { topicId });
             if (response.status === 200) {
                 navigate("/");
@@ -158,7 +160,7 @@ function TopicPage() {
                         <div className="topic-controls">
                             <button
                                 className="control-button delete-button"
-                                onClick={() => handleTopicAction(topic.Id, "delete")}>
+                                onClick={() => handleDelete(topicId, "delete")}>
                                 DELETE
                             </button>
                         </div>
@@ -190,6 +192,7 @@ function TopicPage() {
                         <span className="comment-date"> at {formatDate(comment?.Timestamp)}</span>
                     </div>
                     <p className="comment-content">{comment?.Sadrzaj}</p>
+                    
                 </div>
         ))}
             </div>
