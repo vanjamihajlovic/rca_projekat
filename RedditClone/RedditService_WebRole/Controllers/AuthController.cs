@@ -88,13 +88,20 @@ namespace RedditService_WebRole.Controllers
                 {
                     var novi = new Korisnik(data.Email, data.FirstName, data.LastName, data.Address, data.City, data.Country, data.Phone, data.Email, data.Password);
 
-                    Image image;
-                    using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(data.Image.Split(',')[1])))
+                    if (data.Image != "")
                     {
-                        image = Image.FromStream(ms);
+                        Image image;
+                        using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(data.Image.Split(',')[1])))
+                        {
+                            image = Image.FromStream(ms);
+                        }
+                        novi.Slika = new BlobHelper().UploadImage(image, "slike",
+                            Guid.NewGuid().ToString() + ".jpg");
+                    } else
+                    {
+                        novi.Slika = "";
                     }
-                    novi.Slika = new BlobHelper().UploadImage(image, "slike",
-                        Guid.NewGuid().ToString() + ".jpg");
+                    
 
                     bool result = repo.DodajKorisnika(novi);
 
