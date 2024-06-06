@@ -13,6 +13,7 @@ function HomePage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1); // State to keep track of current page
     const [pageSize, setPageSize] = useState(5); // State to keep track of page size
+    
 
     let userId;
 
@@ -46,7 +47,7 @@ function HomePage() {
             console.error(`Error ${action} topic: `, error);
         }
     };
-
+   
     const filteredTopics = () => {
         let filtered = topics;
         if (showMyTopics) {
@@ -159,7 +160,8 @@ function HomePage() {
                     <p className="topic-info">Created At: {topic.Timestamp}</p>
                     <p className="topic-info">Owner: {topic.FirstName} {topic.LastName}</p>
                     <p className="topic-info">Upvotes: {topic.GlasoviZa ? topic.GlasoviZa : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv : 0}</p>
-                    <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari.length : 0}</p>
+                    {/* <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari.length : 0}</p> */}
+
                     <div>
                         <button className={`vote-button ${topic.PostVoteStatus === 'UPVOTED' ? 'active-upvote-button' : ''}`}
                                 onClick={(e) => 
