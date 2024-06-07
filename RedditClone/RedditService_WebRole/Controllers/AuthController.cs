@@ -8,6 +8,8 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -32,6 +34,7 @@ namespace RedditService_WebRole.Controllers
                 Trace.WriteLine(e.Message);
             }
         }
+
         // GET: Auth
         [HttpPost]
         [Route("login")]
@@ -47,8 +50,11 @@ namespace RedditService_WebRole.Controllers
 
                 try
                 {
+                    // Hash the password with the salt
+                    string hashedPassword = HashPassword(data.Password);
+
                     var korisnik = repo.DobaviKorisnika(data.Email);
-                    if (korisnik != null && korisnik.Lozinka == data.Password)
+                    if (korisnik != null && korisnik.Lozinka == hashedPassword)
                     {
                         var token = JwtToken.GenerateToken(data.Email, korisnik.Ime, korisnik.Prezime);
                         return Ok(token);
@@ -86,7 +92,10 @@ namespace RedditService_WebRole.Controllers
                 var korisnik = repo.DobaviKorisnika(data.Email);
                 if (korisnik == null || korisnik.Id == null)
                 {
-                    var novi = new Korisnik(data.Email, data.FirstName, data.LastName, data.Address, data.City, data.Country, data.Phone, data.Email, data.Password);
+                    // Hash the password with the salt
+                    string hashedPassword = HashPassword(data.Password);
+
+                    var novi = new Korisnik(data.Email, data.FirstName, data.LastName, data.Address, data.City, data.Country, data.Phone, data.Email, hashedPassword);
 
                     if (data.Image != "")
                     {
@@ -126,6 +135,31 @@ namespace RedditService_WebRole.Controllers
                 return BadRequest(e.Message);
             }
         }
-      // implementirati logout na frontu tako da izbaci cookie iz storage-a
+
+        #region  Hash Helpers
+        static string HashPassword(string password)
+        {
+            byte[] salt = Encoding.UTF8.GetBytes("CGYzqeN4plZekNC88Umm1Q==");
+            using (var sha256 = new SHA256Managed())
+            {
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+                byte[] saltedPassword = new byte[passwordBytes.Length + salt.Length];
+
+                // Concatenate password and salt
+                Buffer.BlockCopy(passwordBytes, 0, saltedPassword, 0, passwordBytes.Length);
+                Buffer.BlockCopy(salt, 0, saltedPassword, passwordBytes.Length, salt.Length);
+
+                // Hash the concatenated password and salt
+                byte[] hashedBytes = sha256.ComputeHash(saltedPassword);
+
+                // Concatenate the salt and hashed password for storage
+                byte[] hashedPasswordWithSalt = new byte[hashedBytes.Length + salt.Length];
+                Buffer.BlockCopy(salt, 0, hashedPasswordWithSalt, 0, salt.Length);
+                Buffer.BlockCopy(hashedBytes, 0, hashedPasswordWithSalt, salt.Length, hashedBytes.Length);
+
+                return Convert.ToBase64String(hashedPasswordWithSalt);
+            }
+        }
+        #endregion
     }
 }
