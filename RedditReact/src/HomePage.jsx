@@ -9,7 +9,7 @@ function HomePage() {
     const navigate = useNavigate();
     const [topics, setTopics] = useState([]);
     const [showMyTopics, setShowMyTopics] = useState('');
-    const [sortCriteria, setSortCriteria] = useState(''); 
+    const [sortCriteria, setSortCriteria] = useState('date');
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1); // State to keep track of current page
     const [pageSize, setPageSize] = useState(5); // State to keep track of page size
@@ -62,10 +62,6 @@ function HomePage() {
         }
 
 
-        if (sortCriteria) {
-            console.log(filtered);
-            filtered = [...filtered].sort((a, b) => b[sortCriteria] - a[sortCriteria]);
-        }
         return filtered;
     };
 
@@ -107,7 +103,8 @@ function HomePage() {
 
      const fetchTopics = async () => {
         try {
-            const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}`);
+            const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}&sort=${sortCriteria}`);
+            console.log(response.data);
             setTopics(response.data);
         } catch (error) {
             console.error("Error fetching data: ", error);
@@ -125,6 +122,12 @@ function HomePage() {
     const handlePageSizeChange = (size) => {
         setPageSize(size);
     };
+
+    const onSortChange = (sort) => {
+
+        setSortCriteria(sort);
+        fetchTopics();
+    }
 
     return (
         <div className="homepage-container">
@@ -145,10 +148,10 @@ function HomePage() {
                 </div>
                 <div className="sort-option">
                     <label htmlFor="sortSelect">Sort by:</label>
-                    <select id="sortSelect" value={sortCriteria} onChange={(e) => setSortCriteria(e.target.value)}>
-                        <option value="">Default</option>
-                        <option value="GlasoviZa">Upvotes</option>
-                        <option value="GlasoviProtiv">Downvotes</option>
+                    <select id="sortSelect" value={sortCriteria} onChange={(e) => onSortChange(e.target.value)}>
+                        <option value="date">Default</option>
+                        <option value="upvotes">Upvotes</option>
+                        <option value="downvotes">Downvotes</option>
                     </select>
                 </div>
             </div>
@@ -158,7 +161,7 @@ function HomePage() {
                 <div className={`topic-card`} key={topic.Id} onClick={() => navigateToTopic(topic.Id)}>
                     <h1 className="topic-title">{topic.Naslov}</h1>
                     <p className="topic-content">{topic.Sadrzaj}</p>
-                    <p className="topic-info">Created At: {topic.Timestamp}</p>
+                    <p className="topic-info">Updated At: {topic.Timestamp}</p>
                     <p className="topic-info">Owner: {topic.FirstName} {topic.LastName}</p>
                     <p className="topic-info">Upvotes: {topic.GlasoviZa ? topic.GlasoviZa : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv : 0}</p>
                     {/* <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari.length : 0}</p> */}

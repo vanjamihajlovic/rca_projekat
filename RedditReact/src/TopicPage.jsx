@@ -157,7 +157,7 @@ function TopicPage() {
             <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
                 <h1 className="topic-title">{topic.Naslov}</h1>
                 <p className="topic-content">{topic.Sadrzaj}</p>
-                <p className="topic-info">Created At: {formatDate(topic.Timestamp)}</p>
+                <p className="topic-info">Updated At: {formatDate(topic.Timestamp)}</p>
                     <p className="topic-info">Owner:  {topic.FirstName} {topic.LastName}</p>
                     <p className="topic-info">Upvotes: {topic.GlasoviZa ? topic.GlasoviZa : 0} | Downvotes: {topic.GlasoviProtiv ? topic.GlasoviProtiv : 0}</p>
                     <p className="topic-info">Comments: {topic.Komentari ? topic.Komentari.length : 0}</p>
