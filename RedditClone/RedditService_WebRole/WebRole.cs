@@ -13,16 +13,6 @@ namespace RedditService_WebRole
 
         public override bool OnStart()
         {
-            // Pokretanje pozadinske niti za server
-            Thread nit = new Thread(() =>
-            {
-                RedditService server = new RedditService();
-                server.JobServer();
-                server.Open();
-            });
-            nit.IsBackground = true;
-            nit.Start();
-
             hcs.Open();
             
             return base.OnStart();
