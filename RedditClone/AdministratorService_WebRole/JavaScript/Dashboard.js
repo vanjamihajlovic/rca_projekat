@@ -1,5 +1,4 @@
-﻿// Samo feč radi
-let allReports = [];
+﻿let allReports = [];
 let dailyAverage = 0;
 
 $(document).ready(function () {

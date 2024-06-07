@@ -19,7 +19,6 @@ namespace ServiceData
         public bool IsOwner { get; set; }
         public bool IsSubscribed { get; set; }
         public string PostVoteStatus { get; set; }
-        public List<string> PretplaceniKorisnici { get; set; } = new List<string>();
 
         public Tema() {
             PartitionKey = "Tema";

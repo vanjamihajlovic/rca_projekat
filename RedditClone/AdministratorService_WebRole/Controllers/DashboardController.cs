@@ -22,8 +22,6 @@ namespace AdministratorService_WebRole.Controllers
         {
             try
             {
-                // TODO autorizacija
-
                 var previousHour = await Task.FromResult(repo.DobaviIzvestajeZaPrethodniSat());
                 return Ok(previousHour);
             }
@@ -39,8 +37,6 @@ namespace AdministratorService_WebRole.Controllers
         {
             try
             {
-                // TODO autorizacija
-
                 var previousDay = await Task.FromResult(repo.DobaviProsekZaPrethodniDan());
                 return Ok(previousDay);
             }

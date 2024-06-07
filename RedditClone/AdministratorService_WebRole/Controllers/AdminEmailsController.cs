@@ -23,8 +23,6 @@ namespace AdministratorService_WebRole.Controllers
         {
             try
             {
-                // TODO autorizacija?
-
                 var allEmails = await Task.FromResult(repo.DobaviSveMejlove());
                 return Ok(allEmails);
             }

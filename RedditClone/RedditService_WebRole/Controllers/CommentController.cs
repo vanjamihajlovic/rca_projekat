@@ -22,7 +22,6 @@ namespace RedditService_WebRole.Controllers
         private readonly JwtTokenReader _jwtTokenReader = new JwtTokenReader();
         private readonly TableRepositoryKomentar _commentRepository = new TableRepositoryKomentar();
 
-
         // GET: Comment
         [HttpPost]
         [Route("create")]
@@ -34,7 +33,6 @@ namespace RedditService_WebRole.Controllers
             }
             try
             {
-
                 var token = _jwtTokenReader.ExtractTokenFromAuthorizationHeader(Request.Headers.Authorization);
                 if (token == null)
                     return Unauthorized();
@@ -45,7 +43,6 @@ namespace RedditService_WebRole.Controllers
                 var firstName = _jwtTokenReader.GetClaimValue(claims, "firstName");
                 var lastName = _jwtTokenReader.GetClaimValue(claims, "lastName");
                 var noviKomentar = new Komentar(comment.TopicId, emailClaim, comment.Text, firstName + " " + lastName);
-
 
                 bool isAdded = _commentRepository.DodajKomentar(noviKomentar);
                 if (!isAdded)
@@ -61,7 +58,6 @@ namespace RedditService_WebRole.Controllers
             {
                 return InternalServerError(ex);
             }
-
         }
 
         [HttpPost]
@@ -70,7 +66,6 @@ namespace RedditService_WebRole.Controllers
         {
             try
             {
-
                 if (string.IsNullOrEmpty(id))
                 {
                     return BadRequest("Invalid comment ID.");
@@ -90,8 +85,5 @@ namespace RedditService_WebRole.Controllers
                 return InternalServerError(ex);
             }
         }
-
-
-
     }
 }

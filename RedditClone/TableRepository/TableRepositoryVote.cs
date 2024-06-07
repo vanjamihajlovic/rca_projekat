@@ -63,20 +63,20 @@ namespace TableRepository
 
 		public async Task<List<Vote>> DobaviSveGlasoveAsync()
 		{
-               try
-                {
-                    var query = new TableQuery<Vote>();
-                    var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
-                    return queryResult.Results.ToList();
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine(ex.Message);
-                    return new List<Vote>();
-                }
+            try
+            {
+                var query = new TableQuery<Vote>();
+                var queryResult = await table.ExecuteQuerySegmentedAsync(query, null);
+                return queryResult.Results.ToList();
             }
+            catch (Exception ex)
+            {
+                Trace.WriteLine(ex.Message);
+                return new List<Vote>();
+            }
+        }
 
-            public async Task<bool> ObrisiGlasAsync(string voteId)
+        public async Task<bool> ObrisiGlasAsync(string voteId)
         {
             if (string.IsNullOrEmpty(voteId))
                 return false;
@@ -119,7 +119,7 @@ namespace TableRepository
 
             try
             {
-                // Koristimo LINQ upit za dohvaćanje glasa
+                // Koristimo LINQ upit za dohvatanje glasa
                 Vote tmp = (from g in table.CreateQuery<Vote>()
                             where g.PartitionKey == "Vote" && g.RowKey == voteId
                             select g).FirstOrDefault();
@@ -141,8 +141,7 @@ namespace TableRepository
                 return false;
             }
         }
-
-
+        
         public Vote DobaviGlas(string idGlasa)
 		{
 			if (idGlasa == null)
@@ -206,6 +205,7 @@ namespace TableRepository
             }
         }
 
+        // OVO SE NE KORISTI!
         public Task<bool> DobaviSveGlasove()
         {
             throw new NotImplementedException();
@@ -226,6 +226,7 @@ namespace TableRepository
             }
         }
 
+        // OVO SE NE KORISTI
         public List<Vote> DobaviSveGlasoveZaKorisnika()
         {
             throw new NotImplementedException();

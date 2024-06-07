@@ -17,10 +17,8 @@ using System.Web.Services.Description;
 using TableRepository;
 using System.Drawing;
 
-
 namespace RedditService_WebRole.Controllers
 {
-
     [RoutePrefix("post")]
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class PostController : ApiController
@@ -64,17 +62,16 @@ namespace RedditService_WebRole.Controllers
 
                 var newPost = new Tema(post.Id, post.Title, post.Content, emailClaim, firstName, lastName);
 
-                    if (post.ImageUrl != "")
+                if (post.ImageUrl != "")
                 {
                     Image image;
                     using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(post.ImageUrl.Split(',')[1])))
                     {
                         image = Image.FromStream(ms);
                     }
-                    newPost.Slika = new BlobHelper().UploadImage(image, "slike",
-                            Guid.NewGuid().ToString() + ".jpg");
-                
-                } else
+                    newPost.Slika = new BlobHelper().UploadImage(image, "slike", Guid.NewGuid().ToString() + ".jpg");                
+                }
+                else
                 {
                     newPost.Slika = "";
                 }
@@ -90,17 +87,14 @@ namespace RedditService_WebRole.Controllers
                 return InternalServerError(ex);
             }
         }
-
         
         [HttpPost]
         [Route("delete/{id}")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-
         public async Task<IHttpActionResult> DeletePost(string id)
         {
             try
             {
-
                 if (string.IsNullOrEmpty(id))
                 {
                     return BadRequest("Invalid post ID.");
@@ -114,8 +108,7 @@ namespace RedditService_WebRole.Controllers
                 List<Komentar> svi = _commentRepository.DobaviSve().ToList();
 
                 temaToDelete.Komentari = svi.Where(x => x.IdTeme == temaToDelete.Id).ToList();
-
-
+                
                 if (temaToDelete.Komentari != null)
                 {
                     foreach (string komentarId in temaToDelete.Komentari.Select(x => x.RowKey).ToList())
@@ -159,7 +152,7 @@ namespace RedditService_WebRole.Controllers
                 // Pretraživanje tema po naslovu
                 var results = await Task.FromResult(_postRepository.PretraziTeme(searchTerm));
 
-                // Pretvorba rezultata u listu i vraćanje HTTP odgovora
+                // Pretvaranje rezultata u listu i vraćanje HTTP odgovora
                 var searchResults = results.ToList();
                 return Ok(searchResults);
             }
@@ -184,12 +177,11 @@ namespace RedditService_WebRole.Controllers
                     case "title":
                         allPosts = sortOrder.ToLower() == "desc" ? allPosts.OrderByDescending(t => t.Naslov) : allPosts.OrderBy(t => t.Naslov);
                         break;
-                    // Dodati dodatne case-ove ako želite omogućiti sortiranje po drugim poljima
                     default:
                         return BadRequest("Invalid sort by parameter.");
                 }
 
-                // Pretvorba rezultata u listu i vraćanje HTTP odgovora
+                // Pretvaranje rezultata u listu i vraćanje HTTP odgovora
                 var sortedResults = allPosts.ToList();
                 return Ok(sortedResults);
             }
@@ -202,7 +194,6 @@ namespace RedditService_WebRole.Controllers
         [HttpGet]
         [Route("read/{id}")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-
         public async Task<IHttpActionResult> ReadPost(string id)
         {
             try
@@ -243,8 +234,6 @@ namespace RedditService_WebRole.Controllers
 
                 votes.ForEach(vote =>
                 {
-                    
-
                     if (vote.UserId == emailClaim)
                     {
                         if (vote.IsUpvote)
@@ -293,7 +282,6 @@ namespace RedditService_WebRole.Controllers
                 List<Vote> votes = await Task.FromResult(_voteRepository.DobaviSve().ToList());
                 List<Subscribe> subscribes = await Task.FromResult(_subscriptionRepository.DobaviSve().ToList());
 
-
                 foreach (var post in allPosts)
                 {
                     if (emailClaim == post.UserId)
@@ -308,7 +296,6 @@ namespace RedditService_WebRole.Controllers
 
                     votes.Where(vote => vote.PostId == post.Id).ToList().ForEach(vote =>
                     {
-
                         if (vote.UserId == emailClaim)
                         {
                             if (vote.IsUpvote)
@@ -333,17 +320,13 @@ namespace RedditService_WebRole.Controllers
                     });
                 }
                 
-
                 return Ok(allPosts);
-
-
             }
             catch (Exception ex)
             {
                 return InternalServerError(ex);
             }
         }
-        
         
         [HttpGet]
         [Route("readallpaginated")]
@@ -390,7 +373,6 @@ namespace RedditService_WebRole.Controllers
                                 post.PostVoteStatus = "DOWNVOTED";
                             }
                         }
-
                     });
                 }
 
@@ -401,8 +383,5 @@ namespace RedditService_WebRole.Controllers
                 return InternalServerError(ex);
             }
         }
-
     }
-
-
 }

@@ -74,7 +74,6 @@ namespace TableRepository
             Subscribe subscribe = (from g in table.CreateQuery<Subscribe>()
                                    where g.PartitionKey == "Subscribe" && g.PostId == postId && g.UserId == userId
                                    select g).FirstOrDefault();
-                                   
 
             if (subscribe == null)
             {
@@ -84,10 +83,9 @@ namespace TableRepository
             TableOperation deleteOperation = TableOperation.Delete(subscribe);
             table.Execute(deleteOperation);
             return true;
-
         }
 
-        //dodati metoddu koja prima id teme i vraca suba za tu temu
+        // Metoda koja prima IdTeme i za nju vraca listu Subscribera
         public List<Subscribe> DobaviSvePrijavljene(string post)
         {
             var results = from g in table.CreateQuery<Subscribe>()
@@ -103,7 +101,7 @@ namespace TableRepository
             try
             {
                 // Kreiranje operacije za insert ili replace entiteta u tabelu
-                TableOperation insertOperation = TableOperation.Insert(s); // ili INSERT ?
+                TableOperation insertOperation = TableOperation.Insert(s);
                 table.Execute(insertOperation);
                 return true;
             }

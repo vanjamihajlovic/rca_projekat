@@ -29,7 +29,6 @@ namespace HealthMonitoringService_WorkerRole
 
 			while (true)
 			{
-				//TODO uncomment
 				hf.HealthCheck();
 
 				Thread.Sleep(5000);

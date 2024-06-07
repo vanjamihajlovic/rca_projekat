@@ -20,9 +20,6 @@ namespace AdministratorService_WebRole.Controllers
 		{
 			if (loginData.Username == "admin" && loginData.Password == "admin")
 			{
-				// TODO menjaj
-                // Ovo ne može ovako, skontaj šta je greška
-				//HttpContext.Current.Session["User"] = loginData as User;
 				return Ok("Uspesna prijava");
 			}
 

@@ -238,7 +238,6 @@
     <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Views\Auth\" />
     <Folder Include="Views\Comment\" />
     <Folder Include="Views\Post\" />

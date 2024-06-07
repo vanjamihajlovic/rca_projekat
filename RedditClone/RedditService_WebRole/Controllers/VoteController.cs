@@ -48,21 +48,20 @@ namespace RedditService_WebRole.Controllers
 
                 Vote userVote = _repo.DobaviGlasovaNaPostZaKorisnik(emailClaim, postId);
 
+                // Use case when user already voted. Now the vote gets 'de-voted' 
+                // If the deleted vote is a upvote, we add a downvote, if it was an downvote we just remove it
                 if (userVote != null)
                 {
-                    // Use case when user already voted. Now the vote gets 'de-voted' 
-                    // If the deleted vote is a downvote, we add an upvote, if it was an upvote we just remove the upvote
-
                     bool isDeleted = await _repo.ObrisiGlasAsync(userVote.VoteId);
 
                     if (userVote.IsUpvote) {
                         bool decremented = await _repositoryTema.UpdateVoteCount(postId, false, true);
                         return Ok();
-                    } else
+                    }
+                    else
                     {
                         bool decremented = await _repositoryTema.UpdateVoteCount(postId, false, false);
                     }
-
                 }
 
                 var vote = new Vote(Guid.NewGuid().ToString(), emailClaim, postId, true, DateTime.UtcNow);
@@ -100,10 +99,10 @@ namespace RedditService_WebRole.Controllers
 
                 Vote userVote = _repo.DobaviGlasovaNaPostZaKorisnik(emailClaim, postId);
 
+                // Use case when user already voted. Now the vote gets 'de-voted' 
+                // If the deleted vote is a upvote, we add a downvote, if it was an downvote we just remove it
                 if (userVote != null)
                 {
-                    // Use case when user already voted. Now the vote gets 'de-voted' 
-                    // If the deleted vote is a upvote, we add a downvote, if it was an downvote we just remove it
 
                     bool isDeleted = await _repo.ObrisiGlasAsync(userVote.VoteId);
 
@@ -111,7 +110,8 @@ namespace RedditService_WebRole.Controllers
                     {
                         bool decremented = await _repositoryTema.UpdateVoteCount(postId, false, false);
                         return Ok();
-                    } else
+                    }
+                    else
                     {
                         bool decremented = await _repositoryTema.UpdateVoteCount(postId, false, true);
                     }
@@ -123,8 +123,8 @@ namespace RedditService_WebRole.Controllers
 
                 if (!isAdded)
                     return BadRequest("Failed to upvote.");
-                return Ok("Downvote successful.");
 
+                return Ok("Downvote successful.");
             }
             catch (Exception ex)
             {

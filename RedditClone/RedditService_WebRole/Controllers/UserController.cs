@@ -30,7 +30,6 @@ namespace RedditService_WebRole.Controllers
             _jwtTokenReader = new JwtTokenReader();
         }
 
-
         [HttpPut]
         [Route("profile/update")]
         public async Task<IHttpActionResult> UpdateUserProfile([FromBody]Korisnik updatedUser)
@@ -65,24 +64,21 @@ namespace RedditService_WebRole.Controllers
                         user.Lozinka = HashPassword(updatedUser.Lozinka);
                     }
 
-                    if (!updatedUser.Slika.StartsWith("http")) {
+                    if (!updatedUser.Slika.StartsWith("http"))
+                    {
                         Image image;
                         string slikaB64 = updatedUser.Slika;
                         using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(slikaB64.Split(',')[1])))
                         {
                             image = Image.FromStream(ms);
                         }
-                        user.Slika = new BlobHelper().UploadImage(image, "slike",
-                            Guid.NewGuid().ToString() + ".jpg");
+                        user.Slika = new BlobHelper().UploadImage(image, "slike", Guid.NewGuid().ToString() + ".jpg");
                     }
 
                     bool isUpdated = await Task.FromResult(_userRepository.IzmeniKorisnika(user.RowKey, user));
                     if (!isUpdated)
                         return BadRequest("Failed to update user profile.");
                 }
-
-                    // Update user properties
-                    
 
                 return Ok("User profile updated successfully.");
             }
@@ -91,7 +87,6 @@ namespace RedditService_WebRole.Controllers
                 return InternalServerError(ex);
             }
         }
-
 
         [HttpGet]
         [Route("get")]
@@ -124,8 +119,6 @@ namespace RedditService_WebRole.Controllers
             }
         }
 
-        
-
         #region  Hash Helpers
         static string HashPassword(string password)
         {
@@ -152,5 +145,4 @@ namespace RedditService_WebRole.Controllers
         }
         #endregion
     }
-
 }

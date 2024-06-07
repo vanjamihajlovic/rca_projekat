@@ -83,7 +83,7 @@ namespace HealthMonitoringService_WorkerRole
             // Napravi izveštaj
             string poruka = (sveOkej) ? "RedditService OK" : "RedditService NOT OK";
             DateTime vreme = DateTime.Now;
-			int idIzvestaja = (int)DateTime.UtcNow.Ticks;    // TODO: promeniti
+			int idIzvestaja = (int)DateTime.UtcNow.Ticks;
 			Izvestaj ri = new Izvestaj(idIzvestaja, vreme, poruka);
 
             // Upiši izveštaj u tabelu
@@ -144,7 +144,7 @@ namespace HealthMonitoringService_WorkerRole
             // Napravi izveštaj
             string poruka = (sveOkej) ? "NotificationService OK" : "NotificationService NOT OK";
             DateTime vreme = DateTime.Now;
-			int idIzvestaja = (int)DateTime.UtcNow.Ticks;    // TODO: promeniti
+			int idIzvestaja = (int)DateTime.UtcNow.Ticks;
 			Izvestaj ni = new Izvestaj(idIzvestaja, vreme, poruka);
 
             // Upiši izveštaj u tabelu

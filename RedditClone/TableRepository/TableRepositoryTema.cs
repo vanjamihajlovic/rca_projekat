@@ -39,6 +39,8 @@ namespace TableRepository
             }
         }
 
+
+        // TODO fix
         public async Task<IQueryable<Tema>> DobaviSvePaginirano(int page, int pageSize, string sortBy)
         {
             try
@@ -78,10 +80,6 @@ namespace TableRepository
                 throw;
             }
         }
-
-
-
-
 
 
         public Tema DobaviTemu(string id)
@@ -140,7 +138,6 @@ namespace TableRepository
                 return false;
             try
             {
-                // select
                 Tema tmp = (from g in table.CreateQuery<Tema>() where g.PartitionKey == "Tema" && g.RowKey == id select g).FirstOrDefault();
 
                 if (tmp == null)
@@ -149,7 +146,6 @@ namespace TableRepository
                     return false;
                 }
 
-                // delete
                 TableOperation deleteOperation = TableOperation.Delete(tmp);
                 table.Execute(deleteOperation);
                 return true;
@@ -194,7 +190,6 @@ namespace TableRepository
             }
         }
 
-
         public IQueryable<Tema> PretraziTeme(string searchTerm)
         {
             try
@@ -209,9 +204,8 @@ namespace TableRepository
             catch (Exception ex)
             {
                 Trace.WriteLine($"Error while searching topics: {ex.Message}");
-                throw; // Prema potrebi možete dodati dalju obradu ili logovanje greške
+                throw;
             }
         }
-
     }
 }

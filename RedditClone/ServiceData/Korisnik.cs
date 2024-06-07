@@ -15,7 +15,6 @@ namespace ServiceData
         public string Email { get; set; }
         public string Lozinka { get; set; }
         public string Slika { get; set; }
-        public List<int> Teme { get; set; }
 
         public Korisnik()
         {
@@ -36,7 +35,6 @@ namespace ServiceData
             Email = email;
             Lozinka = lozinka;
             Slika = "";  // default - nema sliku, ili staviti neki placeholder
-            Teme = new List<int>();
         }
     }
 }

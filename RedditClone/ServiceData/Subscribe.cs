@@ -20,8 +20,6 @@ namespace ServiceData
 
             PostId = postId;
             UserId = userId;
-
-
         }
     }
 }

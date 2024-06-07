@@ -29,8 +29,7 @@ namespace NotificationService_WorkerRole
 
         private HealthCheckService hcs = new HealthCheckService();
 
-        //private readonly QueueHelper queueHelper;
-        // samo deklaracija ovde, a u async je i nalazenje reference
+        // Samo deklaracija ovde, a u RunAsync se dobavlja referenca
         CloudQueue queueComments;
         CloudQueue queueAdmins;
 
@@ -83,7 +82,7 @@ namespace NotificationService_WorkerRole
             Trace.TraceInformation("NotificationService_WorkerRole has stopped");
         }
 
-        // Ovde u asinhronom ce ici citanje iz QUEUE
+        // Pošto je sam po sebi Queue asinhron, onda se u RunAsync mora raditi sa njim
         private async Task RunAsync(CancellationToken cancellationToken)
         {
             queueComments = QueueHelper.GetQueueReference("CommentNotificationsQueue");
@@ -103,14 +102,13 @@ namespace NotificationService_WorkerRole
                     Trace.TraceError("Queue initialization failed.");
                 }
 
-                // Wait for a period before checking the queue again
+                // Wait for a period (10 sec) before checking the queue again
                 await Task.Delay(10000, cancellationToken);
             }
         }
-
         #endregion WorkerRole methods
 
-        #region NotificationService methods
+        #region PostGrid methods
         public async Task PosaljiMejl(string korisnikEmail, string tekstKomentara, string autorKomentara, DateTime vreme, string naslovTeme)
 		{
 			var apiKey = "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";
@@ -140,7 +138,9 @@ namespace NotificationService_WorkerRole
             //Console.WriteLine(response.StatusCode);
             //Console.WriteLine(response.Body.ReadAsStringAsync());
         }
+        #endregion PostGrid methods
 
+        #region NotificationService methods
         // Komentari
         private async Task ProveriQueueKomentari()
         {

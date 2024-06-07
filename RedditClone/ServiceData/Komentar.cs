@@ -19,16 +19,16 @@ namespace ServiceData
 {
     public class Komentar : TableEntity
     {
-        private int id;
         private string idTeme;
         private string autor;
         private string sadrzaj;
         private string authorName;
-        public int Id { get => id; set => id = value; }
+
         public string IdTeme { get => idTeme; set => idTeme = value; }
         public string Autor { get => autor; set => autor = value; }
         public string Sadrzaj { get => sadrzaj; set => sadrzaj = value; }
         public string AuthorName { get => authorName; set => authorName = value; }
+
         public Komentar() {
             PartitionKey = "Komentar";
         }

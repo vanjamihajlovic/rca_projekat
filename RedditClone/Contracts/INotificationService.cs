@@ -9,8 +9,5 @@ namespace Contracts
     {
         [OperationContract]
         Task PosaljiMejl(string korisnikEmail, string tekstKomentara, string autorKomentara, DateTime vreme, string naslovTeme);
-
-
-
     }
 }

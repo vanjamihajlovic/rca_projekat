@@ -19,7 +19,6 @@ namespace RedditService_WebRole.Controllers
         TableRepositorySubscribe repo = new TableRepositorySubscribe();
         private readonly JwtTokenReader _jwtTokenReader = new JwtTokenReader();
 
-
         [HttpPost]
         [Route("subscribepost")]
         public async Task<IHttpActionResult> SubscribeToPost([FromBody] SubscriptionRequest request)
@@ -63,7 +62,5 @@ namespace RedditService_WebRole.Controllers
                 return InternalServerError(ex);
             }
         }
-
-
     }
 }

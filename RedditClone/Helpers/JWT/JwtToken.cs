@@ -42,8 +42,5 @@ namespace Helpers.JWT
             return tokenHandler.WriteToken(token);
         }
     }
-
-
-
 }
 

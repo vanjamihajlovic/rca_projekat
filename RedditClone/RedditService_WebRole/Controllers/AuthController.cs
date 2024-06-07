@@ -38,7 +38,6 @@ namespace RedditService_WebRole.Controllers
         // GET: Auth
         [HttpPost]
         [Route("login")]
-
         public IHttpActionResult Login(Login data)
         {
             try
@@ -68,8 +67,6 @@ namespace RedditService_WebRole.Controllers
                 {
                     return InternalServerError(ex);
                 }
-
-
             }
             catch (Exception e)
             {
@@ -84,7 +81,7 @@ namespace RedditService_WebRole.Controllers
         {
             try
             {
-                if(ModelState.IsValid == false || data == null)
+                if (ModelState.IsValid == false || data == null)
                 {
                     return BadRequest();
                 }
@@ -106,15 +103,15 @@ namespace RedditService_WebRole.Controllers
                         }
                         novi.Slika = new BlobHelper().UploadImage(image, "slike",
                             Guid.NewGuid().ToString() + ".jpg");
-                    } else
+                    }
+                    else
                     {
                         novi.Slika = "";
                     }
                     
-
                     bool result = repo.DodajKorisnika(novi);
 
-                    if(result)
+                    if (result)
                     {
                         var token = JwtToken.GenerateToken(data.Email, data.FirstName, data.LastName);
                         return Ok(token);
@@ -123,7 +120,6 @@ namespace RedditService_WebRole.Controllers
                     {
                         return BadRequest();
                     }
-                    
                 }
                 else
                 {
@@ -136,7 +132,7 @@ namespace RedditService_WebRole.Controllers
             }
         }
 
-        #region  Hash Helpers
+        #region Hash Helpers
         static string HashPassword(string password)
         {
             byte[] salt = Encoding.UTF8.GetBytes("CGYzqeN4plZekNC88Umm1Q==");

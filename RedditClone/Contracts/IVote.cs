@@ -40,7 +40,5 @@ namespace Contracts
 		Task<bool> DobaviSveGlasove();
 		[OperationContract]
 		List<Vote> DobaviSveGlasoveZaKorisnika();
-
-
     }
 }
