@@ -30,8 +30,9 @@ namespace NotificationService_WorkerRole
         private HealthCheckService hcs = new HealthCheckService();
 
         //private readonly QueueHelper queueHelper;
-        CloudQueue queueComments = QueueHelper.GetQueueReference("CommentNotificationsQueue");
-        CloudQueue queueAdmins = QueueHelper.GetQueueReference("AdminNotificationsQueue");
+        // samo deklaracija ovde, a u async je i nalazenje reference
+        CloudQueue queueComments;
+        CloudQueue queueAdmins;
 
 		#region WorkerRole methods
 		public override void Run()
@@ -164,7 +165,7 @@ namespace NotificationService_WorkerRole
 					string tekstKomentara = k.Sadrzaj;
 					string autorKomentara = k.Autor;
 					string naslovTeme = t.Naslov;
-					int brojMejlova = t.PretplaceniKorisnici.Count;
+					int brojMejlova = pretplaceni.Count;
 					DateTime vreme = DateTime.Now;
 
 					foreach (Subscribe i in pretplaceni)
@@ -172,12 +173,13 @@ namespace NotificationService_WorkerRole
 						await PosaljiMejl(i.UserId, tekstKomentara, autorKomentara, vreme, naslovTeme);
 					}
 
-					UpisiNotifikacijuUTabelu(k.Id, vreme, brojMejlova);
+					UpisiNotifikacijuUTabelu(idKomentara, vreme, brojMejlova);
 					// Delete the message after processing
 					queueComments.DeleteMessage(message.Id, message.PopReceipt);
 				}
 			}
 		}
+
         private async Task ProveriQueueAdmini()
         {
             await queueAdmins.FetchAttributesAsync();
@@ -204,14 +206,16 @@ namespace NotificationService_WorkerRole
                         await PosaljiMejlAdminima(ae.EmailAdresa, i.Sadrzaj, i.Vreme);
                     }
 
-                    UpisiNotifikacijuUTabelu(i.Id, vreme, brojMejlova);
+                    // Nije trazeno u zadatku, ali moze se dodati
+                    //UpisiNotifikacijuUTabelu(idIzvestaja, vreme, brojMejlova);
+                    
                     // Delete the message after processing
                     queueAdmins.DeleteMessage(message.Id, message.PopReceipt);
                 }
             }
         }
         
-        private void UpisiNotifikacijuUTabelu(int idKomentara, DateTime vreme, int brojPoslatihMejlova)
+        private void UpisiNotifikacijuUTabelu(string idKomentara, DateTime vreme, int brojPoslatihMejlova)
 		{
 			Notifikacija n = new Notifikacija(idKomentara, vreme, brojPoslatihMejlova);
 			TableRepositoryNotifikacije trn = new TableRepositoryNotifikacije();

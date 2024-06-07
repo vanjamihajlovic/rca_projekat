@@ -5,7 +5,7 @@ namespace ServiceData
 {
     public class Notifikacija : TableEntity
     {
-        public int IdKomentara { get; set; }
+        public string IdKomentara { get; set; }
         public DateTime Vreme { get; set; }
         public int BrojPoslatihMejlova { get; set; }
 
@@ -13,7 +13,7 @@ namespace ServiceData
             PartitionKey = "Notifikacija";
         }
 
-        public Notifikacija(int idKomentara, DateTime vreme, int brojPoslatihMejlova) : this()
+        public Notifikacija(string idKomentara, DateTime vreme, int brojPoslatihMejlova) : this()
         {
             RowKey = idKomentara.ToString();
 
