@@ -39,31 +39,49 @@ namespace TableRepository
             }
         }
 
-        public async Task<IQueryable<Tema>> DobaviSvePaginirano(int page, int pageSize)
+        public async Task<IQueryable<Tema>> DobaviSvePaginirano(int page, int pageSize, string sortBy)
         {
             try
             {
-                TableQuerySegment<Tema> currentSegment = null;
-                TableContinuationToken continuationToken = null;
+                var tableQuery = new TableQuery<Tema>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "Tema"));
                 var results = new List<Tema>();
 
-                var tableQuery = new TableQuery<Tema>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "Tema")).Take(pageSize);
-
+                TableContinuationToken continuationToken = null;
                 do
                 {
-                    currentSegment = await table.ExecuteQuerySegmentedAsync(tableQuery, continuationToken);
-                    results.AddRange(currentSegment.Results);
+                    var currentSegment = await table.ExecuteQuerySegmentedAsync(tableQuery, continuationToken);
                     continuationToken = currentSegment.ContinuationToken;
-                } while (continuationToken != null && results.Count < page * pageSize);
+                    results.AddRange(currentSegment.Results);
+                } while (continuationToken != null);
 
-                return results.AsQueryable();
+                var sortedResults = results.AsQueryable();
+
+                switch (sortBy.ToLower())
+                {
+                    case "upvotes":
+                        sortedResults = sortedResults.OrderByDescending(post => post.GlasoviZa);
+                        break;
+                    case "downvotes":
+                        sortedResults = sortedResults.OrderByDescending(post => post.GlasoviProtiv);
+                        break;
+                    case "date":
+                    default:
+                        sortedResults = sortedResults.OrderByDescending(post => post.Timestamp);
+                        break;
+                }
+
+                return sortedResults.Skip((page - 1) * pageSize).Take(pageSize).OrderByDescending(post => post.Timestamp);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Ovdje je preporučljivo zabilježiti ili obraditi iznimke, ali za ovaj primjer vraćamo prazan rezultat.
-                return Enumerable.Empty<Tema>().AsQueryable();
+                Trace.WriteLine($"Error fetching paginated results: {ex.Message}");
+                throw;
             }
         }
+
+
+
+
 
 
         public Tema DobaviTemu(string id)
@@ -142,6 +160,40 @@ namespace TableRepository
                 return false;
             }
         }
+
+        public async Task<bool> UpdateVoteCount(string rowKey, bool isIncrement, bool isUpvote)
+        {
+            try
+            {
+                var retrieveOperation = TableOperation.Retrieve<Tema>("Tema", rowKey);
+                var retrievedResult = await table.ExecuteAsync(retrieveOperation);
+                var tema = retrievedResult.Result as Tema;
+
+                if (tema == null)
+                {
+                    Trace.WriteLine($"Entity with RowKey {rowKey} not found.");
+                    return false;
+                }
+                if (isUpvote)
+                {
+                    tema.GlasoviZa += isIncrement ? 1 : -1;
+                } else
+                {
+                    tema.GlasoviProtiv += isIncrement ? 1 : -1;
+                }
+                var updateOperation = TableOperation.InsertOrReplace(tema);
+
+                await table.ExecuteAsync(updateOperation);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Error updating GlasoviZa: {ex.Message}");
+                return false;
+            }
+        }
+
 
         public IQueryable<Tema> PretraziTeme(string searchTerm)
         {

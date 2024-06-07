@@ -19,12 +19,14 @@ namespace RedditService_WebRole.Controllers
     public class VoteController : ApiController
     {
         private readonly TableRepositoryVote _repo;
+        private readonly TableRepositoryTema _repositoryTema;
         private readonly JwtTokenReader _jwtTokenReader;
 
         public VoteController()
         {
             _repo = new TableRepositoryVote();
             _jwtTokenReader = new JwtTokenReader();
+            _repositoryTema = new TableRepositoryTema();
         }
 
         [HttpPost]
@@ -54,12 +56,19 @@ namespace RedditService_WebRole.Controllers
                     bool isDeleted = await _repo.ObrisiGlasAsync(userVote.VoteId);
 
                     if (userVote.IsUpvote) {
+                        bool decremented = await _repositoryTema.UpdateVoteCount(postId, false, true);
                         return Ok();
+                    } else
+                    {
+                        bool decremented = await _repositoryTema.UpdateVoteCount(postId, false, false);
                     }
+
                 }
 
                 var vote = new Vote(Guid.NewGuid().ToString(), emailClaim, postId, true, DateTime.UtcNow);
                 bool isAdded = _repo.DodajGlas(vote);
+                bool incremented = await _repositoryTema.UpdateVoteCount(postId, true, true);
+
                 if (!isAdded)
                     return BadRequest("Failed to upvote.");
 
@@ -100,12 +109,18 @@ namespace RedditService_WebRole.Controllers
 
                     if (!userVote.IsUpvote)
                     {
+                        bool decremented = await _repositoryTema.UpdateVoteCount(postId, false, false);
                         return Ok();
+                    } else
+                    {
+                        bool decremented = await _repositoryTema.UpdateVoteCount(postId, false, true);
                     }
                 }
 
                 var vote = new Vote(Guid.NewGuid().ToString(), emailClaim, postId, false, DateTime.UtcNow);
                 bool isAdded = _repo.DodajGlas(vote);
+                bool incremented = await _repositoryTema.UpdateVoteCount(postId, true, false);
+
                 if (!isAdded)
                     return BadRequest("Failed to upvote.");
                 return Ok("Downvote successful.");

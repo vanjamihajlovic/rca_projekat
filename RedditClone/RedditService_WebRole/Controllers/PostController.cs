@@ -63,14 +63,14 @@ namespace RedditService_WebRole.Controllers
                 var lastName = _jwtTokenReader.GetClaimValue(claims, "lastName");
 
                 var newPost = new Tema(post.Id, post.Title, post.Content, emailClaim, firstName, lastName);
-
-                Image image;
-                using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(post.ImageUrl.Split(',')[1])))
-                {
-                    image = Image.FromStream(ms);
-                }
-                newPost.Slika = new BlobHelper().UploadImage(image, "slike",
-                        Guid.NewGuid().ToString() + ".jpg");
+                
+                    Image image;
+                    using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(post.ImageUrl.Split(',')[1])))
+                    {
+                        image = Image.FromStream(ms);
+                    }
+                    newPost.Slika = new BlobHelper().UploadImage(image, "slike",
+                            Guid.NewGuid().ToString() + ".jpg");
 
                 bool isAdded = await Task.FromResult(_postRepository.DodajTemu(newPost));
 
@@ -337,10 +337,12 @@ namespace RedditService_WebRole.Controllers
                 return InternalServerError(ex);
             }
         }
+        
+        
         [HttpGet]
         [Route("readallpaginated")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public async Task<IHttpActionResult> ReadAllPostsPaginated(int page = 1, int pageSize = 5)
+        public async Task<IHttpActionResult> ReadAllPostsPaginated(int page = 1, int pageSize = 5, string sortBy = "date")
         {
             try
             {
@@ -351,17 +353,12 @@ namespace RedditService_WebRole.Controllers
                 var claims = _jwtTokenReader.GetClaimsFromToken(token);
                 var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
 
-
-
-                var paginatedPostsTask = _postRepository.DobaviSvePaginirano(page, pageSize);
+                var paginatedPostsTask = _postRepository.DobaviSvePaginirano(page, pageSize, sortBy);
                 var paginatedPosts = await paginatedPostsTask;
 
-
-                // Dohvati dodatne informacije o postovima (glasovi, pretplate)
                 var votes = await Task.FromResult(_voteRepository.DobaviSve().ToList());
                 var subscribes = await Task.FromResult(_subscriptionRepository.DobaviSve().ToList());
 
-                // Dodaj dodatne informacije u svaki post
                 foreach (var post in paginatedPosts)
                 {
                     if (emailClaim == post.UserId)
@@ -388,14 +385,6 @@ namespace RedditService_WebRole.Controllers
                             }
                         }
 
-                        if (vote.IsUpvote)
-                        {
-                            post.GlasoviZa++;
-                        }
-                        else if (!vote.IsUpvote)
-                        {
-                            post.GlasoviProtiv++;
-                        }
                     });
                 }
 
