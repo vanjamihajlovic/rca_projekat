@@ -63,7 +63,9 @@ namespace RedditService_WebRole.Controllers
                 var lastName = _jwtTokenReader.GetClaimValue(claims, "lastName");
 
                 var newPost = new Tema(post.Id, post.Title, post.Content, emailClaim, firstName, lastName);
-                
+
+                    if (post.ImageUrl != "")
+                {
                     Image image;
                     using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(post.ImageUrl.Split(',')[1])))
                     {
@@ -71,7 +73,11 @@ namespace RedditService_WebRole.Controllers
                     }
                     newPost.Slika = new BlobHelper().UploadImage(image, "slike",
                             Guid.NewGuid().ToString() + ".jpg");
-
+                
+                } else
+                {
+                    newPost.Slika = "";
+                }
                 bool isAdded = await Task.FromResult(_postRepository.DodajTemu(newPost));
 
                 if (!isAdded)
