@@ -59,18 +59,16 @@ namespace TableRepository
 
                 var sortedResults = results.AsQueryable();
 
-                switch (sortBy.ToLower())
+                if (sortBy.ToLower().Equals("asc"))
                 {
-                    case "naslov":
-                        sortedResults = sortedResults.OrderBy(post => post.Naslov);
-                        break;
-                    default:
-                        sortedResults = sortedResults.OrderByDescending(post => post.Timestamp);
-                        break;
+                    sortedResults = sortedResults.OrderBy(post => post.Naslov);
+                }
+                else
+                {
+                    sortedResults = sortedResults.OrderByDescending(post => post.Naslov);
                 }
 
                 return sortedResults.Skip((page - 1) * pageSize).Take(pageSize).AsQueryable();
-                // return sortedResults.Skip((page - 1) * pageSize).Take(pageSize).OrderByDescending(post => post.Timestamp);
             }
             catch (Exception ex)
             {

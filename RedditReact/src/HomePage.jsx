@@ -107,7 +107,7 @@ function HomePage() {
             console.log(`Fetching topics with sortBy=${sortCriteria} and sortOrder=${sortOrder}`);
 
             //const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}&sort=${sortCriteria}`);
-            const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}&sortBy=${sortCriteria}`);
+            const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}&sort=${sortOrder}`);
             console.log(response.data);
             setTopics(response.data);
         } catch (error) {

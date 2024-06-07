@@ -331,7 +331,7 @@ namespace RedditService_WebRole.Controllers
         [HttpGet]
         [Route("readallpaginated")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public async Task<IHttpActionResult> ReadAllPostsPaginated(int page = 1, int pageSize = 5, string sortBy = "Naslov")
+        public async Task<IHttpActionResult> ReadAllPostsPaginated(int page = 1, int pageSize = 5, string sort = "asc")
         {
             try
             {
@@ -342,7 +342,7 @@ namespace RedditService_WebRole.Controllers
                 var claims = _jwtTokenReader.GetClaimsFromToken(token);
                 var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
 
-                var paginatedPostsTask = _postRepository.DobaviSvePaginirano(page, pageSize, sortBy);
+                var paginatedPostsTask = _postRepository.DobaviSvePaginirano(page, pageSize, sort);
                 var paginatedPosts = await paginatedPostsTask;
 
                 var votes = await Task.FromResult(_voteRepository.DobaviSve().ToList());
