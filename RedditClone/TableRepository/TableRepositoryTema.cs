@@ -5,6 +5,7 @@ using Microsoft.WindowsAzure.Storage.Table;
 using ServiceData;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -60,19 +61,16 @@ namespace TableRepository
 
                 switch (sortBy.ToLower())
                 {
-                    case "upvotes":
-                        sortedResults = sortedResults.OrderByDescending(post => post.GlasoviZa);
+                    case "naslov":
+                        sortedResults = sortedResults.OrderBy(post => post.Naslov);
                         break;
-                    case "downvotes":
-                        sortedResults = sortedResults.OrderByDescending(post => post.GlasoviProtiv);
-                        break;
-                    case "date":
                     default:
                         sortedResults = sortedResults.OrderByDescending(post => post.Timestamp);
                         break;
                 }
 
-                return sortedResults.Skip((page - 1) * pageSize).Take(pageSize).OrderByDescending(post => post.Timestamp);
+                return sortedResults.Skip((page - 1) * pageSize).Take(pageSize).AsQueryable();
+                // return sortedResults.Skip((page - 1) * pageSize).Take(pageSize).OrderByDescending(post => post.Timestamp);
             }
             catch (Exception ex)
             {

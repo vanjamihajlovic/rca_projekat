@@ -245,14 +245,14 @@ namespace RedditService_WebRole.Controllers
                         }
                     }
 
-                    if (vote.IsUpvote)
+                    /*if (vote.IsUpvote)
                     {
                         post.GlasoviZa++;
 
                     } else if (!vote.IsUpvote)
                     {
                         post.GlasoviProtiv++;
-                    }
+                    }*/
                 });
 
                 return Ok(post);
@@ -308,7 +308,7 @@ namespace RedditService_WebRole.Controllers
                             }
                         }
 
-                        if (vote.IsUpvote)
+                        /*if (vote.IsUpvote)
                         {
                             post.GlasoviZa++;
 
@@ -316,7 +316,7 @@ namespace RedditService_WebRole.Controllers
                         else if (!vote.IsUpvote)
                         {
                             post.GlasoviProtiv++;
-                        }
+                        }*/
                     });
                 }
                 
@@ -331,7 +331,7 @@ namespace RedditService_WebRole.Controllers
         [HttpGet]
         [Route("readallpaginated")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public async Task<IHttpActionResult> ReadAllPostsPaginated(int page = 1, int pageSize = 5, string sortBy = "date")
+        public async Task<IHttpActionResult> ReadAllPostsPaginated(int page = 1, int pageSize = 5, string sortBy = "Naslov")
         {
             try
             {

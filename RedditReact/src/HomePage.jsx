@@ -9,13 +9,14 @@ function HomePage() {
     const navigate = useNavigate();
     const [topics, setTopics] = useState([]);
     const [showMyTopics, setShowMyTopics] = useState('');
-    const [sortCriteria, setSortCriteria] = useState('date');
+    const [sortCriteria, setSortCriteria] = useState('naslov');
+    const [sortOrder, setSortOrder] = useState('asc');
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1); // State to keep track of current page
     const [pageSize, setPageSize] = useState(5); // State to keep track of page size
     
     let userId;
-
+    
     const navigateToCreateTopic = () => {
         navigate('/create/topic');
     };
@@ -103,7 +104,10 @@ function HomePage() {
 
      const fetchTopics = async () => {
         try {
-            const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}&sort=${sortCriteria}`);
+            console.log(`Fetching topics with sortBy=${sortCriteria} and sortOrder=${sortOrder}`);
+
+            //const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}&sort=${sortCriteria}`);
+            const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}&sortBy=${sortCriteria}`);
             console.log(response.data);
             setTopics(response.data);
         } catch (error) {
@@ -113,7 +117,7 @@ function HomePage() {
 
     useEffect(() => {
         fetchTopics();
-    }, [currentPage, pageSize]);
+    }, [currentPage, pageSize, sortCriteria, sortOrder]);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -128,6 +132,12 @@ function HomePage() {
         setSortCriteria(sort);
         fetchTopics();
     }
+
+    const onSortOrderChange = (order) => {
+        console.log(`Sorting order: ${order}`);
+        setSortOrder(order);
+        fetchTopics();
+    };
 
     return (
         <div className="homepage-container">
@@ -146,12 +156,11 @@ function HomePage() {
                     <input type="checkbox" id="myTopicsCheckbox" checked={showMyTopics} onChange={() => setShowMyTopics(!showMyTopics)} />
                     <label htmlFor="myTopicsCheckbox">Show only my topics</label>
                 </div>
-                <div className="sort-option">
-                    <label htmlFor="sortSelect">Sort by:</label>
-                    <select id="sortSelect" value={sortCriteria} onChange={(e) => onSortChange(e.target.value)}>
-                        <option value="date">Default</option>
-                        <option value="upvotes">Upvotes</option>
-                        <option value="downvotes">Downvotes</option>
+                <div className="sort-order-option">
+                    <label htmlFor="sortOrderSelect">Sort order:</label>
+                    <select id="sortOrderSelect" value={sortOrder} onChange={(e) => onSortOrderChange(e.target.value)}>
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
                     </select>
                 </div>
             </div>
