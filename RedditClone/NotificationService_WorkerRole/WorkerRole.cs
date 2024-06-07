@@ -81,26 +81,36 @@ namespace NotificationService_WorkerRole
 
             Trace.TraceInformation("NotificationService_WorkerRole has stopped");
         }
-		
+
         // Ovde u asinhronom ce ici citanje iz QUEUE
         private async Task RunAsync(CancellationToken cancellationToken)
         {
+            queueComments = QueueHelper.GetQueueReference("CommentNotificationsQueue");
+            queueAdmins = QueueHelper.GetQueueReference("AdminNotificationsQueue");
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 Trace.TraceInformation("Working");
 
-                // Call ProveriQueueKomentari to process messages from the queue
-                await ProveriQueueKomentari();
-                await ProveriQueueAdmini();
+                if (queueComments != null && queueAdmins != null)
+                {
+                    await ProveriQueueKomentari();
+                    await ProveriQueueAdmini();
+                }
+                else
+                {
+                    Trace.TraceError("Queue initialization failed.");
+                }
 
                 // Wait for a period before checking the queue again
                 await Task.Delay(10000, cancellationToken);
             }
         }
-		#endregion WorkerRole methods
 
-		#region NotificationService methods
-		public async Task PosaljiMejl(string korisnikEmail, string tekstKomentara, string autorKomentara, DateTime vreme, string naslovTeme)
+        #endregion WorkerRole methods
+
+        #region NotificationService methods
+        public async Task PosaljiMejl(string korisnikEmail, string tekstKomentara, string autorKomentara, DateTime vreme, string naslovTeme)
 		{
 			var apiKey = "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";
 			var client = new SendGridClient(apiKey);
