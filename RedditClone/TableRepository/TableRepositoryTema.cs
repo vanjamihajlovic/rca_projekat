@@ -60,7 +60,8 @@ namespace TableRepository
                 // Pretraga po naslovu
                 if (searchCriteria != "")
                 {
-                    sortedResults = sortedResults.Where(t => t.Naslov.Contains(searchCriteria));
+                    string searchLowerCase = searchCriteria.ToLowerInvariant();
+                    sortedResults = sortedResults.Where(t => t.Naslov.Contains(searchLowerCase));
                 }
 
                 // Sortiranje
