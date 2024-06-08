@@ -61,7 +61,8 @@ namespace TableRepository
                 if (searchCriteria != "")
                 {
                     string searchLowerCase = searchCriteria.ToLowerInvariant();
-                    sortedResults = sortedResults.Where(t => t.Naslov.Contains(searchLowerCase));
+                    //sortedResults = sortedResults.Where(t => t.Naslov.Contains(searchLowerCase));
+                    sortedResults = sortedResults.Where(t => t.Naslov.ToLowerInvariant().Contains(searchLowerCase));
                 }
 
                 // Sortiranje

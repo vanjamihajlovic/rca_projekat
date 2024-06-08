@@ -10,10 +10,10 @@ namespace Helpers
 {
     public class BlobHelper
     {
-        // read account configuration settings
+        //Predstavlja skladišni nalog u Azure-u.
         CloudStorageAccount storageAccount = CloudStorageAccount.Parse(CloudConfigurationManager.GetSetting("DataConnectionString"));
 
-        // create blob container for images
+        //Klijent za rad sa blobovima u Azure skladištu.
         CloudBlobClient blobStorage;
 
         public BlobHelper()
@@ -23,7 +23,10 @@ namespace Helpers
 
         public Image DownloadImage(String containerName, String blobName)
         {
+            //Predstavlja kontejner u kojem su smešteni blobovi
             CloudBlobContainer container = blobStorage.GetContainerReference(containerName);
+
+            //Predstavlja pojedinačni blok blob unutar kontejnera.
             CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
 
             using (MemoryStream ms = new MemoryStream())
