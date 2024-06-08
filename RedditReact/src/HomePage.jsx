@@ -14,9 +14,7 @@ function HomePage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1); // State to keep track of current page
     const [pageSize, setPageSize] = useState(5); // State to keep track of page size
-    
-    let userId;
-    
+        
     const navigateToCreateTopic = () => {
         navigate('/create/topic');
     };
@@ -53,16 +51,6 @@ function HomePage() {
         if (showMyTopics) {
             filtered = filtered.filter(topic => topic.IsOwner);
         }
-
-        if (searchQuery.trim() !== '') {
-            const lowerCaseQuery = searchQuery.toLowerCase();
-            filtered = filtered.filter(topic =>
-                topic.Naslov.toLowerCase().includes(lowerCaseQuery) ||
-                topic.Sadrzaj.toLowerCase().includes(lowerCaseQuery)
-            );
-        }
-
-
         return filtered;
     };
 
@@ -84,30 +72,38 @@ function HomePage() {
     };
 
     const handleTopicAction = async (topicId, action) => {
-    console.log(`${action} Topic ID: ${topicId}`);
+		console.log(`${action} Topic ID: ${topicId}`);
 
-    try {
-        const endpoint = `/vote/${action}/${topicId}`;
-        console.log(endpoint);
-        console.log({topicId});
-        const response = await axiosInstance.post(endpoint, { topicId });
-        if (response.status === 200) {
-            fetchTopics();
-            toast(response.data.message);
-        }
-    } catch (error) {
-        toast("Error Happened");
+		try {
+			const endpoint = `/vote/${action}/${topicId}`;
+			console.log(endpoint);
+			console.log({topicId});
+			const response = await axiosInstance.post(endpoint, { topicId });
+			if (response.status === 200) {
+				fetchTopics();
+				toast(response.data.message);
+			}
+		} catch (error) {
+			toast("Error Happened");
 
-        console.error(`Error ${action} topic: `, error);
-    }
-};
+			console.error(`Error ${action} topic: `, error);
+		}
+	};
 
      const fetchTopics = async () => {
         try {
             console.log(`Fetching topics with sortBy=${sortCriteria} and sortOrder=${sortOrder}`);
 
-            //const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}&sort=${sortCriteria}`);
-            const response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}&sort=${sortOrder}`);
+			let response = [];
+			if (searchQuery != '')
+			{
+				response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}&sort=${sortOrder}&search=${searchQuery}`);
+			}
+			else 
+			{
+				response = await axiosInstance.get(`post/readallpaginated?page=${currentPage}&pageSize=${pageSize}&sort=${sortOrder}`);
+			}
+       
             console.log(response.data);
             setTopics(response.data);
         } catch (error) {
@@ -117,7 +113,7 @@ function HomePage() {
 
     useEffect(() => {
         fetchTopics();
-    }, [currentPage, pageSize, sortCriteria, sortOrder]);
+    }, [currentPage, pageSize, sortOrder, searchQuery]);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -128,7 +124,6 @@ function HomePage() {
     };
 
     const onSortChange = (sort) => {
-
         setSortCriteria(sort);
         fetchTopics();
     }

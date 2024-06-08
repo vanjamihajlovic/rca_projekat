@@ -307,16 +307,6 @@ namespace RedditService_WebRole.Controllers
                                 post.PostVoteStatus = "DOWNVOTED";
                             }
                         }
-
-                        /*if (vote.IsUpvote)
-                        {
-                            post.GlasoviZa++;
-
-                        }
-                        else if (!vote.IsUpvote)
-                        {
-                            post.GlasoviProtiv++;
-                        }*/
                     });
                 }
                 
@@ -331,7 +321,7 @@ namespace RedditService_WebRole.Controllers
         [HttpGet]
         [Route("readallpaginated")]
         [EnableCors(origins: "*", headers: "*", methods: "*")]
-        public async Task<IHttpActionResult> ReadAllPostsPaginated(int page = 1, int pageSize = 5, string sort = "asc")
+        public async Task<IHttpActionResult> ReadAllPostsPaginated(int page = 1, int pageSize = 5, string sort = "asc", string search = "")
         {
             try
             {
@@ -342,7 +332,7 @@ namespace RedditService_WebRole.Controllers
                 var claims = _jwtTokenReader.GetClaimsFromToken(token);
                 var emailClaim = _jwtTokenReader.GetClaimValue(claims, "email");
 
-                var paginatedPostsTask = _postRepository.DobaviSvePaginirano(page, pageSize, sort);
+                var paginatedPostsTask = _postRepository.DobaviSvePaginirano(page, pageSize, sort, search);
                 var paginatedPosts = await paginatedPostsTask;
 
                 var votes = await Task.FromResult(_voteRepository.DobaviSve().ToList());

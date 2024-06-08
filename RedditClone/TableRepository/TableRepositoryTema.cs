@@ -39,10 +39,8 @@ namespace TableRepository
                 return Enumerable.Empty<Tema>().AsQueryable();
             }
         }
-
-
-        // TODO fix
-        public async Task<IQueryable<Tema>> DobaviSvePaginirano(int page, int pageSize, string sortBy)
+        
+        public async Task<IQueryable<Tema>> DobaviSvePaginirano(int page, int pageSize, string sortBy, string searchCriteria)
         {
             try
             {
@@ -59,6 +57,13 @@ namespace TableRepository
 
                 var sortedResults = results.AsQueryable();
 
+                // Pretraga po naslovu
+                if (searchCriteria != "")
+                {
+                    sortedResults = sortedResults.Where(t => t.Naslov.Contains(searchCriteria));
+                }
+
+                // Sortiranje
                 if (sortBy.ToLower().Equals("asc"))
                 {
                     sortedResults = sortedResults.OrderBy(post => post.Naslov);
@@ -68,6 +73,7 @@ namespace TableRepository
                     sortedResults = sortedResults.OrderByDescending(post => post.Naslov);
                 }
 
+                // Paginacija
                 return sortedResults.Skip((page - 1) * pageSize).Take(pageSize).AsQueryable();
             }
             catch (Exception ex)
@@ -76,7 +82,6 @@ namespace TableRepository
                 throw;
             }
         }
-
 
         public Tema DobaviTemu(string id)
         {
