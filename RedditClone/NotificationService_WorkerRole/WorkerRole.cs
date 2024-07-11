@@ -16,9 +16,6 @@ using TableRepository;
 Prilikom postavljanja novog komentara na temu - RedditService rola šalje poruku u red (notifications) gde ubacuje ID komentara
 */
 
-//mejl cloudproj@gmail.com
-//sifra cloudproj123
-//za sendGrid nalog je drugo
 
 namespace NotificationService_WorkerRole
 {
